@@ -1,24 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
-
+import Navbar from "./components/Navbar";
+import { Outlet } from 'react-router-dom';
+import Footer from "./components/Footer";
+import Home from "./screens/Home";
+import { Routes, Route } from "react-router-dom";
+import './assets/css/style.css';
+import './assets/css/responsive.css';
+import '@fortawesome/fontawesome-free/css/all.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+// import './assets/styles/bootstrap.custom.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import './assets/styles/index.css';
+import './assets/styles/modern-theme.css';
+import './assets/styles/complete-redesign.css';
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar />
+      <Outlet />
+      <Routes>
+        <Route path="/" element={<Home />} />
+       
+      </Routes>
+      <Footer />
+    </>
   );
 }
 
