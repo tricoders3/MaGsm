@@ -1,7 +1,4 @@
-import Navbar from "./components/Navbar";
-import TopBar from "./components/TopBar";
-import { Outlet } from 'react-router-dom';
-import Footer from "./components/Footer";
+import Layout from "./components/Layout";
 import Home from "./screens/Home";
 import { Routes, Route } from "react-router-dom";
 import './assets/css/style.css';
@@ -16,16 +13,11 @@ import './assets/styles/modern-theme.css';
 import './assets/styles/complete-redesign.css';
 function App() {
   return (
-    <>
-    <TopBar /> 
-      <Navbar />
-      <Outlet />
-      <Routes>
-        <Route path="/" element={<Home />} />
-       
-      </Routes>
-      <Footer />
-    </>
+    <Routes>
+    <Route element={<Layout />}>
+      <Route path="/" element={<Home />} />
+    </Route>
+  </Routes>
   );
 }
 
