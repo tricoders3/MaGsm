@@ -1,14 +1,20 @@
-import mongoose from 'mongoose';
+// models/User.js
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true, select: false },
-    role: { type: String, enum: ['client', 'admin'], default: 'client' },
+    name: String,
+    email: { type: String, unique: true },
+    password: { type: String, select: false },
+    role: { type: String, enum: ["client", "admin"], default: "client" },
+
+    // Google
+    googleId: { type: String, unique: true, sparse: true },
+    provider: { type: String, default: "local" },
+
     refreshToken: String,
   },
   { timestamps: true }
 );
 
-export default mongoose.model('User', userSchema);
+export default mongoose.model("User", userSchema);

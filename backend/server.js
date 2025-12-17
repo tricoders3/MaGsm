@@ -1,37 +1,72 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import connectDB from './config/db.js'
-import cookieParser from 'cookie-parser';
-import authRoutes from './routes/authRoutes.js';
+// backend/server.js
+import express from "express";
+import dotenv from "dotenv";
+import path from "path";
+import connectDB from "./config/db.js";
+import cookieParser from "cookie-parser";
+import authRoutes from "./routes/authRoutes.js";
+import passport from "./passport.js";
+import cors from "cors";
+import session from "express-session";
 
-dotenv.config()
+// ------------------
+// Load .env from root (MaGsm/.env)
+// ------------------
+dotenv.config({ path: path.resolve("../.env") });
 
-connectDB()
+// ------------------
+// Connect MongoDB
+// ------------------
+connectDB();
 
-// --------------------
-// App Express
-// --------------------
-const app = express()
-
+// ------------------
+// Initialize Express
+// ------------------
+const app = express();
 app.use(cookieParser());
+app.use(express.json());
 
-app.use(express.json())
+// ------------------
+// Express Session
+// ------------------
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "fallbacksecret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // true si HTTPS
+  })
+);
 
-// --------------------
-// Routes test
-// --------------------
-app.get('/', (req, res) => {
-  res.send('🚀 Backend running')
-})
+// ------------------
+// Passport
+// ------------------
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.use('/api/auth', authRoutes);
+// ------------------
+// CORS
+// ------------------
+app.use(
+  cors({
+    origin:"http://localhost:3000",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
 
+// ------------------
+// Routes
+// ------------------
+app.get("/", (req, res) => res.send("🚀 Backend running"));
+app.use("/api/auth", authRoutes);
 
-// --------------------
-// Server
-// --------------------
-const PORT = process.env.PORT 
-
+// ------------------
+// Start Server
+// ------------------
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`)
-})
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
+
