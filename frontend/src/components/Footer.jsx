@@ -21,17 +21,17 @@ function Footer(props) {
             </div>
             
             <div className="col-lg-2 col-md-6 mb-4">
-              <h5 className="footer-title">Quick Links</h5>
+              <h5 className="footer-title">Contact</h5>
               <ul className="footer-links">
                 <li><a href="/">Home</a></li>
-                <li><a href="/price">Compare Prices</a></li>
+                <li><a href="/price">Categories</a></li>
                 <li><a href="/products">Products</a></li>
                 <li><a href="/favorites">Favorites</a></li>
               </ul>
             </div>
             
             <div className="col-lg-2 col-md-6 mb-4">
-              <h5 className="footer-title">Support</h5>
+              <h5 className="footer-title">Categories</h5>
               <ul className="footer-links">
                 <li><a href="#">Help Center</a></li>
                 <li><a href="#">FAQs</a></li>
@@ -41,7 +41,7 @@ function Footer(props) {
             </div>
             
             <div className="col-lg-4 col-md-6 mb-4">
-              <h5 className="footer-title">Follow Us</h5>
+              <h5 className="footer-title">About Us</h5>
               <div className="footer-social">
                 <a href="#" className="social-link">
                   <FaFacebookF />
