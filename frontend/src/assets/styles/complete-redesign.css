@@ -338,7 +338,6 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   background: var(--white);
   border-bottom: 1px solid var(--gray-200);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 1rem 0;
   z-index: 100;
   transition: all var(--transition-normal);
 }
@@ -346,7 +345,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 .navbar-brand-redesign {
   font-size: 1.75rem;
   font-weight: 800;
-  background: var(--primary-gradient);
+  background: linear-gradient(to right, #01abab 0%, #01abab 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -378,7 +377,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 
 .nav-link-redesign:hover {
   color: var(--primary);
-  background: rgba(102, 126, 234, 0.1);
+
 }
 
 .nav-link-redesign:hover::before {
@@ -627,7 +626,9 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   .navbar-redesign {
     background: rgba(15, 15, 35, 0.95);
   }
-  
+  .categories-sidebar{
+    background: rgba(15, 15, 35, 0.95);
+  }
   .nav-icon-redesign {
     background: var(--dark-surface);
     border-color: rgba(255, 255, 255, 0.1);
