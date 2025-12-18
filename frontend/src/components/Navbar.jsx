@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FaHeart, FaSearch, FaUser, FaShoppingBag, FaBars, FaStore } from "react-icons/fa";
 import logo from "../assets/images/logo.png"; 
+import { useAuth } from "../context/AuthContext";
+import { FiLogOut } from "react-icons/fi";
 
 
 function NavBar() {
 
- 
+  const { user, isAuthenticated, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
-
+  const navigate = useNavigate ();
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef(null);
+  
 
 
   useEffect(() => {
@@ -20,6 +25,17 @@ function NavBar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+    };
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+  
   return (
     <>
     <nav className={`navbar-redesign ${isScrolled ? "scrolled" : ""}`}>
@@ -63,14 +79,52 @@ function NavBar() {
           <div className="d-flex align-items-center gap-3">
             <div className="d-none d-lg-flex align-items-center gap-3">
 
-            {/* Search */}
-            <button className="nav-icon-redesign" title="Search">
-              <FaSearch />
-            </button>
-             {/* User */}
-            <button className="nav-icon-redesign" title="Account">
-              <FaUser />
-            </button>
+         {isAuthenticated ? (
+  <div className="nav-avatar-wrapper" ref={menuRef}>
+    <button
+      className="nav-avatar"
+      onClick={() => setShowMenu((prev) => !prev)}
+      title="Account"
+    >
+      {user.name.charAt(0).toUpperCase()}
+    </button>
+
+    {showMenu && (
+      <div className="nav-avatar-menu">
+        <div className="nav-avatar-user">
+          <div>
+            <div className="nav-avatar-name">{user.name}</div>
+            <div className="nav-avatar-email">{user.email}</div>
+          </div>
+        </div>
+
+        <button
+  className="nav-avatar-logout"
+  onClick={() => {
+    logout();
+    setShowMenu(false);
+    navigate("/");
+  }}
+>
+  <FiLogOut size={18} />
+ Déconnexion
+</button>
+
+      </div>
+    )}
+  </div>
+) : (
+  <button
+    className="nav-icon-redesign"
+    title="Account"
+    onClick={() => navigate("/login")}
+  >
+    <FaUser />
+  </button>
+)}
+
+
+
             </div>
             {/* Favorites */}
             <button
@@ -88,11 +142,6 @@ function NavBar() {
             <button
               className="nav-icon-redesign position-relative"
               title="Shopping Cart"
-              style={{
-                background: "var(--primary-gradient)",
-                color: "var(--white)",
-                border: "none",
-              }}
             >
               <FaShoppingBag />
              {/* <span className="nav-badge-redesign"></span> */}
