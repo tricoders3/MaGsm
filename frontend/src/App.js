@@ -28,8 +28,6 @@ function App() {
 
   return (
     <>
-      <TopBar />
-      <Navbar />
        <Routes>
        <Route element={<Layout />}>
       <Route path="/" element={<Home />} />
@@ -42,7 +40,6 @@ function App() {
   
   </Route>
 </Routes>      
-      <Footer />
     </>
 
   );
