@@ -1,6 +1,9 @@
 
 import React from "react";
-import { FaFacebookF, FaTwitter, FaInstagram, FaPinterestP, FaStore } from "react-icons/fa";
+import { FaFacebookF, FaTwitter, FaInstagram, FaPinterestP} from "react-icons/fa";
+import { Link } from "react-router-dom";
+import logo from "../assets/images/logo.png"; 
+
 
 function Footer(props) {
   return (
@@ -11,8 +14,18 @@ function Footer(props) {
             <div className="col-lg-4 col-md-6 mb-4">
               <div className="footer-brand">
                 <div className="footer-logo">
-                  <FaStore className="me-2" />
-                  <span>PriceFinder</span>
+                  <Link to="/" className="navbar-brand-redesign d-flex align-items-center">
+                      <img 
+                        src={logo} 
+                        alt="PriceFinder Logo" 
+                        style={{ height: "60px", width: "auto", marginRight: "10px" }} 
+                      />
+                  <span>
+                    MA GSM
+                  </span>
+                  
+                  
+                    </Link>
                 </div>
                 <p className="footer-description">
                   Compare prices across multiple suppliers and find the best deals for your business needs.
@@ -64,7 +77,7 @@ function Footer(props) {
           <div className="row align-items-center">
             <div className="col-md-6">
               <p className="copyright">
-                © 2024 PriceFinder. All rights reserved.
+              © {new Date().getFullYear()} MA GSM. All rights reserved.
               </p>
             </div>
             <div className="col-md-6">

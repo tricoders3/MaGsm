@@ -1,7 +1,5 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import axios from "axios";
-
+import { Routes, Route } from "react-router-dom";
+import { useState } from "react";
 import Navbar from "./components/Navbar";
 import TopBar from "./components/TopBar";
 import Footer from "./components/Footer";
@@ -10,6 +8,8 @@ import Home from "./screens/Home";
 import Login from "./screens/login";
 import Register from "./screens/register";
 import Dashboard from "./screens/Dashboard";
+import Layout from "./components/Layout";
+import About from "./screens/About";
 import './assets/css/style.css';
 import './assets/css/responsive.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -19,8 +19,6 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import './assets/styles/index.css';
 import './assets/styles/modern-theme.css';
 import './assets/styles/complete-redesign.css';
-import BASE_URL from "./constante";
-
 
 function App() {
   const [user, setUser] = useState(null);
@@ -32,20 +30,21 @@ function App() {
     <>
       <TopBar />
       <Navbar />
-      <div className="main-content">
        <Routes>
-         <Route path="/" element={<Home />} />
+       <Route element={<Layout />}>
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
   <Route path="/register" element={<Register />} />
   <Route path="/login" element={<Login setUser={setUser} />} />
 
   <Route path="/dashboard" element={<Dashboard user={user} />} />
   <Route path="/oauth-success" element={<OAuthSuccess setUser={setUser} />} />
-</Routes>
-
-       
-      </div>
+  
+  </Route>
+</Routes>      
       <Footer />
     </>
+
   );
 }
 
