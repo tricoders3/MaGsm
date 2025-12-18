@@ -59,29 +59,31 @@ function NavBar() {
           </div>
 
           {/* Action Icons */}
+   
           <div className="d-flex align-items-center gap-3">
-            {/* Categories Sidebar Icon */}
-          
+            <div className="d-none d-lg-flex align-items-center gap-3">
 
             {/* Search */}
             <button className="nav-icon-redesign" title="Search">
               <FaSearch />
             </button>
-
+             {/* User */}
+            <button className="nav-icon-redesign" title="Account">
+              <FaUser />
+            </button>
+            </div>
             {/* Favorites */}
             <button
               className="nav-icon-redesign position-relative"
               title="Favorites"
             >
               <FaHeart />
-              <span className="nav-badge-redesign"></span>
+              {/* <span className="nav-badge-redesign"></span> */}
             </button>
 
-            {/* User */}
-            <button className="nav-icon-redesign" title="Account">
-              <FaUser />
-            </button>
-
+           
+           
+         
             {/* Cart */}
             <button
               className="nav-icon-redesign position-relative"
@@ -93,18 +95,9 @@ function NavBar() {
               }}
             >
               <FaShoppingBag />
-              <span className="nav-badge-redesign"></span>
+             {/* <span className="nav-badge-redesign"></span> */}
             </button>
-            <button
-              className="nav-icon-redesign"
-              type="button"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#categoriesSidebar"
-              aria-controls="categoriesSidebar"
-              title="Categories"
-            >
-              <FaBars />
-            </button>
+          
             {/* Mobile Menu Toggle */}
             <button
               className="nav-icon-redesign "
@@ -120,76 +113,89 @@ function NavBar() {
       </div>
     </nav>
 
-    {/* Categories Sidebar Offcanvas */}
-    <div
-      className="offcanvas offcanvas-start categories-sidebar"
-      tabIndex="-1"
-      id="categoriesSidebar"
-      aria-labelledby="categoriesSidebarLabel"
-    >
-      <div className="offcanvas-header">
-        <button
-          type="button"
-          className="btn-close"
-          data-bs-dismiss="offcanvas"
-          aria-label="Close"
-        ></button>
-      </div>
-
-      <div className="offcanvas-body">
-        <ul className="list-unstyled">
-          {/* Empty for now, will fill with API data later */}
-        </ul>
-      </div>
-    </div>
  
     {/* Mobile Menu Offcanvas */}
     <div
-      className="offcanvas offcanvas-end"
-      tabIndex="-1"
-      id="mobileMenu"
-      aria-labelledby="mobileMenuLabel"
-    >
-      <div className="offcanvas-header">
-        <h5 className="offcanvas-title text-gradient" id="mobileMenuLabel">
-          Menu
-        </h5>
-        <button
-          type="button"
-          className="btn-close"
-          data-bs-dismiss="offcanvas"
-        ></button>
-      </div>
-      <div className="offcanvas-body">
-        <div className="d-flex flex-column gap-3">
-          <Link to="/home" className="nav-link-redesign" data-bs-dismiss="offcanvas">
-            Home
-          </Link>
-          <Link to="/price" className="nav-link-redesign" data-bs-dismiss="offcanvas">
-            Compare Prices
-          </Link>
-          <Link to="/products" className="nav-link-redesign" data-bs-dismiss="offcanvas">
-            Products
-          </Link>
-          <Link to="/smart-navigator" className="nav-link-redesign" data-bs-dismiss="offcanvas">
-            Smart Navigator
-          </Link>
-          <Link to="/contact" className="nav-link-redesign" data-bs-dismiss="offcanvas">
-            Contact
-          </Link>
-          <hr />
-          <Link to="/search" className="nav-link-redesign" data-bs-dismiss="offcanvas">
-            Search
-          </Link>
-          <Link to="/favorites" className="nav-link-redesign" data-bs-dismiss="offcanvas">
-            Favorites
-          </Link>
-          <Link to="/login" className="nav-link-redesign" data-bs-dismiss="offcanvas">
-            Account
-          </Link>
-        </div>
-      </div>
+ className="offcanvas offcanvas-start"
+  tabIndex="-1"
+  id="mobileMenu"
+  aria-labelledby="mobileMenuLabel"
+>
+<div className="offcanvas-header d-flex align-items-center justify-content-between">
+    
+    {/* Mobile Brand Logo */}
+    <Link to="/" className="d-flex align-items-center">
+      <img 
+        src={logo} 
+        alt="MA GSM Logo" 
+        style={{ height: "50px", width: "auto", marginRight: "10px" }} 
+      />
+      <span style={{ fontWeight: 600, color: "var(--primary-color)" }}>
+        MA GSM
+      </span>
+    </Link>
+
+    <button
+      type="button"
+      className="btn-close"
+      data-bs-dismiss="offcanvas"
+    ></button>
+  </div>
+
+  <div className="offcanvas-body d-flex flex-column gap-1">
+
+    {/* Mobile-only search input */}
+    <div className="mobile-search-wrapper d-lg-none">
+      <input
+        type="text"
+        placeholder="Rechercher..."
+        className="mobile-search-input"
+      />
+      <FaSearch className="mobile-search-icon" />
     </div>
+
+    {/* Categories */}
+    <div className="categories-section d-flex flex-column gap-1">
+      <Link to="/category/phones" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+         Phones
+      </Link>
+      <Link to="/category/laptops" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+         Laptops
+      </Link>
+      <Link to="/category/accessories" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+         Accessories
+      </Link>
+      <Link to="/category/smart-home" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+         Smart Home
+      </Link>
+    </div>
+
+    {/* Mobile links */}
+    <div className="d-lg-none d-flex flex-column gap-2">
+      <Link to="/home" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+        Home
+      </Link>
+      <Link to="/about" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+        About US
+      </Link>
+      <Link to="/news" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+        News
+      </Link>
+      <Link to="/contact" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+        Contact
+      </Link>
+      <Link to="/login" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+        S'inscrire
+      </Link>
+      <Link to="/register" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+        Se Connecter
+      </Link>
+    </div>
+
+  </div>
+</div>
+
+ 
   </>
   );
 }
