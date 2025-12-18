@@ -8,6 +8,8 @@ import authRoutes from "./routes/authRoutes.js";
 import passport from "./passport.js";
 import cors from "cors";
 import session from "express-session";
+import productRoutes from "./routes/productRoutes.js";
+import categoryRoutes from './routes/categoryRoutes.js'
 
 // ------------------
 // Load .env from root (MaGsm/.env)
@@ -60,6 +62,8 @@ app.use(
 // ------------------
 app.get("/", (req, res) => res.send("🚀 Backend running"));
 app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
 
 // ------------------
 // Start Server

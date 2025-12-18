@@ -19,7 +19,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import './assets/styles/index.css';
 import './assets/styles/modern-theme.css';
 import './assets/styles/complete-redesign.css';
-import BASE_URL from "./constante";
+
 
 
 function App() {
