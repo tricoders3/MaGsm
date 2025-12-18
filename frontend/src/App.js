@@ -1,5 +1,6 @@
 import Layout from "./components/Layout";
 import Home from "./screens/Home";
+import About from "./screens/About";
 import { Routes, Route } from "react-router-dom";
 import './assets/css/style.css';
 import './assets/css/responsive.css';
@@ -16,6 +17,7 @@ function App() {
     <Routes>
     <Route element={<Layout />}>
       <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
     </Route>
   </Routes>
   );
