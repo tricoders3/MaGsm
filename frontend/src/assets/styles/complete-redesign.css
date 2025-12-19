@@ -1268,11 +1268,13 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   padding: 1rem;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   border: 2px solid transparent;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease; 
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  width: 100%;
+  height: 100%;
 }
 
 
@@ -1883,8 +1885,14 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   grid-template-columns: 1fr;
   gap: 1rem;
 }
-
 .product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* keep this; it will now respect the slide height */
+}
+.product-card {
+  display: flex;
+  flex-direction: column;
   background: var(--white);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
@@ -1893,6 +1901,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   position: relative;
   border: none;
   backdrop-filter: blur(10px);
+  height: 100%;
 }
 
 .product-card:hover {
@@ -1907,12 +1916,11 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 
 .product-image {
-  position: relative;
-  overflow: hidden;
-  height: 200px;
-  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;          
 }
-
 .products-list .product-image {
   width: 200px;
   height: 150px;
@@ -2394,7 +2402,61 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
+.best-seller-carousel {
+  position: relative;
+}
 
+/* Position the external arrows slightly outside the Swiper track */
+.best-seller-carousel .best-seller-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.95);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+  color: #222;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  transition: transform 150ms ease, box-shadow 200ms ease, background 150ms ease;
+}
+
+.best-seller-carousel .best-seller-prev { left: -18px; }
+.best-seller-carousel .best-seller-next { right: -18px; }
+
+.best-seller-carousel .best-seller-nav:hover {
+  transform: translateY(-50%) scale(1.04);
+  box-shadow: 0 16px 30px rgba(0,0,0,0.16);
+  background: #fff;
+}
+.best-seller-carousel .best-seller-nav:active {
+  transform: translateY(-50%) scale(0.98);
+}
+
+/* Swiper base styling */
+.best-seller-swiper {
+  padding-bottom: 50px; 
+}
+.best-seller-swiper .swiper-pagination-bullet { background: rgba(0,0,0,0.25); opacity: 1; }
+.best-seller-swiper .swiper-pagination-bullet-active { background: #01ABAB; }
+
+/* Responsive: pull arrows inside a bit on small screens */
+@media (max-width: 576px) {
+  .best-seller-carousel .best-seller-prev { left: 6px; }
+  .best-seller-carousel .best-seller-next { right: 6px; }
+  .best-seller-carousel .best-seller-nav { width: 38px; height: 38px; border-radius: 10px; }
+}
 @media (max-width: 575px) {
   .navbar-brand-redesign {
     font-size: 1.25rem;
@@ -2407,4 +2469,26 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   .nav-icon-redesign svg {
     font-size: 16px;
   }
+  .product-image {
+     height: 180px;
+     }
+
+.product-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.product-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;         
+}
+.product-content .btn-redesign {
+  margin-top: auto;        
+}
+
+.best-seller-swiper .swiper {
+  overflow: visible;
+}  
 }

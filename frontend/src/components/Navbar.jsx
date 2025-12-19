@@ -4,17 +4,21 @@ import { FaHeart, FaSearch, FaUser, FaShoppingBag, FaBars, FaStore } from "react
 import logo from "../assets/images/logo.png"; 
 import { useAuth } from "../context/AuthContext";
 import { FiLogOut } from "react-icons/fi";
-
+import axios from "axios";
+import BASE_URL from "../constante";
 
 function NavBar() {
 
-  const { user, isAuthenticated, logout } = useAuth();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [showCategories, setShowCategories] = useState(false);
-  const navigate = useNavigate ();
-  const [showMenu, setShowMenu] = useState(false);
-  const menuRef = useRef(null);
-  
+const { user, isAuthenticated, logout } = useAuth();
+const [isScrolled, setIsScrolled] = useState(false);
+const [showCategories, setShowCategories] = useState(false);
+const [categories, setCategories] = useState([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
+const navigate = useNavigate ();
+const [showMenu, setShowMenu] = useState(false);
+const menuRef = useRef(null);
+
 
 
   useEffect(() => {
@@ -35,7 +39,22 @@ function NavBar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/api/categories`);
+        setCategories(response.data);
+        console.log(response.data)
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+        setError('Failed to load categories');
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
   return (
     <>
     <nav className={`navbar-redesign ${isScrolled ? "scrolled" : ""}`}>
@@ -86,7 +105,7 @@ function NavBar() {
       onClick={() => setShowMenu((prev) => !prev)}
       title="Account"
     >
-      {user.name.charAt(0).toUpperCase()}
+      {user?.name?.charAt(0).toUpperCase()}
     </button>
 
     {showMenu && (
@@ -205,19 +224,21 @@ function NavBar() {
 
     {/* Categories */}
     <div className="categories-section d-flex flex-column gap-1">
-      <Link to="/category/phones" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
-         Phones
-      </Link>
-      <Link to="/category/laptops" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
-         Laptops
-      </Link>
-      <Link to="/category/accessories" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
-         Accessories
-      </Link>
-      <Link to="/category/smart-home" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
-         Smart Home
-      </Link>
-    </div>
+          {loading ? (
+            <p>Loading categories...</p>
+          ) : (
+            categories.map(category => (
+              <Link
+                key={category.id}
+                to={`/category/${category.name.toLowerCase()}`}
+                className="nav-link-sidebar"
+                data-bs-dismiss="offcanvas"
+              >
+                {category.name}
+              </Link>
+            ))
+          )}
+        </div>
 
     {/* Mobile links */}
     <div className="d-lg-none d-flex flex-column gap-2">
