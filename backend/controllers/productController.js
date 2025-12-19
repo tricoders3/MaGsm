@@ -1,5 +1,5 @@
 import Product from "../models/productModel.js"
-
+import Order from "../models/orderModel.js";
 
 /**
  * @desc    Create new product
@@ -45,16 +45,18 @@ export const createProduct = async (req, res) => {
  * @access  Public
  */
 export const getProducts = async (req, res) => {
-  try {
-    const products = await Product.find()
-     .populate("category", "name subCategories"); 
 
-    res.json(products);
+  try {
+    // Only return the 'name' field
+    const categories = await Category.find({}, 'name'); // returns _id and name
+    // If you want only names, map to an array
+    const categoryNames = categories.map(cat => cat.name);
+    res.json(categoryNames);
   } catch (error) {
-    console.error(error);     
-    res.status(500).json({ message: "Error fetching products", error: error.message });
+    res.status(500).json({ message: "Error fetching categories" });
   }
 };
+
 
 
 /**
@@ -182,5 +184,38 @@ export const getProductsBySubCategory = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error fetching products by subCategory" });
+  }
+};
+export  const getBestSellingProducts = async (req, res) => {
+  try {
+    // Aggregate quantity sold per product
+    const sales = await Order.aggregate([
+      { $unwind: "$orderItems" }, // Flatten orderItems
+      {
+        $group: {
+          _id: "$orderItems.product", // Group by product ID
+          totalSold: { $sum: "$orderItems.qty" } // Sum quantities
+        }
+      },
+      { $sort: { totalSold: -1 } }, // Sort descending
+      { $limit: 5 } // Top 5
+    ]);
+
+    // Get product details
+    const productIds = sales.map(s => s._id);
+    const products = await Product.find({ _id: { $in: productIds } })
+      .populate("category", "name subCategories")
+      .populate("subCategory", "name");
+
+    // Merge totalSold into product objects
+    const result = products.map(p => {
+      const sale = sales.find(s => s._id.toString() === p._id.toString());
+      return { ...p._doc, totalSold: sale ? sale.totalSold : 0 };
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching best-selling products" });
   }
 };
