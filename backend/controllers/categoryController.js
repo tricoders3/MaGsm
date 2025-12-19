@@ -106,3 +106,55 @@ export const removeSubCategory = async (req, res) => {
     res.status(500).json({ message: "Error removing subCategory" });
   }
 };
+/**
+ * @desc    Get subCategories of a category
+ * @route   GET /api/categories/:id/subcategories
+ * @access  Public
+ */
+
+/**
+ * @desc    Get subCategories of a category
+ * @route   GET /api/categories/:id/subcategories
+ * @access  Public
+ */
+export const getSubCategories = async (req, res) => {
+  try {
+    // Find category by ID and select only the subCategories field
+    const category = await Category.findById(req.params.id, "subCategories");
+    if (!category) return res.status(404).json({ message: "Category not found" });
+
+    // Return only the subCategories array
+    res.json(category.subCategories);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching subCategories" });
+  }
+};
+
+/**
+ * @desc    Get subCategory names of a category
+ * @route   GET /api/categories/:id/subcategories/names
+ * @access  Public
+ */
+export const getSubCategoryNames = async (req, res) => {
+  try {
+    const category = await Category.findById(
+      req.params.id,
+      "subCategories.name"
+    );
+
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    // Extract only names
+    const subCategoryNames = category.subCategories.map(
+      (sub) => sub.name
+    );
+
+    res.json(subCategoryNames);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching subcategory names" });
+  }
+};
