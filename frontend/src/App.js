@@ -1,8 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import { useState } from "react";
-import Navbar from "./components/Navbar";
-import TopBar from "./components/TopBar";
-import Footer from "./components/Footer";
 import OAuthSuccess from "./components/OAuthSuccess";
 import Home from "./screens/Home";
 import Login from "./screens/login";
@@ -10,6 +7,8 @@ import Register from "./screens/register";
 import Dashboard from "./screens/Dashboard";
 import Layout from "./components/Layout";
 import About from "./screens/About";
+import ProductsCategory from "./components/ProductsCategory";
+import ProductsByCategory from "./components/ProductsByCategoy";
 import './assets/css/style.css';
 import './assets/css/responsive.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -39,6 +38,8 @@ function App() {
 
   <Route path="/dashboard" element={<Dashboard user={user} />} />
   <Route path="/oauth-success" element={<OAuthSuccess setUser={setUser} />} />
+  <Route path="/" element={<ProductsCategory />} />
+  <Route path="/category/:categoryId" element={<ProductsByCategory />} />
   
   </Route>
 </Routes>      
