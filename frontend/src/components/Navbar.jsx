@@ -86,7 +86,7 @@ function NavBar() {
       onClick={() => setShowMenu((prev) => !prev)}
       title="Account"
     >
-      {user.name.charAt(0).toUpperCase()}
+      {user?.name?.charAt(0).toUpperCase()}
     </button>
 
     {showMenu && (
