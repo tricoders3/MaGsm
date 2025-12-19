@@ -1,3 +1,8 @@
+
+
+
+
+
 // src/pages/Login.jsx
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -31,9 +36,10 @@ const Login = () => {
   };
 
   // Connexion Google
-  const loginWithGoogle = () => {
-    window.open(`${BASE_URL}/api/auth/google`, "_self");
-  };
+const loginWithGoogle = () => {
+  window.location.href = `${BASE_URL}/api/auth/google`;
+};
+
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">

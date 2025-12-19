@@ -1,23 +1,73 @@
-import { registerUser, loginUser, googleLogin } from "../services/authService.js";
+// controllers/authController.js
+import jwt from "jsonwebtoken";
+import { registerUser, loginUser } from "../services/authService.js";
+import bcrypt from "bcryptjs";
+import User from "../models/userModel.js";
 
 /**
- * Inscription
+ * Inscription d'un utilisateur classique (email / mot de passe)
  */
 export const register = async (req, res) => {
   try {
-    const newUser = await registerUser(req.body);
-    res.status(201).json({ message: "Utilisateur créé avec succès", userId: newUser._id });
+    const { name, email, password } = req.body;
+
+    // Vérifier si email existe déjà
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email déjà utilisé" });
+    }
+
+    // Hash du mot de passe
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Création de l'utilisateur
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role: "client",
+    });
+
+    await newUser.save();
+
+    res.status(201).json({ message: "Utilisateur créé avec succès" });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Erreur lors de l'inscription" });
   }
 };
-
 /**
- * Connexion
+ * Connexion classique (email / mot de passe)
  */
 export const login = async (req, res) => {
   try {
-    const { user, accessToken, refreshToken } = await loginUser(req.body);
+    const { email, password } = req.body;
+
+    // +password لأن password في schema select: false
+    const user = await User.findOne({ email }).select("+password");
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // مقارنة كلمة السر
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // إنشاء JWT
+    const accessToken = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    const refreshToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: "7d" }
+    );
 
     res
       .cookie("refreshToken", refreshToken, {
@@ -34,26 +84,53 @@ export const login = async (req, res) => {
         },
       });
   } catch (error) {
-    res.status(401).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
 /**
- * Google OAuth login
+ * Vérifie si l'utilisateur est connecté via Google OAuth
  */
-export const googleLoginSuccess = async (req, res) => {
-  try {
-    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+// controllers/authController.js
+export const googleLoginSuccess = (req, res) => {
+  if (!req.user) return res.status(401).json({ message: "Unauthorized" });
 
-    const { accessToken, refreshToken } = await googleLogin(req.user);
+  const user = req.user;
 
-    res
-      .cookie("refreshToken", refreshToken, { httpOnly: true, sameSite: "strict" })
-      .redirect(`${process.env.CLIENT_URL}/oauth-success?token=${accessToken}`);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  const accessToken = jwt.sign(
+    {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      picture: user.picture || null,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "15m" }
+  );
+
+  const refreshToken = jwt.sign(
+    { id: user._id },
+    process.env.JWT_REFRESH_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  // Set refresh token cookie
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+  });
+
+  // Redirect to frontend route
+  res.redirect(`${process.env.CLIENT_URL}/oauth-success?token=${accessToken}`);
 };
+
+
+
+
+
 
 /**
  * Déconnexion
@@ -62,6 +139,6 @@ export const logout = (req, res) => {
   req.logout(err => {
     if (err) return res.status(500).json({ message: "Erreur lors de la déconnexion" });
     res.clearCookie("refreshToken");
-    res.redirect(process.env.CLIENT_URL);
+    res.redirect(process.env.CLIENT_URL); // Redirige vers le frontend
   });
 };

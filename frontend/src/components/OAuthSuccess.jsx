@@ -1,34 +1,47 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-const OAuthSuccess = ({ setUser }) => {
+const OAuthSuccess = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const executedRef = useRef(false); // ✅ track if effect has already run
 
   useEffect(() => {
+    if (executedRef.current) return; // skip second mount
+    executedRef.current = true;
+
+    console.log("OAuthSuccess mounted");
+
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
+    console.log("Token from URL:", token);
 
     if (token) {
-      // Décodage du JWT
-      const payload = JSON.parse(atob(token.split(".")[1]));
+      try {
+        const base64Payload = token.split(".")[1];
+        const payload = JSON.parse(atob(base64Payload));
+        console.log("Decoded payload:", payload);
 
-      // Mettre les infos utilisateur dans le state
-      setUser({
-        id: payload.id,
-        role: payload.role,
-        name: payload.name,
-        email: payload.email,
-        picture: payload.picture,
-      });
+        login({
+          id: payload.id,
+          name: payload.name,
+          email: payload.email,
+          role: payload.role,
+          picture: payload.picture || null,
+        });
 
-      // Stockage local pour persistance
-      localStorage.setItem("user", JSON.stringify(payload));
-
-      navigate("/dashboard");
+        console.log("User saved in context, navigating to dashboard");
+        navigate("/dashboard");
+      } catch (err) {
+        console.error("Failed to parse token:", err);
+        navigate("/login");
+      }
     } else {
+      console.log("No token found, redirecting to login");
       navigate("/login");
     }
-  }, [navigate, setUser]);
+  }, [login, navigate]);
 
   return <div>Connexion réussie, redirection...</div>;
 };

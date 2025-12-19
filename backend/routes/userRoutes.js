@@ -1,3 +1,4 @@
+
 import express from 'express'
 import {
   getProfile,
@@ -7,7 +8,7 @@ import {
   deleteUserController
 } from '../controllers/userController.js'
 
-import {protect,isAdmin} from '../../middlewares/auth.middleware.js'
+import {protect,isAdmin} from '../middlewares/authMiddleware.js'
 
 
 const router = express.Router()

@@ -23,7 +23,7 @@ import './assets/styles/complete-redesign.css';
 
 
 function App() {
-  const [user, setUser] = useState(null);
+ 
 
 
 
@@ -35,10 +35,10 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
   <Route path="/register" element={<Register />} />
-  <Route path="/login" element={<Login setUser={setUser} />} />
+  <Route path="/login" element={<Login />} />
 
-  <Route path="/dashboard" element={<Dashboard user={user} />} />
-  <Route path="/oauth-success" element={<OAuthSuccess setUser={setUser} />} />
+  <Route path="/dashboard" element={<Dashboard  />} />
+  <Route path="/oauth-success" element={<OAuthSuccess  />} />
   
   </Route>
 </Routes>      

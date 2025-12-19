@@ -34,9 +34,7 @@ const Dashboard = ({ user: propUser }) => {
         style={{ width: "120px", height: "120px" }}
       />
       <p>Email : {user.email}</p>
-      <button className="btn btn-danger mt-3" onClick={handleLogout}>
-        Déconnexion
-      </button>
+      
     </div>
   );
 };
