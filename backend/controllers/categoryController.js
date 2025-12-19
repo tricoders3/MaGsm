@@ -106,11 +106,7 @@ export const removeSubCategory = async (req, res) => {
     res.status(500).json({ message: "Error removing subCategory" });
   }
 };
-/**
- * @desc    Get subCategories of a category
- * @route   GET /api/categories/:id/subcategories
- * @access  Public
- */
+
 
 /**
  * @desc    Get subCategories of a category
@@ -136,25 +132,28 @@ export const getSubCategories = async (req, res) => {
  * @route   GET /api/categories/:id/subcategories/names
  * @access  Public
  */
-export const getSubCategoryNames = async (req, res) => {
+
+
+export const getProductsBySubCategory = async (req, res) => {
   try {
-    const category = await Category.findById(
-      req.params.id,
-      "subCategories.name"
-    );
+    // Find all products that belong to the subCategory
+    const products = await Product.find({ subCategory: req.params.subCategoryId })
+      .populate("category", "name subCategories"); // populate category info
 
-    if (!category) {
-      return res.status(404).json({ message: "Category not found" });
-    }
+    // Map subCategory id to name
+    const result = products.map((p) => {
+      const subCat = p.category.subCategories.find(
+        (sc) => sc._id.toString() === p.subCategory.toString()
+      );
+      return {
+        ...p._doc,
+        subCategoryName: subCat ? subCat.name : null,
+      };
+    });
 
-    // Extract only names
-    const subCategoryNames = category.subCategories.map(
-      (sub) => sub.name
-    );
-
-    res.json(subCategoryNames);
+    res.json(result);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error fetching subcategory names" });
+    res.status(500).json({ message: "Error fetching products by subCategory" });
   }
 };
