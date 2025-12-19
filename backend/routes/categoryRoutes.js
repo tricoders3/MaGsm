@@ -7,13 +7,15 @@ import {
   deleteCategory,
   addSubCategory,
   removeSubCategory,
+ getSubCategories, getSubCategoryNames
 } from "../controllers/categoryController.js";
 
 const router = express.Router();
 
 router.route("/").get(getCategories).post(createCategory);
+router.get("/:id/subcategories", getSubCategories);
 router.route("/:id").put(updateCategory).delete(deleteCategory);
 router.post("/:id/subcategory", addSubCategory);
 router.route("/:categoryId/subcategories/:subId").delete(removeSubCategory);
-
+router.get("/:id/subcategories/names", getSubCategoryNames);
 export default router;

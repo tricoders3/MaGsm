@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaStar } from 'react-icons/fa';
 import axios from 'axios';
 import BASE_URL from "../constante";
@@ -7,7 +8,7 @@ const ProductsCategory = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -36,10 +37,12 @@ const ProductsCategory = () => {
         </div>
         <div className="row g-4">
           {categories.map((category) => (
-            <div key={category.id} className="col-lg-4 col-md-6">
+            <div key={category.id} className="col-lg-4 col-md-6"
+            style={{ cursor: 'pointer' }}
+            onClick={() => navigate(`/category/${category._id}`)}>
               <div className="category-card card-redesign h-100">
                 <div className="card-body-redesign text-center">
-                  {/* Category Image */}
+                  {/* Category Image 
                   <div className="category-image mb-3">
                     <img
                       src={category.image || '/assets/images/default.png'} // fallback image
@@ -48,7 +51,7 @@ const ProductsCategory = () => {
                       style={{ width: '80px', height: '80px', objectFit: 'cover' }}
                     />
                   </div>
-
+*/}
                   {/* Category Name */}
                   <h4 className="category-title mb-2">{category.name}</h4>
 

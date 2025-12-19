@@ -6,7 +6,7 @@ import {
   updateProduct,
   deleteProduct,
   getProductsByCategory,
-  getProductsBySubCategory,
+  getProductsBySubCategory,getBestSellingProducts
 } from "../controllers/productController.js";
 
 
@@ -23,5 +23,5 @@ router.route("/:id")
 
 router.get("/category/:categoryId", getProductsByCategory);
 router.get("/subcategory/:subCategoryId", getProductsBySubCategory);
-
+router.get("/best-selling", getBestSellingProducts);
 export default router;
