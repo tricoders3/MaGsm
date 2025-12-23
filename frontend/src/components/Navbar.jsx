@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaHeart, FaSearch, FaUser, FaShoppingBag, FaBars, FaStore } from "react-icons/fa";
+import { FaHeart, FaSearch, FaUser, FaShoppingBag, FaBars, FaChevronDown, FaChevronRight } from "react-icons/fa";
 import logo from "../assets/images/logo.png"; 
 import { useAuth } from "../context/AuthContext";
 import { FiLogOut } from "react-icons/fi";
@@ -11,7 +11,8 @@ function NavBar() {
 
 const { user, isAuthenticated, logout } = useAuth();
 const [isScrolled, setIsScrolled] = useState(false);
-const [showCategories, setShowCategories] = useState(false);
+const [openCategoryId, setOpenCategoryId] = useState(null);
+const [subcategories, setSubcategories] = useState({});
 const [categories, setCategories] = useState([]);
 const [loading, setLoading] = useState(true);
 const [error, setError] = useState(null);
@@ -55,6 +56,24 @@ const menuRef = useRef(null);
 
     fetchCategories();
   }, []);
+
+  const fetchSubcategories = async (categoryId) => {
+    try {
+      if (subcategories[categoryId]) return; // already loaded
+  
+      const res = await axios.get(
+        `${BASE_URL}/api/categories/${categoryId}/subcategories`
+      );
+  
+      setSubcategories(prev => ({
+        ...prev,
+        [categoryId]: res.data
+      }));
+    } catch (err) {
+      console.error("Error fetching subcategories", err);
+    }
+  };
+  
   return (
     <>
     <nav className={`navbar-redesign ${isScrolled ? "scrolled" : ""}`}>
@@ -224,21 +243,53 @@ const menuRef = useRef(null);
 
     {/* Categories */}
     <div className="categories-section d-flex flex-column gap-1">
-          {loading ? (
-            <p>Loading categories...</p>
-          ) : (
-            categories.map(category => (
-              <Link
-                key={category.id}
-                to={`/category/${category.name.toLowerCase()}`}
-                className="nav-link-sidebar"
-                data-bs-dismiss="offcanvas"
-              >
-                {category.name}
-              </Link>
-            ))
-          )}
-        </div>
+  {loading ? (
+    <p>Loading categories...</p>
+  ) : (
+    categories.map(category => (
+      <div key={category._id} className="category-item">
+        
+        {/* Category title */}
+        <button
+          className="nav-link-sidebar d-flex justify-content-between align-items-center w-100"
+          onClick={() => {
+            const isOpen = openCategoryId === category._id;
+            setOpenCategoryId(isOpen ? null : category._id);
+            fetchSubcategories(category._id);
+          }}
+        >
+          <span>{category.name}</span>
+          <span className="category-toggle-icon">
+  {openCategoryId === category._id ? (
+    <FaChevronDown size={14} />
+  ) : (
+    <FaChevronRight size={14} />
+  )}
+</span>
+
+        </button>
+
+        {openCategoryId === category._id && (
+          <div className="subcategory-list ps-3">
+  {subcategories[category._id]?.map((sub) => (
+  <Link
+    key={sub._id}
+    to={`/products/subcategory/${sub._id}`}
+    className="nav-sublink-sidebar"
+  >
+    {sub.name}
+  </Link>
+))}
+
+
+
+          </div>
+        )}
+      </div>
+    ))
+  )}
+</div>
+
 
     {/* Mobile links */}
     <div className="d-lg-none d-flex flex-column gap-2">
