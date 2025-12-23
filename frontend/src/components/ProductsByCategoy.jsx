@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import BASE_URL from "../constante";
 
-const CategoryProducts = () => {
-  const { categoryId } = useParams();
+const SubcategoryProducts = () => {
+  const { subcategoryId } = useParams(); // updated param
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,7 +12,8 @@ const CategoryProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/products/category/${categoryId}`);;
+        // Fetch products by subcategory
+        const response = await axios.get(`${BASE_URL}/api/products/subcategory/${subcategoryId}`);
         setProducts(response.data);
         setLoading(false);
       } catch (err) {
@@ -23,11 +24,11 @@ const CategoryProducts = () => {
     };
 
     fetchProducts();
-  }, [categoryId]);
+  }, [subcategoryId]);
 
   if (loading) return <p>Loading products...</p>;
   if (error) return <p>{error}</p>;
-  if (!products.length) return <p>No products found in this category.</p>;
+  if (!products.length) return <p>No products found in this subcategory.</p>;
 
   return (
     <section className="products-section py-5">
@@ -54,4 +55,4 @@ const CategoryProducts = () => {
   );
 };
 
-export default CategoryProducts;
+export default SubcategoryProducts;

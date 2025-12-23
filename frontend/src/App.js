@@ -39,7 +39,11 @@ function App() {
   <Route path="/dashboard" element={<Dashboard user={user} />} />
   <Route path="/oauth-success" element={<OAuthSuccess setUser={setUser} />} />
   <Route path="/" element={<ProductsCategory />} />
-  <Route path="/category/:categoryId" element={<ProductsByCategory />} />
+  <Route
+  path="/products/subcategory/:subcategoryId"
+  element={<ProductsByCategory />}
+/>
+
   
   </Route>
 </Routes>      

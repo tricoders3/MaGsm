@@ -398,6 +398,23 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 .nav-link-redesign:hover::before {
   width: 80%;
 }
+.nav-sublink-sidebar {
+  font-size: 14px;
+  padding: 6px 0;
+  display: block;
+  color: #666;
+  text-decoration: none;
+}
+
+.nav-sublink-sidebar:hover {
+  color: var(--primary-color);
+}
+.category-toggle-icon {
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+  color: #888;
+}
 
 .nav-icon-redesign {
   position: relative;

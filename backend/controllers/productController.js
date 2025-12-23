@@ -45,17 +45,25 @@ export const createProduct = async (req, res) => {
  * @access  Public
  */
 export const getProducts = async (req, res) => {
-
   try {
-    // Only return the 'name' field
-    const categories = await Category.find({}, 'name'); // returns _id and name
-    // If you want only names, map to an array
-    const categoryNames = categories.map(cat => cat.name);
-    res.json(categoryNames);
+    const products = await Product.find().populate("category", "name subCategories");
+
+    const result = products.map((p) => {
+      const subCat = p.category.subCategories.find(
+        (sc) => sc._id.toString() === p.subCategory.toString()
+      );
+      return {
+        ...p._doc,
+        subCategoryName: subCat ? subCat.name : null,
+      };
+    });
+
+    res.json(result);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching categories" });
+    console.error(error);
+    res.status(500).json({ message: "Error fetching products" });
   }
-};
+}
 
 
 
