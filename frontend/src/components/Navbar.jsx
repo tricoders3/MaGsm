@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { FiLogOut } from "react-icons/fi";
 import axios from "axios";
 import BASE_URL from "../constante";
+import { toast } from "react-toastify";
 
 function NavBar() {
 
@@ -142,6 +143,7 @@ const menuRef = useRef(null);
     logout();
     setShowMenu(false);
     navigate("/");
+    toast.success("Déconnexion réussie");
   }}
 >
   <FiLogOut size={18} />

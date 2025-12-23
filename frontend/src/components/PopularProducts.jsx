@@ -1,73 +1,112 @@
-import React from 'react'
-import { FiShoppingCart, FiEye } from "react-icons/fi";
-const BestSeller = () => {
-       const products = [
-            {
-              id: 1,
-              name: "Smartphone XYZ",
-              description: "Un smartphone puissant avec un excellent appareil photo.",
-              price: 1200,
-              image: "/images/smartphone.jpg"
-            },
-            {
-              id: 2,
-              name: "Laptop ABC",
-              description: "Portable léger et rapide pour tous vos besoins professionnels.",
-              price: 2500,
-              image: "/images/laptop.jpg"
-            },
-            {
-              id: 3,
-              name: "Casque Audio",
-              description: "Profitez d'un son clair et immersif.",
-              price: 300,
-              image: "/images/headphones.jpg"
-            }
-          ];
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FiShoppingCart, FiArrowRight } from "react-icons/fi";
+import axios from "axios";
+import BASE_URL from "../constante";
+
+const PopularProducts = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/api/products`);
+        const productsData = response.data.map((product) => ({
+          id: product._id,
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          image:
+            product.images && product.images.length > 0
+              ? product.images[0].url
+              : "/assets/images/default.png",
+          countInStock: product.countInStock,
+          category: product.category?.name || "Uncategorized",
+        }));
+
+        setProducts(productsData);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load products");
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (loading) return null;
+  if (error) return <p>{error}</p>;
+
+  // Optional: show only first 4 products as preview
+  const previewProducts = products.slice(0, 4);
+
   return (
     <section className="features-section py-5">
-    <div className="container">
-      <div className="mb-5">
-        <h2 className="section-title">Produits populaires</h2>
-        <p className="section-subtitle">Découvrez nos produits les plus populaires</p>
-      </div>
-  
-      <div className="row g-4 justify-content-center">
-        {products.map((product) => (
-          <div key={product.id} className="col-xl-3 col-lg-4 col-md-6">
-            <div className="product-card h-100">
-              
-              {/* Top badges */}
-              <div className="card-badges">
-                <span className="badge-stock">EN STOCK</span>
-                <button className="cart-btn">
-    <FiShoppingCart size={18} />
-  </button>
-  
-              </div>
-  
-              {/* Image */}
-              <div className="product-image">
-                <img src={product.image} alt={product.name} />
-              </div>
-  
-              {/* Content */}
-              <div className="product-content text-center">
-                <h6 className="product-title">{product.name}</h6>
-                <p className="product-category">{product.description}</p>
-  
-                <button className="btn-redesign btn-primary-redesign">
-                  Découvrir les détails
-                </button>
-              </div>
-  
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-  )
-}
+      <div className="container">
+        <div className="mb-4">
+          <h2 className="section-title">Produits Populaires</h2>
+          <p className="section-subtitle">
+            Découvrez nos produits les plus populaires
+          </p>
+        </div>
 
-export default BestSeller
+        <div className="row">
+          {previewProducts.map((product) => (
+            <div key={product.id} className="col-6 col-md-3 mb-4">
+              <div className="product-card h-100">
+                {/* Badges */}
+                <div className="card-badges">
+                  {product.countInStock > 0 ? (
+                    <span className="badge-stock">EN STOCK</span>
+                  ) : (
+                    <span className="badge-stock out-of-stock">RUPTURE</span>
+                  )}
+                  <button className="cart-btn">
+                    <FiShoppingCart size={18} />
+                  </button>
+                </div>
+
+                {/* Image */}
+                <div className="product-image mt-4">
+                  <img src={product.image} alt={product.name} />
+                </div>
+
+                {/* Content */}
+                <div className="product-content text-center">
+                  <h6 className="product-title">{product.name}</h6>
+                  <p className="product-category">{product.category}</p>
+                  <p className="product-description">{product.description}</p>
+                  <p className="product-price">{product.price} DT</p>
+
+                  <button
+                    className="btn-redesign btn-primary-redesign"
+                    onClick={() => navigate(`/products/${product.id}`)}
+                  >
+                    Découvrir les détails
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center mt-4">
+          <button
+            className="btn-plus flex items-center gap-2"
+            onClick={() => navigate("/products")}
+          >
+            Voir plus
+            <FiArrowRight />
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default PopularProducts;

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, FreeMode, A11y } from "swiper/modules";
-import "swiper/css";
-import { FiShoppingCart } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import { FiShoppingCart, FiArrowRight } from "react-icons/fi";
 import axios from "axios";
 import BASE_URL from "../constante";
 
@@ -10,6 +8,7 @@ const BestSeller = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -41,7 +40,10 @@ const BestSeller = () => {
   }, []);
 
   if (loading) return null;
-  if (error) return null;
+  if (error) return <p>{error}</p>;
+
+  // Optional: show only first 4 products as preview
+  const previewProducts = products.slice(0, 4);
 
   return (
     <section className="features-section py-5">
@@ -53,27 +55,9 @@ const BestSeller = () => {
           </p>
         </div>
 
-        <Swiper
-          modules={[Autoplay, FreeMode, A11y]}
-          className="best-seller-swiper"
-          loop={true}
-          freeMode={true}
-          speed={6000}
-          autoplay={{
-            delay: 0,
-            disableOnInteraction: false,
-          }}
-          allowTouchMove={false}
-          spaceBetween={10}
-          breakpoints={{
-            0: { slidesPerView: 1.4 },
-            576: { slidesPerView: 2.2 },
-            768: { slidesPerView: 3 },
-            1200: { slidesPerView: 4 },
-          }}
-        >
-          {products.map((product) => (
-            <SwiperSlide key={product.id}>
+        <div className="row">
+          {previewProducts.map((product) => (
+            <div key={product.id} className="col-6 col-md-3 mb-4">
               <div className="product-card h-100">
                 {/* Badges */}
                 <div className="card-badges">
@@ -82,14 +66,13 @@ const BestSeller = () => {
                   ) : (
                     <span className="badge-stock out-of-stock">RUPTURE</span>
                   )}
-
                   <button className="cart-btn">
                     <FiShoppingCart size={18} />
                   </button>
                 </div>
 
                 {/* Image */}
-                <div className="product-image">
+                <div className="product-image mt-4">
                   <img src={product.image} alt={product.name} />
                 </div>
 
@@ -97,19 +80,30 @@ const BestSeller = () => {
                 <div className="product-content text-center">
                   <h6 className="product-title">{product.name}</h6>
                   <p className="product-category">{product.category}</p>
-                  <p className="product-description">
-                    {product.description}
-                  </p>
+                  <p className="product-description">{product.description}</p>
                   <p className="product-price">{product.price} DT</p>
 
-                  <button className="btn-redesign btn-primary-redesign">
+                  <button
+                    className="btn-redesign btn-primary-redesign"
+                    onClick={() => navigate(`/products/${product.id}`)}
+                  >
                     Découvrir les détails
                   </button>
                 </div>
               </div>
-            </SwiperSlide>
+            </div>
           ))}
-        </Swiper>
+        </div>
+
+        <div className="text-center mt-4">
+          <button
+            className="btn-plus flex items-center gap-2"
+            onClick={() => navigate("/products")}
+          >
+            Voir plus
+            <FiArrowRight />
+          </button>
+        </div>
       </div>
     </section>
   );

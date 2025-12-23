@@ -42,16 +42,6 @@ const ProductsCategory = () => {
             onClick={() => navigate(`/category/${category._id}`)}>
               <div className="category-card card-redesign h-100">
                 <div className="card-body-redesign text-center">
-                  {/* Category Image 
-                  <div className="category-image mb-3">
-                    <img
-                      src={category.image || '/assets/images/default.png'} // fallback image
-                      alt={category.name}
-                      className="img-fluid rounded-circle"
-                      style={{ width: '80px', height: '80px', objectFit: 'cover' }}
-                    />
-                  </div>
-*/}
                   {/* Category Name */}
                   <h4 className="category-title mb-2">{category.name}</h4>
 

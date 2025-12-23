@@ -1,13 +1,9 @@
 
-
-
-
-
 // src/pages/Login.jsx
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaGoogle, FaFacebookF } from "react-icons/fa";
+import { toast } from "react-toastify";
 import BASE_URL from "../constante";
 
 const Login = () => {
@@ -25,27 +21,34 @@ const Login = () => {
         { withCredentials: true }
       );
       if (res.data.user) {
-        // Stocke l'utilisateur dans le state (optionnel)
+        // Stocke l'utilisateur dans le state 
         localStorage.setItem("user", JSON.stringify(res.data.user));
         navigate("/dashboard");
       }
     } catch (err) {
       console.error(err);
-      alert("Email ou mot de passe incorrect");
+      toast.error("Email ou mot de passe incorrect");
     }
   };
 
   // Connexion Google
 const loginWithGoogle = () => {
+  toast.info("Redirection vers Google…");
   window.location.href = `${BASE_URL}/api/auth/google`;
 };
 
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card shadow p-4" style={{ width: "400px" }}>
-        <h3 className="text-center mb-4">Connexion</h3>
-
+    <div className="auth-page min-vh-100 d-flex align-items-center">
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-lg-5 col-md-7">
+            <div className="auth-card animate-scaleIn">
+              <div className="card-header-redesign text-center">
+              <h3 className="text-gradient mb-2">Se connecter</h3>
+             {/* <p className="text-muted mb-0">Accédez à votre compte</p>*/}
+              </div>              
+              <div className="card-body-redesign">
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label">Adresse e-mail</label>
@@ -77,15 +80,26 @@ const loginWithGoogle = () => {
         <div className="text-center mb-3 text-muted">OU</div>
 
         <button
-          className="btn btn-outline-danger w-100 mb-2 d-flex align-items-center justify-content-center gap-2"
+          className="btn btn-google w-100 mb-4 d-flex align-items-center justify-content-center gap-2"
           onClick={loginWithGoogle}
         >
-          <FaGoogle /> Continuer avec Google
+          <svg width="18" height="18" viewBox="0 0 48 48">
+    <path fill="#EA4335" d="M24 9.5c3.54 0 6.7 1.22 9.2 3.6l6.9-6.9C35.9 2.3 30.4 0 24 0 14.6 0 6.5 5.4 2.6 13.3l8.5 6.6C13.1 13.2 18.1 9.5 24 9.5z"/>
+    <path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-2.8-.4-4.1H24v7.8h12.8c-.5 3-2.1 5.6-4.6 7.3l7.1 5.5c4.2-3.9 6.8-9.6 6.8-16.5z"/>
+    <path fill="#FBBC05" d="M11.1 28.1c-.6-1.7-.9-3.5-.9-5.6s.3-3.9.9-5.6L2.6 13.3C.9 16.6 0 20.2 0 24s.9 7.4 2.6 10.7l8.5-6.6z"/>
+    <path fill="#34A853" d="M24 48c6.4 0 11.8-2.1 15.7-5.8l-7.1-5.5c-2 1.3-4.6 2.1-8.6 2.1-5.9 0-10.9-3.7-12.9-9l-8.5 6.6C6.5 42.6 14.6 48 24 48z"/>
+  </svg> 
+  Continuer avec Google
         </button>
-
-        <p className="text-center mt-3 mb-0">
-          Pas encore de compte ? <Link to="/register">Créer un compte</Link>
+        <div className="text-center mb-3">
+        <p className="text-muted">
+          Pas encore de compte ? <Link to="/register" className="text-decoration-none fw-semibold">Créer un compte</Link>
         </p>
+        </div>
+        </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import Register from "./screens/register";
 import Dashboard from "./screens/Dashboard";
 import Layout from "./components/Layout";
 import About from "./screens/About";
+import SubCategories from "./components/SubCategories";
 import ProductsCategory from "./components/ProductsCategory";
 import ProductsByCategory from "./components/ProductsByCategoy";
 import './assets/css/style.css';
@@ -18,7 +19,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import './assets/styles/index.css';
 import './assets/styles/modern-theme.css';
 import './assets/styles/complete-redesign.css';
-
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
 
 
 function App() {
@@ -29,6 +31,16 @@ function App() {
 
   return (
     <>
+     <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+      />
+
        <Routes>
        <Route element={<Layout />}>
       <Route path="/" element={<Home />} />
@@ -38,7 +50,8 @@ function App() {
 
   <Route path="/dashboard" element={<Dashboard user={user} />} />
   <Route path="/oauth-success" element={<OAuthSuccess setUser={setUser} />} />
-  <Route path="/" element={<ProductsCategory />} />
+  <Route path="/category/:categoryId" element={<SubCategories />} />
+  <Route path="/products/category" element={<ProductsCategory />} />
   <Route
   path="/products/subcategory/:subcategoryId"
   element={<ProductsByCategory />}

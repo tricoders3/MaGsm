@@ -247,7 +247,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   margin-bottom: var(--space-6);
 }
 
-.form-control-redesign {
+.form-control{
   width: 100%;
   padding: var(--space-4) var(--space-4);
   font-size: 1rem;
@@ -260,19 +260,19 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   box-shadow: var(--shadow-xs);
 }
 
-.form-control-redesign:focus {
+.form-control:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: var(--shadow-md), 0 0 0 4px rgb(102 126 234 / 0.1);
   transform: translateY(-1px);
 }
 
-.form-control-redesign::placeholder {
+.form-control::placeholder {
   color: var(--gray-400);
   transition: all var(--transition-normal);
 }
 
-.form-control-redesign:focus::placeholder {
+.form-control:focus::placeholder {
   opacity: 0.7;
   transform: translateY(-2px);
 }
@@ -290,8 +290,8 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   padding: 0 var(--space-2);
 }
 
-.form-control-redesign:focus + .form-label-redesign,
-.form-control-redesign:not(:placeholder-shown) + .form-label-redesign {
+.form-control:focus + .form-label-redesign,
+.form-control:not(:placeholder-shown) + .form-label-redesign {
   top: -var(--space-2);
   left: var(--space-3);
   font-size: 0.75rem;
@@ -300,7 +300,8 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 
 /* Revolutionary Card System */
-.card-redesign {
+.card-redesign,
+.auth-card {
   position: relative;
   background: var(--white);
   border-radius: var(--radius-2xl);
@@ -310,7 +311,8 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.card-redesign::before {
+.card-redesign::before,
+.auth-card::before {
   content: '';
   position: absolute;
   top: 0;
@@ -320,7 +322,8 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   
 }
 
-.card-redesign:hover {
+.card-redesign:hover,
+.auth-card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-2xl);
 }
@@ -333,7 +336,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 
 .card-header-redesign {
   padding: var(--space-8);
-  background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
+  background: var(--white);
   border-bottom: 1px solid var(--gray-100);
 }
 
@@ -611,7 +614,8 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
     margin-bottom: var(--space-2);
   }
   
-  .card-redesign {
+  .card-redesign,
+  .auth-card {
     margin: var(--space-4);
     border-radius: var(--radius-xl);
   }
@@ -648,7 +652,10 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
     background: var(--dark-card);
     border-color: rgba(255, 255, 255, 0.1);
   }
-  
+  .auth-card {
+    background: var(--white);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
   .form-control-redesign {
     background: var(--dark-surface);
     border-color: rgba(255, 255, 255, 0.1);
@@ -968,7 +975,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   padding-top: 0;
 }
 
-.price-comparison-page .card-redesign {
+.price-comparison-page .card-redesign .auth-card {
   box-shadow: var(--shadow-2xl);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -1009,7 +1016,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   color: var(--white);
 }
 
-.empty-state .card-redesign {
+.empty-state .card-redesign .auth-card {
   max-width: 500px;
   margin: 0 auto;
 }
@@ -1075,7 +1082,11 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 
 .card-header-redesign {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(30, 64, 175, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(1, 135, 135, 0.08),
+    rgba(1, 135, 135, 0.02)
+  );
   border-bottom: 1px solid rgba(59, 130, 246, 0.1);
   padding: 1.5rem;
 }
@@ -1099,6 +1110,33 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 .toggle-btn:hover {
   transform: scale(1.1);
 }
+.btn-plus {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: #111;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  transition: color 0.2s ease;
+}
+
+.btn-plus svg {
+  transition: transform 0.2s ease;
+}
+
+.btn-plus:hover {
+  color: #555;
+}
+
+.btn-plus:hover svg {
+  transform: translateX(4px);
+}
+
 
 .products-grid {
   display: flex;
@@ -2075,6 +2113,32 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
   color: var(--white);
 }
+.btn-google {
+  background: #ffffff;
+  color: var(--dark-bg);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.btn-google:hover {
+  background: #f9fafb;
+  color: var(--dark-bg);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.btn-google svg {
+  flex-shrink: 0;
+}
 
 .no-products {
   text-align: center;
@@ -2467,6 +2531,35 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 .best-seller-swiper .swiper-pagination-bullet { background: rgba(0,0,0,0.25); opacity: 1; }
 .best-seller-swiper .swiper-pagination-bullet-active { background: #01ABAB; }
+.subcategory-filter {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 50px; /* pill shape */
+  background-color: #f9f9f9;
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  background-color: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.filter-btn.active {
+  background-color: #111;
+  color: #fff;
+  border-color: #111;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
 
 /* Responsive: pull arrows inside a bit on small screens */
 @media (max-width: 576px) {

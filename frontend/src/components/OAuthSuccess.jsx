@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 const OAuthSuccess = () => {
   const navigate = useNavigate();
@@ -31,8 +32,8 @@ const OAuthSuccess = () => {
           picture: payload.picture || null,
         });
 
-        console.log("User saved in context, navigating to dashboard");
         navigate("/dashboard");
+        toast.success("Connexion réussie !");
       } catch (err) {
         console.error("Failed to parse token:", err);
         navigate("/login");
