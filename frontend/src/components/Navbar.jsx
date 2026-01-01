@@ -105,8 +105,8 @@ const menuRef = useRef(null);
             <Link to="/about" className="nav-link-redesign mx-3">
               About US
             </Link>
-            <Link to="/news" className="nav-link-redesign mx-3">
-              News
+            <Link to="/offers" className="nav-link-redesign mx-3">
+             Offres
             </Link>
             <Link to="/contact" className="nav-link-redesign mx-3">
               Contact
@@ -170,6 +170,7 @@ const menuRef = useRef(null);
             <button
               className="nav-icon-redesign position-relative"
               title="Favorites"
+              onClick={() => navigate("/favorites")}
             >
               <FaHeart />
               {/* <span className="nav-badge-redesign"></span> */}
@@ -182,6 +183,7 @@ const menuRef = useRef(null);
             <button
               className="nav-icon-redesign position-relative"
               title="Shopping Cart"
+              onClick={() => navigate("/cart")}
             >
               <FaShoppingBag />
              {/* <span className="nav-badge-redesign"></span> */}
@@ -301,8 +303,8 @@ const menuRef = useRef(null);
       <Link to="/about" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
         About US
       </Link>
-      <Link to="/news" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
-        News
+      <Link to="/offers" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+        Offres
       </Link>
       <Link to="/contact" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
         Contact

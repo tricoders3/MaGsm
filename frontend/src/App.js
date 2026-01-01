@@ -7,9 +7,14 @@ import Register from "./screens/register";
 import Dashboard from "./screens/Dashboard";
 import Layout from "./components/Layout";
 import About from "./screens/About";
+import Contact from "./screens/Contact";
 import SubCategories from "./components/SubCategories";
 import ProductsCategory from "./components/ProductsCategory";
 import ProductsByCategory from "./components/ProductsByCategoy";
+import OffersModal from "./components/OffersModal";
+import Offer from "./screens/Offers";
+import Cart from "./screens/Cart";
+import Favoris from "./screens/Favoris"
 import './assets/css/style.css';
 import './assets/css/responsive.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -31,6 +36,7 @@ function App() {
 
   return (
     <>
+     <OffersModal />
      <ToastContainer
         position="top-right"
         autoClose={2000}
@@ -45,9 +51,12 @@ function App() {
        <Route element={<Layout />}>
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/offers" element={<Offer />} />
   <Route path="/register" element={<Register />} />
   <Route path="/login" element={<Login setUser={setUser} />} />
-
+  <Route path="/cart" element={<Cart />} />
+  <Route path="/favoris" element={<Favoris />} />
   <Route path="/dashboard" element={<Dashboard user={user} />} />
   <Route path="/oauth-success" element={<OAuthSuccess setUser={setUser} />} />
   <Route path="/category/:categoryId" element={<SubCategories />} />
