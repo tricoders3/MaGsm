@@ -1,6 +1,5 @@
 import React from 'react';
 import huawei from "../assets/images/Huawei-Logo.png";
-import samsung from "../assets/images/Samsung-Logo.png";
 import apple from "../assets/images/Apple-Logo.png";
 import oppo from "../assets/images/oppo-logo.png";
 
