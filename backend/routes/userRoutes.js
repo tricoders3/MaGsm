@@ -16,9 +16,10 @@ const router = express.Router()
 /**
  * CLIENT + ADMIN
  * @route   GET /api/users/me
+
  */
 router.get('/me', protect, getProfile)
-
+router.get("/",  getUsers);
 /**
  * ADMIN uniquement
  * @route   GET /api/users

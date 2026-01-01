@@ -11,7 +11,7 @@ import session from "express-session";
 import productRoutes from "./routes/productRoutes.js";
 import categoryRoutes from './routes/categoryRoutes.js'
 import userRoutes from './routes/userRoutes.js'
-
+import promotionRoutes from './routes/promotionRoutes.js'
 // ------------------
 // Load .env from root (MaGsm/.env)
 // ------------------
@@ -66,6 +66,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/user",userRoutes)
+app.use("/api/promotions",promotionRoutes)
 
 // ------------------
 // Start Server
