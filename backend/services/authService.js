@@ -39,3 +39,8 @@ export const googleLogin = async (user) => {
 
   return { accessToken, refreshToken };
 };
+export const facebookLogin = async (user) => {
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);  
+  return { accessToken, refreshToken };
+};
