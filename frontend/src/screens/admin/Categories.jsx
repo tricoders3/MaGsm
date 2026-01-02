@@ -118,89 +118,150 @@ const Categories = () => {
   }, []);
 
   return (
-    <div className="container">
-      <h4>Catégories</h4>
+<div className="container py-4">
+  <div className="card border-0 shadow-sm rounded-4 mb-4">
+    <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+      <h4 className="mb-0">Catégories</h4>
+      <span className="badge bg-primary-soft">{categories.length} catégories</span>
+    </div>
+
+    <div className="card-body">
       {/* Input Category */}
-      <div className="input-group mb-3">
+      <div className="d-flex mb-3 gap-2">
         <input
-          className="form-control w-100"
+          className="form-control rounded-pill ps-3"
           placeholder="Nom catégorie"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          style={{ height: "38px" }}
+          style={{ height: "40px" }}
         />
         {editId ? (
-          <button className="btn btn-success" style={{ height: "38px" }} onClick={() => updateCategory(editId)} title="Modifier">
-            <i className="fas fa-pen"></i>
+          <button
+            className="btn btn-success btn-pill shadow-sm"
+            style={{ height: "40px" }}
+            onClick={() => updateCategory(editId)}
+            title="Modifier"
+          >
+            <i className="fas fa-pen"></i> Modifier
           </button>
         ) : (
-          <button className="btn btn-primary" style={{ height: "38px" }} onClick={addCategory} title="Ajouter">
-            Ajoute
+          <button
+            className="btn btn-primary btn-pill shadow-sm"
+            style={{ height: "40px" }}
+            onClick={addCategory}
+            title="Ajouter"
+          >
+            <i className="fas fa-plus"></i> Ajouter
           </button>
         )}
       </div>
 
       {/* Categories List */}
-      <ul className="list-group mb-4">
+      <ul className="list-group list-group-flush">
         {categories.map((cat) => (
-          <li key={cat._id} className="list-group-item d-flex justify-content-between align-items-center">
+          <li
+            key={cat._id}
+            className="list-group-item d-flex justify-content-between align-items-center shadow-sm rounded-3 mb-2"
+          >
             <span>{cat.name}</span>
-            <div>
-              <button className="btn btn-sm btn-warning me-2" onClick={() => handleEditCategory(cat)} title="Modifier">
+            <div className="d-flex gap-2">
+              <button
+                className="btn btn-sm btn-outline-warning"
+                onClick={() => handleEditCategory(cat)}
+                title="Modifier"
+              >
                 <i className="fas fa-pen"></i>
               </button>
-              <button className="btn btn-sm btn-danger me-2" onClick={() => deleteCategory(cat._id)} title="Supprimer">
+              <button
+                className="btn btn-sm btn-outline-danger"
+                onClick={() => deleteCategory(cat._id)}
+                title="Supprimer"
+              >
                 <i className="fas fa-trash"></i>
               </button>
-              <button className="btn btn-sm btn-info" onClick={() => handleSub(cat._id)} title="Gérer Sub">
+              <button
+                className="btn btn-sm btn-outline-info"
+                onClick={() => handleSub(cat._id)}
+                title="Gérer Sub"
+              >
                 <i className="fas fa-list"></i>
               </button>
             </div>
           </li>
         ))}
       </ul>
-
-      {/* SubCategories */}
-      {selectedCategory && (
-        <div>
-          <h5>Sous-catégories</h5>
-          <div className="d-flex mb-3">
-            <input
-              className="form-control me-2"
-              placeholder="Nom sous-catégorie"
-              value={subName}
-              onChange={(e) => setSubName(e.target.value)}
-              style={{ height: "38px" }}
-            />
-            {subEditId ? (
-              <button className="btn btn-success" style={{ height: "38px" }} onClick={updateSubCategory} title="Modifier Sub">
-                <i className="fas fa-pen"></i>
-              </button>
-            ) : (
-              <button className="btn btn-primary" style={{ height: "38px" }} onClick={addSubCategory} title="Ajouter Sub">
-               Ajoute
-              </button>
-            )}
-          </div>
-
-          <ul className="list-group">
-            {subCategories.map((sc) => (
-              <li key={sc._id} className="list-group-item d-flex justify-content-between align-items-center">
-                <span>{sc.name}</span>
-                <div>
-                  <button className="btn btn-sm btn-warning me-2" onClick={() => handleEditSub(sc)} title="Modifier">
-                    <i className="fas fa-pen"></i>
-                  </button>
-                  <button className="btn btn-sm btn-danger" onClick={() => deleteSubCategory(sc._id)} title="Supprimer">
-                    <i className="fas fa-trash"></i>
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
+  </div>
+
+  {/* SubCategories */}
+  {selectedCategory && (
+    <div className="card border-0 shadow-sm rounded-4">
+      <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+        <h5 className="mb-0">Sous-catégories de {selectedCategory.name}</h5>
+        <span className="badge bg-info-soft">{subCategories.length} sous-catégories</span>
+      </div>
+
+      <div className="card-body">
+        <div className="d-flex mb-3 gap-2">
+          <input
+            className="form-control rounded-pill ps-3"
+            placeholder="Nom sous-catégorie"
+            value={subName}
+            onChange={(e) => setSubName(e.target.value)}
+            style={{ height: "40px" }}
+          />
+          {subEditId ? (
+            <button
+              className="btn btn-success btn-pill shadow-sm"
+              style={{ height: "40px" }}
+              onClick={updateSubCategory}
+              title="Modifier Sub"
+            >
+              <i className="fas fa-pen"></i> Modifier
+            </button>
+          ) : (
+            <button
+              className="btn btn-primary btn-pill shadow-sm"
+              style={{ height: "40px" }}
+              onClick={addSubCategory}
+              title="Ajouter Sub"
+            >
+              <i className="fas fa-plus"></i> Ajouter
+            </button>
+          )}
+        </div>
+
+        <ul className="list-group list-group-flush">
+          {subCategories.map((sc) => (
+            <li
+              key={sc._id}
+              className="list-group-item d-flex justify-content-between align-items-center shadow-sm rounded-3 mb-2"
+            >
+              <span>{sc.name}</span>
+              <div className="d-flex gap-2">
+                <button
+                  className="btn btn-sm btn-outline-warning"
+                  onClick={() => handleEditSub(sc)}
+                  title="Modifier"
+                >
+                  <i className="fas fa-pen"></i>
+                </button>
+                <button
+                  className="btn btn-sm btn-outline-danger"
+                  onClick={() => deleteSubCategory(sc._id)}
+                  title="Supprimer"
+                >
+                  <i className="fas fa-trash"></i>
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )}
+</div>
+
   );
 };
 
