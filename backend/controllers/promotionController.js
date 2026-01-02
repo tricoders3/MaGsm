@@ -67,11 +67,7 @@ export const applyPromotion = async (req, res) => {
 
 
 
-/**
- * @desc Remove promotion from products
- * @route POST /api/promotions/remove
- * @access Private (admin)
- */
+
 /**
  * @desc    Remove a promotion: deactivate it and remove it from all products
  * @route   DELETE /api/promotions/:id
