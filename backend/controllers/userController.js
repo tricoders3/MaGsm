@@ -6,6 +6,8 @@ import {
   deleteUser
 } from '../services/userService.js'
 
+import User from '../models/userModel.js'
+
 // CLIENT + ADMIN
 export const getProfile = async (req, res) => {
   try {
@@ -16,15 +18,22 @@ export const getProfile = async (req, res) => {
   }
 }
 
-// ADMIN
+/**
+ * @desc    Get all users
+ * @route   GET /api/users
+ * @access  Private (admin)
+ */
 export const getUsers = async (req, res) => {
   try {
-    const users = await getAllUsers()
-    res.status(200).json(users)
+    // Fetch all users, exclude passwords
+    const users = await User.find().select("-password");
+
+    res.status(200).json(users);
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Erreur lors de la récupération des utilisateurs" });
   }
-}
+};
 
 // ADMIN
 export const getUserByIdController = async (req, res) => {

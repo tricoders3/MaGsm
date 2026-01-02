@@ -1,5 +1,7 @@
 import Product from "../models/productModel.js"
 import Order from "../models/orderModel.js";
+import Promotion from "../models/Promotion.js";
+import { model } from "mongoose";
 
 /**
  * @desc    Create new product
@@ -10,6 +12,7 @@ export const createProduct = async (req, res) => {
   try {
     const {
       name,
+      model,
       images,
       brand,
       category,
@@ -22,6 +25,7 @@ export const createProduct = async (req, res) => {
     const product = new Product({
 
       name,
+      model,
       images,
       brand,
       category,
@@ -46,15 +50,34 @@ export const createProduct = async (req, res) => {
  */
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find().populate("category", "name subCategories");
+    // 1️⃣ Get all products and populate category & promotion
+    const products = await Product.find()
+      .populate("category", "name subCategories")
+      .populate("promotion"); // populate promotion if exists
 
     const result = products.map((p) => {
-      const subCat = p.category.subCategories.find(
-        (sc) => sc._id.toString() === p.subCategory.toString()
+      // 2️⃣ Get subCategory name from category.subCategories
+      const subCat = p.category?.subCategories.find(
+        (sc) => sc._id.toString() === p.subCategory?.toString()
       );
+
+      // 3️⃣ Prepare promotion info only if exists
+      const promoInfo = p.promotion
+        ? {
+            _id: p.promotion._id,
+            name: p.promotion.name,
+            discountType: p.promotion.discountType,
+            discountValue: p.promotion.discountValue,
+            startDate: p.promotion.startDate,
+            endDate: p.promotion.endDate,
+            isActive: p.promotion.isActive,
+          }
+        : null;
+
       return {
         ...p._doc,
         subCategoryName: subCat ? subCat.name : null,
+        promotion: promoInfo,
       };
     });
 
@@ -63,7 +86,7 @@ export const getProducts = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Error fetching products" });
   }
-}
+};
 
 
 
@@ -101,6 +124,7 @@ export const updateProduct = async (req, res) => {
     }
 
     product.name = req.body.name || product.name;
+    product.model = req.body.model || product.model;
     product.images = req.body.images || product.images;
     product.brand = req.body.brand || product.brand;
     product.category = req.body.category || product.category;
@@ -227,3 +251,43 @@ export  const getBestSellingProducts = async (req, res) => {
     res.status(500).json({ message: "Error fetching best-selling products" });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Get all distinct brands
+export const getBrands = async (req, res) => {
+  try {
+    const { category, subCategory } = req.query;
+
+    const filter = {};
+
+    if (category && mongoose.Types.ObjectId.isValid(category)) {
+      filter.category = category;
+    }
+    if (subCategory && mongoose.Types.ObjectId.isValid(subCategory)) {
+      filter.subCategory = subCategory;
+    }
+
+    const brands = await Product.distinct("brand", filter);
+
+    res.json(brands);
+  } catch (error) {
+    console.error("Error fetching brands:", error);
+    res.status(500).json({ message: "Error fetching brands", error: error.message });
+  }
+};
+
+
+
+

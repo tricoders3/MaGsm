@@ -10,6 +10,12 @@ import About from "./screens/About";
 import SubCategories from "./components/SubCategories";
 import ProductsCategory from "./components/ProductsCategory";
 import ProductsByCategory from "./components/ProductsByCategoy";
+import AdminLayout from "./components/AdminLayout";
+import AdminDashboard from "./screens/admin/Dashboard";
+import Categories from "./screens/admin/Categories";
+import ProductsAdmin from "./screens/admin/Products";
+import Promos from "./screens/admin/Promos";
+import Users from "./screens/admin/Users";
 import './assets/css/style.css';
 import './assets/css/responsive.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -58,6 +64,14 @@ function App() {
 />
 
   
+  </Route>
+   <Route path="/admin" element={<AdminLayout />}>
+    <Route index element={<AdminDashboard />} />
+    <Route path="categories" element={<Categories />} />
+ 
+    <Route path="products" element={<ProductsAdmin />} />
+    <Route path="promos" element={<Promos />} />
+    <Route path="users" element={<Users />} />
   </Route>
 </Routes>      
     </>
