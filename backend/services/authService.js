@@ -44,3 +44,4 @@ export const facebookLogin = async (user) => {
   const refreshToken = generateRefreshToken(user);  
   return { accessToken, refreshToken };
 };
+

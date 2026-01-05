@@ -52,12 +52,10 @@ router.get(
 );
 
 // Facebook callback
+
 router.get(
   "/facebook/callback",
-  passport.authenticate("facebook", {
-    failureRedirect: `${process.env.CLIENT_URL}/login`,
-    session: true,
-  }),
+  passport.authenticate("facebook", { session: true }),
   facebookLoginSuccess
 );
 

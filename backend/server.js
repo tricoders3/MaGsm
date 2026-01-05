@@ -72,6 +72,7 @@ app.use("/api/promotions",promotionRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/favorites', favoriteRoutes)
 
+
 // ------------------
 // Start Server
 // ------------------

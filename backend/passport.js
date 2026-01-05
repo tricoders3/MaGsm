@@ -2,6 +2,9 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as FacebookStrategy } from "passport-facebook";
 import User from "./models/userModel.js";
+const callbackHandler = (accessToken, refreshToken, profile, done) => {
+    return done(null, profile);
+};
 
 /* ========= GOOGLE ========= */
 passport.use(
@@ -41,26 +44,32 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: "/api/auth/facebook/callback",
+      callbackURL: process.env.FACEBOOK_CALLBACK_URL,
       profileFields: ["id", "displayName", "emails", "photos"],
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
         const email = profile.emails?.[0]?.value;
 
-        let user = await User.findOne({
-          $or: [{ facebookId: profile.id }, { email }],
-        });
+        let user = await User.findOne({ $or: [{ facebookId: profile.id }, { email }] });
 
-        if (!user) {
-          user = await User.create({
-            name: profile.displayName,
-            email,
-            facebookId: profile.id,
-            provider: "facebook",
-            picture: profile.photos?.[0]?.value || null,
-          });
+        if (user) {
+          if (!user.facebookId) {
+            user.facebookId = profile.id;
+            user.provider = "facebook";
+            await user.save();
+          }
+          return done(null, user);
         }
+
+        // Nouveau user
+        user = await User.create({
+          name: profile.displayName,
+          email,
+          facebookId: profile.id,
+          provider: "facebook",
+          picture: profile.photos?.[0]?.value || null,
+        });
 
         return done(null, user);
       } catch (err) {
@@ -69,6 +78,7 @@ passport.use(
     }
   )
 );
+
 
 /* ========= SESSION ========= */
 passport.serializeUser((user, done) => {

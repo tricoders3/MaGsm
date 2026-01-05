@@ -2,6 +2,7 @@ import {
   registerUser,
   loginUser,
   googleLogin,
+  facebookLogin,
 } from "../services/authService.js";
 
 /**
@@ -74,17 +75,20 @@ export const facebookLoginSuccess = async (req, res) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  const { accessToken, refreshToken } = await googleLogin(req.user);
+  const { accessToken, refreshToken } = await facebookLogin(req.user);
 
+  // Mettre le refresh token dans cookie
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
   });
 
-  res.redirect(
+  // Redirection vers frontend avec token
+   res.redirect(
     `${process.env.CLIENT_URL}/oauth-success?token=${accessToken}`
   );
+
 };
 
 /**
