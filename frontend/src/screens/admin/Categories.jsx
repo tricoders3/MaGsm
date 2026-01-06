@@ -165,28 +165,29 @@ const Categories = () => {
           >
             <span>{cat.name}</span>
             <div className="d-flex gap-2">
-              <button
-                className="btn btn-sm btn-outline-warning"
-                onClick={() => handleEditCategory(cat)}
-                title="Modifier"
-              >
-                <i className="fas fa-pen"></i>
-              </button>
-              <button
-                className="btn btn-sm btn-outline-danger"
-                onClick={() => deleteCategory(cat._id)}
-                title="Supprimer"
-              >
-                <i className="fas fa-trash"></i>
-              </button>
-              <button
-                className="btn btn-sm btn-outline-info"
-                onClick={() => handleSub(cat._id)}
-                title="Gérer Sub"
-              >
-                <i className="fas fa-list"></i>
-              </button>
-            </div>
+  <button
+    className="btn btn-sm btn-light border action-btn"
+    onClick={() => handleEditCategory(cat)}
+    title="Modifier"
+  >
+    <i className="fas fa-pen"></i>
+  </button>
+  <button
+    className="btn btn-sm btn-light border action-btn text-danger"
+    onClick={() => deleteCategory(cat._id)}
+    title="Supprimer"
+  >
+    <i className="fas fa-trash"></i>
+  </button>
+  <button
+    className="btn btn-sm btn-light border action-btn"
+    onClick={() => handleSub(cat._id)}
+    title="Gérer Sub"
+  >
+    <i className="fas fa-list"></i>
+  </button>
+</div>
+
           </li>
         ))}
       </ul>
