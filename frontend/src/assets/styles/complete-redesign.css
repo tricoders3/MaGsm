@@ -2810,7 +2810,362 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 
 .contact-page iframe { display: block; }
 
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #eef2ff;
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
 
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
+  border-radius: 999px;
+  background: #ecfdf3;
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #16a34a;
+}
+
+.team-badge {
+  background: #eef2ff;
+  color: #4338ca;
+  margin-right: 4px;
+  font-weight: 500;
+}
+.users-count-pill {
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;             
+  background-color: #eff6fd;  
+  border: 1px solid #e2e8f0;   
+  border-radius: 999px;        
+}
+
+/* Dashboard.css */
+
+/* Container and section */
+.dashboard-container {
+  padding: 2rem 0;
+}
+
+.dashboard-title {
+  margin-bottom: 2rem;
+  font-weight: 600;
+  color: #1c1c1c;
+}
+
+/* Cards */
+.dashboard-card {
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* Card header with icon and text */
+.dashboard-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-card-icon {
+  margin-right: 0.75rem;
+  color: var(--gray-500); /* default icon color, can override per card */
+}
+
+.dashboard-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1c1c1c;
+}
+
+.dashboard-card-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1c1c1c;
+  margin: 0;
+}
+
+/* Details link */
+.dashboard-card-details {
+  text-decoration: none;
+  color: var(--gray-800);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.dashboard-card-details:hover {
+  text-decoration: underline;
+}
+
+/* Card color variants */
+.card-products {
+  background-color: #f8f9fa;
+}
+
+.card-categories {
+  background-color: #e9f7ef;
+}
+
+.card-promotions {
+  background-color: #fff3cd;
+}
+
+.card-users {
+  background-color: #e7f0fd;
+}
+/* AdminLayout.css */
+
+/* General layout */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f7fa;
+  transition: all 0.3s;
+}
+
+/* Sidebar */
+.admin-sidebar {
+  width: 220px;
+  background: #1f1f2e;
+  color: #fff;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s;
+  min-height: 100vh;
+}
+
+.admin-layout.is-collapsed .admin-sidebar {
+  width: 60px;
+}
+
+.sidebar-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.brand {
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.sidebar-nav {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: 1rem;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  margin: 0.2rem 0;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.nav-link span {
+  white-space: nowrap;
+  transition: opacity 0.3s;
+}
+
+.admin-layout.is-collapsed .nav-link span {
+  opacity: 0;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.nav-link.active {
+  background: #4a90e2;
+  color: #fff;
+}
+
+/* Main area */
+.admin-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 220px;
+  transition: margin-left 0.3s;
+}
+
+.admin-layout.is-collapsed .admin-main {
+  margin-left: 60px;
+}
+
+/* Topbar */
+.admin-topbar {
+  background: #fff;
+  border-bottom: 1px solid #dee2e6;
+  height: 60px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  z-index: 100;
+}
+
+/* Profile and actions */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-profile .avatar {
+  width: 36px;
+  height: 36px;
+  background: #4a90e2;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.btn-outline-promo {
+  border-color: #4a90e2;
+  color: #4a90e2;
+}
+
+.btn-outline-promo:hover {
+  background: #4a90e2;
+  color: #fff;
+}
+
+/* Main content */
+.admin-content {
+  flex-grow: 1;
+  background: #f5f7fa;
+  min-height: calc(100vh - 60px);
+  overflow-x: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .admin-sidebar {
+    position: fixed;
+    left: -220px;
+    top: 0;
+    z-index: 999;
+  }
+
+  .admin-layout.is-collapsed .admin-sidebar {
+    left: 0;
+  }
+
+  .admin-main {
+    margin-left: 0;
+  }
+
+  .sidebar-header button {
+    display: inline-block;
+  }
+}
+.btn-add-primary {
+  background: var(--accent-color);
+  color: #fff;
+  font-weight: 500;
+  border: none;
+  border-radius: 50px;
+  padding: 0.5rem 1.5rem;
+  transition: all 0.3s;
+}
+
+.btn-add-primary:hover {
+  background: var(--accent-color);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+}
+
+.btn-add-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(74, 144, 226, 0.4);
+}
+/* Pill buttons */
+.btn-pill {
+  border-radius: 50px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-pill i {
+  margin-right: 4px;
+}
+
+/* Gradient for primary button */
+.btn-pill {
+  background: linear-gradient(135deg, #4a90e2, #6fb1fc);
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 6px rgba(74, 144, 226, 0.3);
+}
+
+.btn-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
+}
+
+/* Soft badges */
+.bg-primary-soft {
+  background-color: rgba(74, 144, 226, 0.15);
+  color: #4a90e2;
+  font-weight: 500;
+}
+
+.bg-info-soft {
+  background-color: rgba(48, 178, 227, 0.15);
+  color: #30b2e3;
+  font-weight: 500;
+}
+
+/* List items shadow */
+.list-group-item.shadow-sm {
+  transition: all 0.2s;
+}
+
+.list-group-item.shadow-sm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
 
 /* Responsive: pull arrows inside a bit on small screens */
 @media (max-width: 576px) {
