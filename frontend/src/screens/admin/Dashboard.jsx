@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { BsBox, BsTags, BsPercent, BsPeople } from "react-icons/bs";
 import BASE_URL from "../../constante";
 
 const Dashboard = () => {
@@ -46,43 +47,30 @@ const Dashboard = () => {
   if (loading) return <p>Chargement du tableau de bord...</p>;
   if (error) return <p className="text-danger">{error}</p>;
 
-  // Modern soft colors
-  const cardStyles = [
-    { backgroundColor: "#ffffffff", color: "#1C1C1C" }, 
-    { backgroundColor: "#ffffffff", color: "#1C1C1C" }, 
-    { backgroundColor: "#ffffffff", color: "#1C1C1C" }, 
-    { backgroundColor: "#ffffffff", color: "#1C1C1C" }, 
-  ];
-
-  const titles = ["Produits", "Catégories", "Promotions", "Utilisateurs"];
-  const values = [
-    counts.products,
-    counts.categories,
-    counts.promotions,
-    counts.users,
+  const cards = [
+    { title: "Produits", value: counts.products, icon: <BsBox size={30} />, cssClass: "card-products" },
+    { title: "Catégories", value: counts.categories, icon: <BsTags size={30} />, cssClass: "card-categories" },
+    { title: "Promotions", value: counts.promotions, icon: <BsPercent size={30} />, cssClass: "card-promotions" },
+    { title: "Utilisateurs", value: counts.users, icon: <BsPeople size={30} />, cssClass: "card-users" },
   ];
 
   return (
-    <div className="container py-4">
-      <h3 className="mb-4">Tableau de bord</h3>
+    <div className="container dashboard-container">
+      <h3 className="dashboard-title">Tableau de bord</h3>
       <div className="row g-4">
-        {titles.map((title, index) => (
+        {cards.map((card, index) => (
           <div className="col-md-3" key={index}>
-            <div
-              className="card shadow-sm rounded-3"
-              style={{
-                backgroundColor: cardStyles[index].backgroundColor,
-                color: cardStyles[index].color,
-                minHeight: "120px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <div className="card-body text-center">
-                <h5 className="card-title mb-2">{title}</h5>
-                <p className="card-text fs-4 fw-bold">{values[index]}</p>
+            <div className={`dashboard-card ${card.cssClass}`}>
+              <div className="dashboard-card-header">
+                <div className="dashboard-card-icon">{card.icon}</div>
+                <div>
+                  <h5 className="dashboard-card-title">{card.title}</h5>
+                  <p className="dashboard-card-value">{card.value}</p>
+                </div>
               </div>
+              <a href={`/${card.title.toLowerCase()}`} className="dashboard-card-details">
+                Voir les détails →
+              </a>
             </div>
           </div>
         ))}
