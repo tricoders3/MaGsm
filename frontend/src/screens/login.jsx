@@ -4,14 +4,13 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import CONSTANTS from "../constante";
+import  BASE_URL from "../constante";
 
 
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { BASE_URL, ngrokUrl } = CONSTANTS;
   const navigate = useNavigate();
 
   // Connexion classique (email/password)
@@ -42,7 +41,7 @@ const loginWithGoogle = () => {
   // Connexion Facebook
   const loginWithFacebook = () => {
     toast.info("Redirection vers Facebook…");
-    window.location.href = `${ngrokUrl}/api/auth/facebook`;
+    window.location.href = `https://0dd4d5a2ec44.ngrok-free.app/api/auth/facebook`;
   };
 
 
