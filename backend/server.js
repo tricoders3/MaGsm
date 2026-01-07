@@ -13,6 +13,7 @@ import categoryRoutes from './routes/categoryRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import promotionRoutes from './routes/promotionRoutes.js';
 import cartRoutes from "./routes/cartRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 import favoriteRoutes from './routes/favoriteRoutes.js'
 // ------------------
 // Load .env from root (MaGsm/.env)
@@ -71,7 +72,7 @@ app.use("/api/user",userRoutes);
 app.use("/api/promotions",promotionRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/favorites', favoriteRoutes)
-
+app.use('/api/orders', orderRoutes);
 
 // ------------------
 // Start Server
