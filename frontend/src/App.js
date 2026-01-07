@@ -16,11 +16,16 @@ import Offer from "./screens/Offers";
 import Cart from "./screens/Cart";
 import Favoris from "./screens/Favoris";
 import AdminLayout from "./components/AdminLayout";
+import AdminRoute from "./components/AdminRoute";
 import AdminDashboard from "./screens/admin/Dashboard";
 import Categories from "./screens/admin/Categories";
 import ProductsAdmin from "./screens/admin/Products";
 import Promos from "./screens/admin/Promos";
 import Users from "./screens/admin/Users";
+import AdminOffers from "./screens/admin/AdminOffers";
+import AdminAbout from "./screens/admin/AdminAbout";
+import AdminBanner from "./screens/admin/AdminBanner";
+import AdminContact from "./screens/admin/AdminContact";
 import './assets/css/style.css';
 import './assets/css/responsive.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -71,16 +76,22 @@ function App() {
   path="/products/subcategory/:subcategoryId"
   element={<ProductsByCategory />}
 />
-<Route path="/admin" element={<AdminLayout />}>
-    <Route index element={<AdminDashboard />} />
-    <Route path="categories" element={<Categories />} />
- 
-    <Route path="products" element={<ProductsAdmin />} />
-    <Route path="promos" element={<Promos />} />
-    <Route path="users" element={<Users />} />
+</Route>
+<Route element={<AdminRoute />}>
+    <Route path="/admin" element={<AdminLayout />}>
+      <Route index element={<AdminDashboard />} />
+      <Route path="categories" element={<Categories />} />
+      <Route path="products" element={<ProductsAdmin />} />
+      <Route path="promos" element={<Promos />} />
+      <Route path="users" element={<Users />} />
+      <Route path="offers-manage" element={<AdminOffers />} />
+  <Route path="about" element={<AdminAbout />} />
+  <Route path="banner" element={<AdminBanner />} />
+  <Route path="contact" element={<AdminContact />} />
+    </Route>
   </Route>
   
-  </Route>
+
 </Routes>      
     </>
 

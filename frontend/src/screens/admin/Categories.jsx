@@ -137,8 +137,7 @@ const Categories = () => {
         />
         {editId ? (
           <button
-            className="btn btn-success btn-pill shadow-sm"
-            style={{ height: "40px" }}
+             className="btn btn-add-primary d-inline-flex align-items-center gap-2"
             onClick={() => updateCategory(editId)}
             title="Modifier"
           >
@@ -146,8 +145,7 @@ const Categories = () => {
           </button>
         ) : (
           <button
-            className="btn btn-primary btn-pill shadow-sm"
-            style={{ height: "40px" }}
+             className="btn btn-add-primary d-inline-flex align-items-center gap-2"
             onClick={addCategory}
             title="Ajouter"
           >
@@ -213,8 +211,8 @@ const Categories = () => {
           />
           {subEditId ? (
             <button
-              className="btn btn-success btn-pill shadow-sm"
-              style={{ height: "40px" }}
+               className="btn btn-add-primary d-inline-flex align-items-center gap-2"
+            
               onClick={updateSubCategory}
               title="Modifier Sub"
             >
@@ -222,13 +220,14 @@ const Categories = () => {
             </button>
           ) : (
             <button
-              className="btn btn-primary btn-pill shadow-sm"
-              style={{ height: "40px" }}
-              onClick={addSubCategory}
-              title="Ajouter Sub"
-            >
-              <i className="fas fa-plus"></i> Ajouter
-            </button>
+            className="btn btn-add-primary d-inline-flex align-items-center gap-2"
+            onClick={addSubCategory}
+            title="Ajouter Sub"
+          >
+            <i className="fas fa-plus"></i>
+            Ajouter
+          </button>
+          
           )}
         </div>
 
@@ -240,15 +239,16 @@ const Categories = () => {
             >
               <span>{sc.name}</span>
               <div className="d-flex gap-2">
+              
                 <button
-                  className="btn btn-sm btn-outline-warning"
+                  className="btn btn-sm btn-light border action-btn"
                   onClick={() => handleEditSub(sc)}
                   title="Modifier"
                 >
                   <i className="fas fa-pen"></i>
                 </button>
                 <button
-                  className="btn btn-sm btn-outline-danger"
+                  className="btn btn-sm btn-light border action-btn text-danger"
                   onClick={() => deleteSubCategory(sc._id)}
                   title="Supprimer"
                 >

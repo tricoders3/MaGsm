@@ -86,6 +86,7 @@ const BestSeller = () => {
                   <button
                     className="btn-redesign btn-primary-redesign"
                     onClick={() => navigate(`/products/${product.id}`)}
+                    
                   >
                     Découvrir les détails
                   </button>

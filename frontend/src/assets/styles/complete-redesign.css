@@ -185,6 +185,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 
 .btn-primary-redesign:hover {
+  background: linear-gradient(135deg, #111111 0%, #1a1919 100%);
   color: var(--white);
 }
 .btn-primary-details {
@@ -2334,7 +2335,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 
 .offcanvas.offcanvas-start {
-  width: min(90vw, 420px);
+  width: min(70vw, 300px);
 }
 
 /* Header separator */
@@ -2954,13 +2955,17 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 /* Sidebar */
 .admin-sidebar {
   width: 220px;
-  background: #1f1f2e;
+  background: #1e293b;
   color: #fff;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   transition: all 0.3s;
   min-height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
 }
 
 .admin-layout.is-collapsed .admin-sidebar {
@@ -2968,7 +2973,13 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 
 .sidebar-header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #1e293b;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .brand {
@@ -3001,7 +3012,23 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 
 .admin-layout.is-collapsed .nav-link span {
-  opacity: 0;
+  display: none;
+}
+
+/* Center icons when collapsed */
+.admin-layout.is-collapsed .sidebar-nav {
+  align-items: center;
+}
+
+.admin-layout.is-collapsed .nav-link {
+  justify-content: center;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+/* Hide brand text when collapsed */
+.admin-layout.is-collapsed .brand {
+  display: none;
 }
 
 .nav-link:hover {
@@ -3073,7 +3100,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 .admin-content {
   flex-grow: 1;
   background: #f5f7fa;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 64px);
   overflow-x: hidden;
 }
 
@@ -3083,7 +3110,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
     position: fixed;
     left: -220px;
     top: 0;
-    z-index: 999;
+    z-index: 1000;
   }
 
   .admin-layout.is-collapsed .admin-sidebar {
@@ -3099,7 +3126,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   }
 }
 .btn-add-primary {
-  background: var(--accent-color);
+  background: var(--primary-dark);
   color: #fff;
   font-weight: 500;
   border: none;
@@ -3111,15 +3138,15 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 .btn-add-primary:hover {
   background: var(--accent-color);
   color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+
+  
 }
 
 .btn-add-primary:active {
   transform: translateY(0);
   box-shadow: 0 2px 6px rgba(74, 144, 226, 0.4);
 }
-/* Pill buttons */
+
 .btn-pill {
   border-radius: 50px;
   padding: 0.5rem 1rem;
@@ -3165,6 +3192,186 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 .list-group-item.shadow-sm:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.admin-navbar {
+  height: 64px;
+  background: #1e293b;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  z-index: 1000;
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-toggle {
+  color: #fff;
+  cursor: pointer;
+}
+
+.admin-user-wrapper {
+  position: relative;
+}
+
+/* ================= Admin UI Enhancements ================ */
+/* Cards */
+.admin-content .card {
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.08);
+}
+
+.admin-content .card .card-body {
+  padding: 1rem 1.25rem;
+}
+
+@media (min-width: 992px) {
+  .admin-content .card .card-body { padding: 1.25rem 1.5rem; }
+}
+
+/* Headings and spacing */
+.admin-content h2,
+.admin-content h3,
+.admin-content h4,
+.admin-content h5 {
+  color: #0f172a;
+}
+
+.admin-content .fw-semibold { letter-spacing: -0.01em; }
+
+/* Buttons */
+.admin-content .btn-primary {
+  background: linear-gradient(135deg, #1e293b, #0b1220);
+  border: 0;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+}
+
+.admin-content .btn-primary:hover { filter: brightness(1.05); }
+
+.admin-content .btn-outline-promo {
+  border-color: #1e293b;
+  color: #1e293b;
+}
+
+.admin-content .btn-outline-promo:hover {
+  background: #1e293b;
+  color: #fff;
+}
+
+/* Forms */
+.admin-content .form-label { font-weight: 600; }
+
+.admin-content .form-control {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.admin-content .form-control:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.12);
+}
+
+.admin-content .form-check-input:checked {
+  background-color: #1e293b;
+  border-color: #1e293b;
+}
+
+/* Tables */
+.admin-content table.table { margin-bottom: 0; }
+
+.admin-content .table thead th {
+  color: #475569;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-content .table tbody td { vertical-align: middle; }
+
+.admin-content .table tbody tr:hover { background: #f8fafc; }
+
+/* Make tables scrollable on small screens */
+@media (max-width: 768px) {
+  .admin-content table { display: block; overflow-x: auto; white-space: nowrap; }
+}
+
+/* List group */
+.admin-content .list-group-item {
+  padding: 0.75rem 1rem;
+}
+
+/* Sidebar nav improvements */
+.admin-sidebar .nav-link {
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.admin-sidebar .nav-link:hover { transform: translateX(2px); }
+
+.admin-sidebar .nav-link.active {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+/* Placeholder skeleton tweak for admin */
+.placeholder { background-color: #e5e7eb; }
+.placeholder-glow .placeholder { opacity: .7; }
+
+.admin-user-btn {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.admin-avatar {
+  width: 36px;
+  height: 36px;
+  background: #334155;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.admin-username {
+  font-size: 14px;
+}
+
+.admin-user-menu {
+  position: absolute;
+  right: 0;
+  top: 48px;
+  background: #fff;
+  border-radius: 10px;
+  width: 180px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  overflow: hidden;
+}
+
+.admin-user-menu button {
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.admin-user-menu button:hover {
+  background: #f1f5f9;
+}
+
+.admin-user-menu .logout {
+  color: #dc2626;
 }
 
 /* Responsive: pull arrows inside a bit on small screens */

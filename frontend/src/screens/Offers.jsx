@@ -6,9 +6,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, FreeMode, A11y } from 'swiper/modules';
 import 'swiper/css';
 import BASE_URL from '../constante';
+import { useContent } from '../context/ContentContext';
 
 export default function OfferPage() {
   const navigate = useNavigate();
+  const { content } = useContent();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -59,8 +61,8 @@ export default function OfferPage() {
         <div className="rounded-4 shadow-soft p-4 p-lg-5 mb-5 position-relative offer-hero" >
           <div className="row align-items-center g-4">
             <div className="col-lg-8">
-              <h1 className="display-5 fw-bold hero-heading mb-3">Offres Spéciales</h1>
-              <p className="lead mb-4">Profitez de remises exclusives sur les accessoires GSM les plus demandés.</p>
+              <h1 className="display-5 fw-bold hero-heading mb-3">{content?.offers?.title || 'Offres Spéciales'}</h1>
+              <p className="lead mb-4">{content?.offers?.description || 'Profitez de remises exclusives sur les accessoires GSM les plus demandés.'}</p>
               <div className="d-flex gap-3">
                 <button className="btn-redesign btn-primary-redesign" onClick={() => navigate('/products')}>Voir tout</button>
                 <button className="btn-redesign btn-outline-promo" onClick={() => navigate('/')}>Retour à l'accueil</button>
