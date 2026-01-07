@@ -21,11 +21,13 @@ import AdminDashboard from "./screens/admin/Dashboard";
 import Categories from "./screens/admin/Categories";
 import ProductsAdmin from "./screens/admin/Products";
 import Promos from "./screens/admin/Promos";
+import Products from "./screens/products.jsx";
 import Users from "./screens/admin/Users";
 import AdminOffers from "./screens/admin/AdminOffers";
 import AdminAbout from "./screens/admin/AdminAbout";
 import AdminBanner from "./screens/admin/AdminBanner";
 import AdminContact from "./screens/admin/AdminContact";
+import ProductDetails from "./screens/ProductDetails.jsx";
 import './assets/css/style.css';
 import './assets/css/responsive.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -37,6 +39,7 @@ import './assets/styles/modern-theme.css';
 import './assets/styles/complete-redesign.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from "react-toastify";
+
 
 
 function App() {
@@ -72,13 +75,17 @@ function App() {
   <Route path="/oauth-success" element={<OAuthSuccess setUser={setUser} />} />
   <Route path="/category/:categoryId" element={<SubCategories />} />
   <Route path="/products/category" element={<ProductsCategory />} />
+    <Route path="/products" element={<Products />} />
+    </Route>
   <Route
   path="/products/subcategory/:subcategoryId"
   element={<ProductsByCategory />}
 />
-</Route>
+<Route path="/products/:productId" element={<ProductDetails />} />
+
 <Route element={<AdminRoute />}>
     <Route path="/admin" element={<AdminLayout />}>
+    
       <Route index element={<AdminDashboard />} />
       <Route path="categories" element={<Categories />} />
       <Route path="products" element={<ProductsAdmin />} />
@@ -90,7 +97,6 @@ function App() {
   <Route path="contact" element={<AdminContact />} />
     </Route>
   </Route>
-  
 
 </Routes>      
     </>
