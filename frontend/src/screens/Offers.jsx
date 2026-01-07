@@ -1,192 +1,136 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FiShoppingCart, FiArrowRight, FiCheckCircle, FiShield, FiTruck, FiRefreshCcw } from 'react-icons/fi';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, FreeMode, A11y } from 'swiper/modules';
-import 'swiper/css';
+import { FiShoppingCart } from 'react-icons/fi';
 import BASE_URL from '../constante';
+import 'swiper/css';
 
 export default function OfferPage() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const [promotions, setPromotions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch products with promotion
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchPromotions = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/products`);
-        const productsData = response.data.map((product) => ({
-          id: product._id,
-          name: product.name,
-          description: product.description,
-          price: product.price,
-          image: product.images && product.images.length > 0 ? product.images[0].url : '/assets/images/default.png',
-          countInStock: product.countInStock,
-          category: product.category?.name || 'Uncategorized',
+        // 1️⃣ Get products with active promotions
+        const response = await axios.get(`${BASE_URL}/api/promotions/promos`);
+        const productsData = response.data.map((p) => ({
+          id: p._id,
+          name: p.name,
+          image: p.image || '/assets/images/default.png',
+          category: p.category,
+          subCategory: p.subCategory,
+          originalPrice: p.originalPrice,
+          discountedPrice: p.discountedPrice,
+          promotion: p.promotion,
         }));
         setProducts(productsData);
+
+        // 2️⃣ Get active promotions for banner
+        const promoResp = await axios.get(`${BASE_URL}/api/promotions`);
+        setPromotions(promoResp.data.filter((p) => p.isActive));
+
         setLoading(false);
       } catch (err) {
         console.error(err);
-        setError('Failed to load products');
+        setError('Failed to load promotions');
         setLoading(false);
       }
     };
-    fetchProducts();
+    fetchPromotions();
   }, []);
 
-  const categories = useMemo(() => {
-    const set = new Set(products.map((p) => p.category).filter(Boolean));
-    return ['Tous', ...Array.from(set)];
-  }, [products]);
-
-  const hotDeals = useMemo(() => {
-    return products
-      .filter((p) => (p.countInStock ?? 0) > 0)
-      .sort((a, b) => (a.price ?? 0) - (b.price ?? 0))
-      .slice(0, 12);
-  }, [products]);
-
-  if (loading) return <p className="text-center py-5">Chargement des produits...</p>;
+  if (loading) return <p className="text-center py-5">Chargement des promotions...</p>;
   if (error) return <p className="text-center py-5 text-danger">{error}</p>;
 
+  // Take the first active promotion for the hero banner
+  const heroPromotion = promotions[0];
+const formatTimeLeft = (endDate) => {
+  if (!endDate) return '';
+  const now = new Date();
+  const end = new Date(endDate);
+  const diff = end - now; // en ms
+  if (diff <= 0) return 'Terminé';
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  return days > 0 ? `${days}j ${hours}h restants` : `${hours}h restants`;
+};
   return (
     <section className="offer-page">
       <div className="container py-5">
-        {/* Featured Banner */}
-        <div className="rounded-4 shadow-soft p-4 p-lg-5 mb-5 position-relative offer-hero" >
-          <div className="row align-items-center g-4">
-            <div className="col-lg-8">
-              <h1 className="display-5 fw-bold hero-heading mb-3">Offres Spéciales</h1>
-              <p className="lead mb-4">Profitez de remises exclusives sur les accessoires GSM les plus demandés.</p>
-              <div className="d-flex gap-3">
-                <button className="btn-redesign btn-primary-redesign" onClick={() => navigate('/products')}>Voir tout</button>
-                <button className="btn-redesign btn-outline-promo" onClick={() => navigate('/')}>Retour à l'accueil</button>
+
+        {/* Dynamic Hero Banner */}
+        {heroPromotion && (
+          <div className="rounded-4 shadow-soft p-4 p-lg-5 mb-5 position-relative offer-hero">
+            <div className="row align-items-center g-4">
+              <div className="col-lg-8">
+                <h1 className="display-5 fw-bold hero-heading mb-3">{heroPromotion.name}</h1>
+                <p className="lead mb-4">{heroPromotion.description || "Profitez de remises exclusives sur nos produits"}</p>
+                <div className="d-flex gap-3">
+                  <button className="btn-redesign btn-primary-redesign" onClick={() => navigate('/products')}>
+                    Voir tout
+                  </button>
+                  <button className="btn-redesign btn-outline-promo" onClick={() => navigate('/')}>
+                    Retour à l'accueil
+                  </button>
+                </div>
               </div>
-            </div>
-           <div className="col-lg-4 text-lg-end">
+            <div className="col-lg-4 text-lg-end">
   <div className="d-inline-flex align-items-center gap-2 p-2 px-3 bg-white rounded-4 shadow-soft">
-    <span className="offer-badge bg-success-subtle text-success fw-semibold">Jusqu'à -40%</span>
-    <span className="text-muted">Temps limité</span>
+    <span className="offer-badge bg-success-subtle text-success fw-semibold">
+      {heroPromotion.discountType === "percentage"
+        ? `${heroPromotion.discountValue}% `
+        : `${heroPromotion.discountValue} DT `}
+    </span>
+    {/* Temps limité dynamique */}
+    <span className="text-muted">{formatTimeLeft(heroPromotion.endDate)}</span>
   </div>
 </div>
-
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Category Chips */}
-        <div className="subcategory-filter d-flex mb-4">
-          {categories.map((cat) => (
-            <button key={cat} className="btn btn-outline-promo btn-sm">{cat}</button>
-          ))}
-        </div>
-
-        {/* Existing Offers Grid (kept as-is) */}
+        {/* Section Title */}
         <div className="mb-4 text-center">
           <h2 className="section-title">Offres Spéciales</h2>
           <p className="section-subtitle">Profitez de nos meilleures offres sur les produits populaires</p>
         </div>
 
+        {/* Products Grid */}
         <div className="row">
           {products.map((product) => (
             <div key={product.id} className="col-6 col-md-3 mb-4">
-              <div className="product-card h-100 position-relative">
-                {/* Static Offer Badge */}
-                <div className="card-badges">
-                  <span className="badge-offer">20% OFF</span>
-                  <button className="cart-btn" aria-label={`Ajouter ${product.name} au panier`}>
-                    <FiShoppingCart size={18} />
-                  </button>
-                </div>
+              <div className="product-card h-100 position-relative shadow-sm rounded-4 p-3 bg-white">
+                {product.promotion && (
+                  <div className="card-badges position-absolute top-0 start-0 m-2">
+                    <span className="badge-offer bg-danger text-white px-2 py-1 rounded">
+                      {product.promotion.discountType === 'percentage'
+                        ? `${product.promotion.discountValue}% OFF`
+                        : `${product.promotion.discountValue} DT OFF`}
+                    </span>
+                  </div>
+                )}
 
-                {/* Product Image */}
                 <div className="product-image mt-4 text-center">
-                  <img src={product.image} alt={product.name} className="img-fluid" loading="lazy" decoding="async" />
+                  <img src={product.image} alt={product.name} className="img-fluid" style={{ height: 150, objectFit: 'cover' }} />
                 </div>
 
-                {/* Product Content */}
                 <div className="product-content text-center mt-3">
                   <h6 className="product-title">{product.name}</h6>
-                  <p className="product-category">{product.category}</p>
-                  <p className="product-description">{product.description}</p>
-
-                  {/* Price with Static Discount */}
-                  <p className="product-price">
-                    <span className="original-price">{product.price} DT</span>{' '}
-                    <span className="discounted-price">{(product.price * 0.8).toFixed(2)} DT</span>
+                  <p className="product-category text-muted">{product.category}</p>
+                  <p className="product-price mt-2">
+                    <span className="original-price text-decoration-line-through">{product.originalPrice} DT</span>{' '}
+                    <span className="discounted-price fw-bold">{product.discountedPrice} DT</span>
                   </p>
-
-                  {/* Product Details Button */}
-                  <button className="btn-redesign btn-primary-redesign" onClick={() => navigate(`/products/${product.id}`)}>
-                    Découvrir les détails
-                  </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
-
-
-    
-
-        {/* Benefits Section 
-        <div className="row g-3 g-md-4 mt-5">
-          <div className="col-6 col-lg-3">
-            <div className="rounded-4 shadow-soft p-3 h-100 bg-white d-flex align-items-center gap-3">
-              <FiShield className="text-success" size={24} />
-              <div>
-                <strong>Qualité garantie</strong>
-                <div className="text-muted small">Produits vérifiés et notés</div>
-              </div>
-            </div>
-          </div>
-          <div className="col-6 col-lg-3">
-            <div className="rounded-4 shadow-soft p-3 h-100 bg-white d-flex align-items-center gap-3">
-              <FiTruck className="text-primary" size={24} />
-              <div>
-                <strong>Livraison rapide</strong>
-                <div className="text-muted small">Partout en Tunisie</div>
-              </div>
-            </div>
-          </div>
-          <div className="col-6 col-lg-3">
-            <div className="rounded-4 shadow-soft p-3 h-100 bg-white d-flex align-items-center gap-3">
-              <FiRefreshCcw className="text-info" size={24} />
-              <div>
-                <strong>Retours faciles</strong>
-                <div className="text-muted small">Sous 14 jours</div>
-              </div>
-            </div>
-          </div>
-          <div className="col-6 col-lg-3">
-            <div className="rounded-4 shadow-soft p-3 h-100 bg-white d-flex align-items-center gap-3">
-              <FiCheckCircle className="text-warning" size={24} />
-              <div>
-                <strong>Meilleurs prix</strong>
-                <div className="text-muted small">Jusqu'à -60%</div>
-              </div>
-            </div>
-          </div>
-        </div>
-*/}
-     
-        {/* Newsletter CTA */}
-        <div className="rounded-4 shadow-soft mt-5 p-4 p-md-5" style={{
-          background: 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)',
-        }}>
-          <div className="row align-items-center g-3">
-            <div className="col-md-8">
-              <h3 className="mb-2">Recevez nos meilleures offres</h3>
-              <p className="mb-0">Inscrivez-vous pour ne rien rater des promotions exclusives.</p>
-            </div>
-            <div className="col-md-4 text-md-end mt-3 mt-md-0">
-              <button className="btn-redesign btn-primary">S'inscrire</button>
-            </div>
-          </div>
-        </div>
-
       </div>
     </section>
   );

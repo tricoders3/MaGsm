@@ -2,7 +2,7 @@
 import express from "express";
 import Promotion from "../models/Promotion.js";
 import {
-applyPromotion,removePromotion,getActivePromotions,updatePromotion,getProductsWithPromo
+applyPromotion,removePromotion,getActivePromotions,updatePromotion,getProductsWithPromo, getPromotionByProduct
   
 
 } from "../controllers/promotionController.js";
@@ -11,7 +11,7 @@ const router = express.Router();
 
 // Get all active promotions
 router.get("/", getActivePromotions);
-
+router.get("/product/:productId", getPromotionByProduct);
  router.get("/promos", getProductsWithPromo);     
 router.post("/apply", applyPromotion);   
 router.delete("/:id", removePromotion);

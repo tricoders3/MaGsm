@@ -14,7 +14,7 @@ const router = express.Router()
 router.get('/', protect, getMyCart)
 
 // Ajouter un produit au panier
-router.post('/', protect, addItemToCart)
+router.post('/',  addItemToCart)
 
 // Modifier la quantité d’un produit
 router.put('/:productId', protect, updateItemQuantity)

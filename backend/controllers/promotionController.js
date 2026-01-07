@@ -219,3 +219,56 @@ export const getProductsWithPromo = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+/**
+ * @desc    Get the promotion for a single product by productId
+ * @route   GET /api/promotions/product/:productId
+ * @access  Public
+ */
+export const getPromotionByProduct = async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    // Find the product and populate promotion
+    const product = await Product.findById(productId).populate("promotion");
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    if (!product.promotion || !product.promotion.isActive) {
+      return res.json({ promotion: null });
+    }
+
+    const promo = product.promotion;
+
+    // Calculate discounted price
+    const originalPrice = product.price;
+    let discountedPrice = originalPrice;
+
+    if (promo.discountType === "percentage") {
+      discountedPrice = originalPrice - (originalPrice * promo.discountValue) / 100;
+    } else if (promo.discountType === "fixed") {
+      discountedPrice = originalPrice - promo.discountValue;
+    }
+    discountedPrice = Math.max(discountedPrice, 0);
+
+    res.json({
+      productId: product._id,
+      originalPrice,
+      discountedPrice,
+      promotion: {
+        _id: promo._id,
+        name: promo.name,
+        discountType: promo.discountType,
+        discountValue: promo.discountValue,
+        startDate: promo.startDate,
+        endDate: promo.endDate,
+        isActive: promo.isActive,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching product promotion:", error);
+    res.status(500).json({ message: error.message });
+  }
+};

@@ -170,7 +170,7 @@ const menuRef = useRef(null);
             <button
               className="nav-icon-redesign position-relative"
               title="Favorites"
-              onClick={() => navigate("/favorites")}
+              onClick={() => navigate("/favoris")}
             >
               <FaHeart />
               {/* <span className="nav-badge-redesign"></span> */}
