@@ -85,20 +85,10 @@ function App() {
 />
 <Route path="/products/:productId" element={<ProductDetails />} />
 
-
-<Route path="/admin" element={<AdminLayout />}>
-    <Route index element={<AdminDashboard />} />
-    <Route path="categories" element={<Categories />} />
- 
-    <Route path="products" element={<ProductsAdmin />} />
-    <Route path="promos" element={<Promos />} />
-    <Route path="users" element={<Users />} />
-  </Route>
   </Route>
 
 <Route element={<AdminRoute />}>
     <Route path="/admin" element={<AdminLayout />}>
-    
       <Route index element={<AdminDashboard />} />
       <Route path="categories" element={<Categories />} />
       <Route path="products" element={<ProductsAdmin />} />
