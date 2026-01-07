@@ -1,13 +1,21 @@
 import React from "react";
+import { useContent } from "../context/ContentContext";
 import { FiBox, FiUsers, FiZap, FiMapPin, FiClock, FiPhone, FiMail } from "react-icons/fi";
 
 export default function About() {
+  const { content } = useContent();
   return (
     <main>
       {/* Hero Section */}
       <section className="py-0">
         <div className="container-fluid px-0">
           <img alt="About MA GSM cover" className="w-100" style={{ display: 'block', objectFit: 'cover', maxHeight: 420, width: '100%' }} />
+        </div>
+      </section>
+      <section className="py-4">
+        <div className="container">
+          <h2 className="fw-bold mb-2">{content?.about?.title || 'About Us'}</h2>
+          <p className="text-muted mb-0">{content?.about?.content || 'Carefully selected products, customer-first support and fast service.'}</p>
         </div>
       </section>
       {/* Values / Features */}

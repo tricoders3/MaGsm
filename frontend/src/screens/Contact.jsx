@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useContent } from '../context/ContentContext';
 import axios from 'axios';
 import { FiMail, FiPhone, FiMapPin, FiClock, FiSend } from 'react-icons/fi';
 import BASE_URL from '../constante';
@@ -7,7 +8,7 @@ export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState({ type: '', message: '' });
-
+  const { content } = useContent();
   const isValid = useMemo(() => {
     if (!form.name || !form.email || !form.message) return false;
     const emailOk = /.+@.+\..+/.test(form.email);
@@ -50,8 +51,12 @@ export default function Contact() {
             </div>
             <div className="col-lg-5">
               <div className="d-flex flex-wrap gap-3 justify-content-lg-end">
-                <a className="btn btn-promo" href="tel:+21600000000"><FiPhone className="me-2" /> +216 00 000 000</a>
-                <a className="btn btn-outline-promo" href="mailto:contact@magsm.tn"><FiMail className="me-2" /> contact@magsm.tn</a>
+              <a className="btn btn-promo" href={`tel:${content?.contact?.phone || ''}`}>
+  <FiPhone className="me-2" /> {content?.contact?.phone || '+216 00 000 000'}
+</a>
+<a className="btn btn-outline-promo" href={`mailto:${content?.contact?.email || ''}`}>
+  <FiMail className="me-2" /> {content?.contact?.email || 'contact@magsm.tn'}
+</a>
               </div>
             </div>
           </div>

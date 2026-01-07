@@ -1,47 +1,22 @@
-import { Outlet, NavLink } from "react-router-dom";
-import { BsSpeedometer2, BsTags, BsBox, BsPercent, BsPeople } from "react-icons/bs";
+import React from "react";
+import { Outlet } from "react-router-dom";
+import AdminNavBar from "./AdminNavbar";
+import AdminSidebar from "./AdminSidebar";
 
 
 const AdminLayout = () => {
-  return (
-    <div className="admin-layout d-flex">
-      {/* Sidebar */}
-      <nav className="sidebar bg-dark text-white">
-        <div className="sidebar-header px-3 py-4">
-          <h4 className="mb-0">Admin Dashboard</h4>
-        </div>
-        <ul className="nav flex-column sidebar-nav">
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/admin">
-              <BsSpeedometer2 className="me-2" /> Dashboard
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/admin/categories">
-              <BsTags className="me-2" /> Catégories
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/admin/products">
-              <BsBox className="me-2" /> Produits
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/admin/promos">
-              <BsPercent className="me-2" /> Promotions
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/admin/users">
-              <BsPeople className="me-2" /> Utilisateurs
-            </NavLink>
-          </li>
-        </ul>
-      </nav>
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
 
-      {/* Main Content */}
-      <div className="content flex-grow-1 p-4">
-        <Outlet />
+  const toggleSidebar = () => setIsCollapsed((prev) => !prev);
+
+  return (
+    <div className={`admin-layout ${isCollapsed ? "is-collapsed" : ""}`}>
+      <AdminSidebar onToggleSidebar={toggleSidebar} />
+      <div className="admin-main">
+        <AdminNavBar onToggleSidebar={toggleSidebar} />
+        <div className="admin-content">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

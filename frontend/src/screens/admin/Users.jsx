@@ -60,6 +60,7 @@ const Users = () => {
       {filteredUsers.length} users
     </span>
   </h5>
+  <small className="text-muted">Gérez les comptes et les rôles des utilisateurs.</small>
 </div>
 
         <div className="col-md-4 position-relative">
@@ -146,6 +147,7 @@ const Users = () => {
                       title="Modifier"
                     >
                       <FiEdit2 size={16} />
+                      <span className="visually-hidden">Modifier</span>
                     </button>
 
                     <button
@@ -154,11 +156,21 @@ const Users = () => {
                       onClick={() => deleteUser(u._id)}
                     >
                       <FiTrash2 size={16} />
+                      <span className="visually-hidden">Supprimer</span>
                     </button>
                   </td>
 
                   </tr>
                 ))}
+                {filteredUsers.length === 0 && !loading && (
+                  <tr>
+                    <td colSpan="5" className="py-4">
+                      <div className="text-center">
+                        <p className="text-muted mb-0">Aucun utilisateur trouvé.</p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

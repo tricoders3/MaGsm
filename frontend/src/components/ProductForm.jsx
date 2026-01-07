@@ -97,80 +97,81 @@ const ProductForm = ({ show, onClose, onSaved, product }) => {
   };
 
   return (
-    <div className="card card-body mb-4">
-      <h5 className="mb-3">
-        {product ? "Modifier produit" : "Ajouter produit"}
-      </h5>
-
-      {/* BASIC INFO */}
-      <div className="d-flex gap-2 mb-2">
-        <input className="form-control" placeholder="Nom" value={name} onChange={e => setName(e.target.value)} />
-        <input className="form-control" placeholder="Model" value={model} onChange={e => setModel(e.target.value)} />
-        <input className="form-control" placeholder="Brand" value={brand} onChange={e => setBrand(e.target.value)} />
+    <div className="card border-0 shadow-sm rounded-4 mb-4">
+      <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+        <h5 className="mb-0 fw-semibold">{product ? "Modifier produit" : "Ajouter produit"}</h5>
+        <button type="button" className="btn btn-outline-secondary btn-sm" onClick={onClose}>Fermer</button>
       </div>
 
-      {/* CATEGORY */}
-      <div className="d-flex gap-2 mb-2">
-        <select className="form-select" value={category} onChange={e => {
-          setCategory(e.target.value);
-          setSubCategory("");
-        }}>
-          <option value="">Choisir catégorie</option>
-          {categories.map(c => (
-            <option key={c._id} value={c._id}>{c.name}</option>
-          ))}
-        </select>
+      <div className="card-body">
+        <div className="row g-3">
+          {/* BASIC INFO */}
+          <div className="col-12 col-md-4">
+            <label className="form-label">Nom</label>
+            <input className="form-control" placeholder="Nom" value={name} onChange={e => setName(e.target.value)} />
+          </div>
+          <div className="col-12 col-md-4">
+            <label className="form-label">Modèle</label>
+            <input className="form-control" placeholder="Modèle" value={model} onChange={e => setModel(e.target.value)} />
+          </div>
+          <div className="col-12 col-md-4">
+            <label className="form-label">Marque</label>
+            <input className="form-control" placeholder="Marque" value={brand} onChange={e => setBrand(e.target.value)} />
+          </div>
 
-        <select
-          className="form-select"
-          value={subCategory}
-          onChange={e => setSubCategory(e.target.value)}
-          disabled={!category}
-        >
-          <option value="">Choisir sous-catégorie</option>
-          {subCategories.map(sc => (
-            <option key={sc._id} value={sc._id}>{sc.name}</option>
-          ))}
-        </select>
-      </div>
+          {/* CATEGORY */}
+          <div className="col-12 col-md-6">
+            <label className="form-label">Catégorie</label>
+            <select className="form-select" value={category} onChange={e => { setCategory(e.target.value); setSubCategory(""); }}>
+              <option value="">Choisir catégorie</option>
+              {categories.map(c => (
+                <option key={c._id} value={c._id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="col-12 col-md-6">
+            <label className="form-label">Sous-catégorie</label>
+            <select className="form-select" value={subCategory} onChange={e => setSubCategory(e.target.value)} disabled={!category}>
+              <option value="">Choisir sous-catégorie</option>
+              {subCategories.map(sc => (
+                <option key={sc._id} value={sc._id}>{sc.name}</option>
+              ))}
+            </select>
+          </div>
 
-      {/* DESCRIPTION */}
-      <textarea
-        className="form-control mb-2"
-        placeholder="Description"
-        value={description}
-        onChange={e => setDescription(e.target.value)}
-      />
+          {/* DESCRIPTION */}
+          <div className="col-12">
+            <label className="form-label">Description</label>
+            <textarea className="form-control" rows={4} placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} />
+          </div>
 
-      {/* IMAGE */}
-      <input
-        type="file"
-        className="form-control mb-2"
-        accept="image/*"
-        onChange={imageChangeHandler}
-      />
+          {/* IMAGE */}
+          <div className="col-12 col-md-6">
+            <label className="form-label">Image du produit</label>
+            <input type="file" className="form-control" accept="image/*" onChange={imageChangeHandler} />
+          </div>
+          {imagePreview && (
+            <div className="col-12 col-md-6 d-flex align-items-end">
+              <img src={imagePreview} alt="preview" style={{ width: "120px", height: "120px", objectFit: "cover" }} className="rounded" />
+            </div>
+          )}
 
-      {imagePreview && (
-        <img
-          src={imagePreview}
-          alt="preview"
-          style={{ width: "120px", height: "120px", objectFit: "cover" }}
-          className="mb-2 rounded"
-        />
-      )}
+          {/* PRICE & STOCK */}
+          <div className="col-12 col-md-6">
+            <label className="form-label">Prix (TND)</label>
+            <input className="form-control" type="number" placeholder="Prix" value={price} onChange={e => setPrice(e.target.value)} />
+          </div>
+          <div className="col-12 col-md-6">
+            <label className="form-label">Stock</label>
+            <input className="form-control" type="number" placeholder="Stock" value={countInStock} onChange={e => setCountInStock(e.target.value)} />
+          </div>
+        </div>
 
-      {/* PRICE & ACTION */}
-      <div className="d-flex gap-2">
-        <input className="form-control" type="number" placeholder="Prix" value={price} onChange={e => setPrice(e.target.value)} />
-        <input className="form-control" type="number" placeholder="Stock" value={countInStock} onChange={e => setCountInStock(e.target.value)} />
-
-        <button className="btn btn-success" onClick={submitHandler}>
-          {product ? "Mettre à jour" : "Créer"}
-        </button>
-
-        <button className="btn btn-secondary" onClick={onClose}>
-          Annuler
-        </button>
+        <div className="d-flex justify-content-end gap-2 mt-4">
+          <button className="btn btn-outline-secondary" onClick={onClose}>Annuler</button>
+          <button className="btn btn-primary-redesign" onClick={submitHandler}>{product ? "Mettre à jour" : "Créer"}</button>
+        </div>
+      
       </div>
     </div>
   );

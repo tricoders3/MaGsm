@@ -71,6 +71,7 @@ const Products = () => {
                 {filteredProducts.length} produits
               </span>
             </h5>
+            <small className="text-muted">Gérez vos produits, photos, prix et promotions.</small>
           </div>
 
           <div className="d-flex gap-2 align-items-center mb-3">
@@ -152,22 +153,35 @@ const Products = () => {
                             setShowForm(true);
                           }}
                         >
-                          <i className="fas fa-pen"></i>
+                          <i className="fas fa-pen" aria-hidden="true"></i>
+                          <span className="visually-hidden">Modifier</span>
                         </button>
                         <button
                           className="btn btn-sm btn-light border text-danger action-btn"
                           title="Supprimer"
                           onClick={() => deleteProduct(p._id)}
                         >
-                          <i className="fas fa-trash"></i>
+                          <i className="fas fa-trash" aria-hidden="true"></i>
+                          <span className="visually-hidden">Supprimer</span>
                         </button>
                       </td>
                     </tr>
                   ))}
                   {filteredProducts.length === 0 && !loading && (
                     <tr>
-                      <td colSpan="6" className="text-center text-muted py-3">
-                        Aucun produit trouvé
+                      <td colSpan="6" className="py-4">
+                        <div className="text-center">
+                          <p className="text-muted mb-3">Aucun produit trouvé.</p>
+                          <button
+                            className="btn btn-primary"
+                            onClick={() => {
+                              setSelectedProduct(null);
+                              setShowForm(true);
+                            }}
+                          >
+                            Ajouter un produit
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   )}

@@ -7,6 +7,8 @@ const Promotions = () => {
   const [subCategories, setSubCategories] = useState([]);
   const [promotions, setPromotions] = useState([]);
   const [productsWithPromo, setProductsWithPromo] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+
 
   const [form, setForm] = useState({
     name: "",
@@ -124,43 +126,91 @@ const Promotions = () => {
     fetchPromotions();
   };
 
-  /* ---------------- UI ---------------- */
+ 
 
   return (
     <div className="container mt-4">
-      <h3>Promotions Management</h3>
+      <div className="card border-0 shadow-sm rounded-4 mb-4">
+        <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+          <div>
+            <h5 className="text-dark fw-bold mb-0">Promotions</h5>
+            <small className="text-muted">Gérez les promotions actives et leurs remises.</small>
+          </div>
+          <div>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                setShowForm(true);
+                setEditingPromoId(null);
+                setForm({
+                  name: "",
+                  discountType: "percentage",
+                  discountValue: "",
+                  category: "",
+                  subCategory: "",
+                  startDate: "",
+                  endDate: "",
+                });
+              }}
+            >
+              + Create Promotion
+            </button>
+          </div>
+        </div>
+      </div>
+  {showForm && (
 
-      {/* FORM */}
-      <div className="card p-3 mb-4">
+     <div className="card shadow-sm border-0 mb-4">
+  <div className="card-body">
+    <h5 className="fw-semibold mb-3">
+      {editingPromoId ? "Edit Promotion" : "Create Promotion"}
+    </h5>
+
+    <div className="row g-3">
+      {/* Name */}
+      <div className="col-md-6">
+        <label className="form-label">Promotion Name</label>
         <input
-          className="form-control mb-2"
-          placeholder="Promotion name"
+          className="form-control"
+          placeholder="Summer Sale"
           name="name"
           value={form.name}
           onChange={handleChange}
         />
+      </div>
 
+      {/* Discount Type */}
+      <div className="col-md-3">
+        <label className="form-label">Discount Type</label>
         <select
-          className="form-select mb-2"
+          className="form-select"
           name="discountType"
           value={form.discountType}
           onChange={handleChange}
         >
-          <option value="percentage">Percentage</option>
-          <option value="fixed">Fixed</option>
+          <option value="percentage">Percentage (%)</option>
+          <option value="fixed">Fixed (TND)</option>
         </select>
+      </div>
 
+      {/* Discount Value */}
+      <div className="col-md-3">
+        <label className="form-label">Value</label>
         <input
           type="number"
-          className="form-control mb-2"
-          placeholder="Discount value"
+          className="form-control"
+          placeholder="20"
           name="discountValue"
           value={form.discountValue}
           onChange={handleChange}
         />
+      </div>
 
+      {/* Category */}
+      <div className="col-md-6">
+        <label className="form-label">Category</label>
         <select
-          className="form-select mb-2"
+          className="form-select"
           name="category"
           value={form.category}
           onChange={handleChange}
@@ -172,9 +222,13 @@ const Promotions = () => {
             </option>
           ))}
         </select>
+      </div>
 
+      {/* SubCategory */}
+      <div className="col-md-6">
+        <label className="form-label">Sub-category</label>
         <select
-          className="form-select mb-2"
+          className="form-select"
           name="subCategory"
           value={form.subCategory}
           onChange={handleChange}
@@ -187,104 +241,156 @@ const Promotions = () => {
             </option>
           ))}
         </select>
+      </div>
 
+      {/* Dates */}
+      <div className="col-md-6">
+        <label className="form-label">Start Date</label>
         <input
           type="date"
-          className="form-control mb-2"
+          className="form-control"
           name="startDate"
           value={form.startDate}
           onChange={handleChange}
         />
+      </div>
+
+      <div className="col-md-6">
+        <label className="form-label">End Date</label>
         <input
           type="date"
-          className="form-control mb-2"
+          className="form-control"
           name="endDate"
           value={form.endDate}
           onChange={handleChange}
         />
+      </div>
+    </div>
 
-        <button className="btn btn-success" onClick={submitHandler}>
-          {editingPromoId ? "Update Promotion" : "Create Promotion"}
-        </button>
+    {/* Actions */}
+    <div className="d-flex justify-content-end gap-2 mt-4">
+      <button
+        className="btn btn-outline-secondary"
+        onClick={() => setShowForm(false)}
+      >
+        Cancel
+      </button>
+
+      <button
+        className="btn btn-primary-redesign px-4"
+        onClick={submitHandler}
+      >
+
+        {editingPromoId ? "Update" : "Create"}
+      </button>
+    </div>
+  </div>
+</div>
+
+)}
+      {/* PROMOTIONS LIST */}
+      <div className="card border-0 shadow-sm rounded-4">
+        <div className="card-body p-0">
+          <div className="table-responsive">
+            <table className="table table-hover table-sm align-middle mb-0">
+              <thead className="table-light">
+                <tr>
+                  <th className="ps-4">Name</th>
+                  <th>Discount</th>
+                  <th>Period</th>
+                  <th className="text-end pe-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {promotions.map((p) => (
+                  <tr key={p._id}>
+                    <td className="ps-4 fw-semibold">{p.name}</td>
+                    <td className="text-muted">
+                      {p.discountValue}
+                      {p.discountType === "percentage" ? "%" : " TND"}
+                    </td>
+                    <td className="text-muted">
+                      {new Date(p.startDate).toLocaleDateString()} → {new Date(p.endDate).toLocaleDateString()}
+                    </td>
+                    <td className="text-end pe-4">
+                      <button
+                        className="btn btn-sm btn-light border me-2 action-btn"
+                        onClick={() => editPromotion(p)}
+                        title="Modifier"
+                      >
+                        <i className="fas fa-pen" aria-hidden="true"></i>
+                        <span className="visually-hidden">Modifier</span>
+                      </button>
+                      <button
+                        className="btn btn-sm btn-light border text-danger action-btn"
+                        onClick={() => deletePromotion(p._id)}
+                        title="Supprimer"
+                      >
+                        <i className="fas fa-trash" aria-hidden="true"></i>
+                        <span className="visually-hidden">Supprimer</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {!promotions.length && (
+                  <tr>
+                    <td colSpan={4} className="py-4 text-center text-muted">Aucune promotion.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
-      {/* PROMOTIONS LIST */}
-      <h4>Promotions List</h4>
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Discount</th>
-            <th>Period</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {promotions.map((p) => (
-            <tr key={p._id}>
-              <td>{p.name}</td>
-              <td>
-                {p.discountValue}{" "}
-                {p.discountType === "percentage" ? "%" : "TND"}
-              </td>
-              <td>
-                {new Date(p.startDate).toLocaleDateString()} →{" "}
-                {new Date(p.endDate).toLocaleDateString()}
-              </td>
-              <td>
-                <button
-                  className="btn btn-sm btn-primary me-2"
-                  onClick={() => editPromotion(p)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="btn btn-sm btn-danger"
-                  onClick={() => deletePromotion(p._id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-     {/* PRODUCTS */}
-<h4>Products with Promotion</h4>
-<table className="table table-bordered">
-  <thead>
-    <tr>
-      <th>Product</th>
-      <th>Original</th>
-      <th>Promo Price</th>
-      
-      <th>Promotion</th>
-    </tr>
-  </thead>
-  <tbody>
-    {productsWithPromo.map((p) => (
-      <tr key={p._id}>
-        <td>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            {p.image && (
-              <img
-                src={p.image}
-                alt={p.name}
-                style={{ width: "50px", height: "50px", objectFit: "cover" }}
-              />
-            )}
-            <span>{p.name}</span>
+           {/* PRODUCTS */}
+      <div className="card border-0 shadow-sm rounded-4 mt-4">
+        <div className="card-header bg-white border-0">
+          <h6 className="mb-0 fw-semibold">Products with Promotion</h6>
+        </div>
+        <div className="card-body p-0">
+          <div className="table-responsive">
+            <table className="table table-hover table-sm align-middle mb-0">
+              <thead className="table-light">
+                <tr>
+                  <th className="ps-4">Product</th>
+                  <th>Original</th>
+                  <th>Promo Price</th>
+                  <th>Promotion</th>
+                </tr>
+              </thead>
+              <tbody>
+                {productsWithPromo.map((p) => (
+                  <tr key={p._id}>
+                    <td className="ps-4">
+                      <div className="d-flex align-items-center gap-3">
+                        {p.image && (
+                          <img
+                            src={p.image}
+                            alt={p.name}
+                            className="rounded"
+                            style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                          />
+                        )}
+                        <div className="fw-semibold">{p.name}</div>
+                      </div>
+                    </td>
+                    <td className="text-muted">{p.originalPrice.toFixed(2)} TND</td>
+                    <td className="fw-semibold text-success">{p.discountedPrice.toFixed(2)} TND</td>
+                    <td className="text-muted">{p.promotion?.name || "-"}</td>
+                  </tr>
+                ))}
+                {!productsWithPromo.length && (
+                  <tr>
+                    <td colSpan={4} className="py-4 text-center text-muted">Aucun produit en promotion.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
-        </td>
-        <td>{p.originalPrice.toFixed(2)} TND</td>
-        <td>{p.discountedPrice.toFixed(2)} TND</td>
-       
-        <td>{p.promotion?.name || "-"}</td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+        </div>
+      </div>
+
 
     </div>
   );
