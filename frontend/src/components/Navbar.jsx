@@ -131,7 +131,7 @@ function NavBar() {
               {/* Favorites */}
               <button
                 className="nav-icon-redesign"
-                onClick={() => navigate("/favorites")}
+                onClick={() => navigate("/favoris")}
               >
                 <FaHeart />
               </button>

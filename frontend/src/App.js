@@ -23,10 +23,12 @@ import ProductsAdmin from "./screens/admin/Products";
 import Promos from "./screens/admin/Promos";
 import Products from "./screens/products.jsx";
 import Users from "./screens/admin/Users";
+
 import AdminOffers from "./screens/admin/AdminOffers";
 import AdminAbout from "./screens/admin/AdminAbout";
 import AdminBanner from "./screens/admin/AdminBanner";
 import AdminContact from "./screens/admin/AdminContact";
+
 import ProductDetails from "./screens/ProductDetails.jsx";
 import './assets/css/style.css';
 import './assets/css/responsive.css';
@@ -76,12 +78,23 @@ function App() {
   <Route path="/category/:categoryId" element={<SubCategories />} />
   <Route path="/products/category" element={<ProductsCategory />} />
     <Route path="/products" element={<Products />} />
-    </Route>
+
   <Route
   path="/products/subcategory/:subcategoryId"
   element={<ProductsByCategory />}
 />
 <Route path="/products/:productId" element={<ProductDetails />} />
+
+
+<Route path="/admin" element={<AdminLayout />}>
+    <Route index element={<AdminDashboard />} />
+    <Route path="categories" element={<Categories />} />
+ 
+    <Route path="products" element={<ProductsAdmin />} />
+    <Route path="promos" element={<Promos />} />
+    <Route path="users" element={<Users />} />
+  </Route>
+  </Route>
 
 <Route element={<AdminRoute />}>
     <Route path="/admin" element={<AdminLayout />}>
@@ -96,6 +109,7 @@ function App() {
   <Route path="banner" element={<AdminBanner />} />
   <Route path="contact" element={<AdminContact />} />
     </Route>
+
   </Route>
 
 </Routes>      
