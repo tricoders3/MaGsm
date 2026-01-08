@@ -25,3 +25,14 @@ export const sendAdminOrderNotification = async ({ user, order }) => {
     `,
   })
 }
+// Fonction générique pour envoyer un mail
+export const sendEmail = async ({ to, subject, text, html }) => {
+  await transporter.sendMail({
+    from: `"Shop" <${process.env.SMTP_USER}>`,
+    to,
+    subject,
+    text, // optionnel si html fourni
+    html, // optionnel si text fourni
+  });
+};
+
