@@ -28,6 +28,7 @@ import AdminOffers from "./screens/admin/AdminOffers";
 import AdminAbout from "./screens/admin/AdminAbout";
 import AdminBanner from "./screens/admin/AdminBanner";
 import AdminContact from "./screens/admin/AdminContact";
+import Profile from "./screens/Profile.jsx";
 
 import ProductDetails from "./screens/ProductDetails.jsx";
 import './assets/css/style.css';
@@ -78,6 +79,8 @@ function App() {
   <Route path="/category/:categoryId" element={<SubCategories />} />
   <Route path="/products/category" element={<ProductsCategory />} />
     <Route path="/products" element={<Products />} />
+    <Route path="/profile" element={<Profile />} />
+
 
   <Route
   path="/products/subcategory/:subcategoryId"

@@ -6,7 +6,7 @@ import {
   FaShoppingBag,
   FaBars,
 } from "react-icons/fa";
-import { FiLogOut } from "react-icons/fi";
+import { FiLogOut,FiUser } from "react-icons/fi";
 import logo from "../assets/images/logo.png";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
@@ -108,6 +108,19 @@ function NavBar() {
                      <div className="nav-avatar-email">{user.email}</div> 
                     </div> 
                     </div> 
+                  
+              {/* 👉 Profile */}
+        <button
+  className=" nav-avatar-profile"
+  onClick={() => {
+    navigate("/profile");
+    setShowMenu(false);
+  }}
+>
+  <FiUser size={18} /> Mon profil
+</button>
+
+          <div className="dropdown-divider"></div>
                     <button className="nav-avatar-logout" 
                     onClick={() => 
                     { logout(); 
