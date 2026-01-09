@@ -5,11 +5,15 @@ export const protect = (req, res, next) => {
   if (!auth) return res.sendStatus(401);
 
   try {
-    const token = auth.split(' ')[1];
-    req.user = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    const token = auth.split(" ")[1];
+    // utilise la bonne variable
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    req.user = decoded;
     next();
-  } catch {
-    res.sendStatus(403);
+  } catch (err) {
+    console.log("JWT ERROR:", err.message);
+    return res.sendStatus(403);
   }
 };
 
