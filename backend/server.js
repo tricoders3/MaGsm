@@ -40,7 +40,7 @@ app.use(
     secret: process.env.SESSION_SECRET || "fallbacksecret",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // true si HTTPS
+    cookie: { secure: false }, // 🔹 ok pour localhost
   })
 );
 
@@ -55,9 +55,9 @@ app.use(passport.session());
 // ------------------
 app.use(
   cors({
-    origin:"http://localhost:3000",
+    origin: "http://localhost:3000",
     methods: "GET,POST,PUT,DELETE",
-    credentials: true,
+    credentials: true, // 🔹 doit être true pour envoyer cookie
   })
 );
 

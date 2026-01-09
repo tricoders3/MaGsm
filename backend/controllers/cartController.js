@@ -9,20 +9,21 @@ import {
 // CLIENT
 export const getMyCart = async (req, res) => {
   try {
-    const cart = await getUserCart(req.user.id)
+    const cart = await getUserCart(req.user.id);
 
     const totalPrice = cart.items.reduce((total, item) => {
-      return total + item.product.price * item.quantity
-    }, 0)
+      return total + item.product.price * item.quantity;
+    }, 0);
 
     res.status(200).json({
       cart,
       totalPrice
-    })
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    res.status(400).json({ message: error.message });
   }
-}
+};
+
 
 // CLIENT
 export const addItemToCart = async (req, res) => {

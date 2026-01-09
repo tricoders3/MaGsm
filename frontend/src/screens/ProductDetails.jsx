@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"; // for getting productId from URL
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Spinner, Badge } from "react-bootstrap";
 import { FiShoppingCart } from "react-icons/fi";
-import BASE_URL from "../constante"; // your backend URL
+import BASE_URL from "../constante";
 
 function ProductDetails() {
+  const navigate = useNavigate();
   const { productId } = useParams();
+
   const [product, setProduct] = useState(null);
   const [promotion, setPromotion] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Fetch product & promotion
   useEffect(() => {
     const fetchProductAndPromo = async () => {
       try {
@@ -22,14 +25,14 @@ function ProductDetails() {
 
         setLoading(false);
       } catch (error) {
-        console.error("Erreur fetching product or promotion:", error);
+        console.error("Erreur backend :", error);
         setLoading(false);
       }
     };
-
     fetchProductAndPromo();
   }, [productId]);
 
+  // Loading state
   if (loading) {
     return (
       <div className="text-center mt-5">
@@ -38,6 +41,7 @@ function ProductDetails() {
     );
   }
 
+  // Product not found
   if (!product) {
     return (
       <div className="text-center mt-5">
@@ -46,7 +50,7 @@ function ProductDetails() {
     );
   }
 
-  // calculate discounted price
+  // Calculate discounted price
   let discountedPrice = product.price;
   let promoText = "";
   if (promotion) {
@@ -59,6 +63,57 @@ function ProductDetails() {
     }
     discountedPrice = Math.max(discountedPrice, 0);
   }
+
+  // Add to favorites
+const handleAddToFavorites = async () => {
+  try {
+    // Juste envoyer la requête avec `withCredentials: true`
+    const res = await axios.post(
+      `${BASE_URL}/api/favorites/${productId}`,
+      {},
+      {
+        withCredentials: true // 🔹 important pour que le cookie HttpOnly soit envoyé
+      }
+    );
+
+   
+  } catch (error) {
+    console.error("Favorites error:", error);
+
+    if (error.response?.status === 401) {
+      console.log("Token absent ou expiré → redirection login");
+      navigate("/login");
+    } else {
+      
+    }
+  }
+};
+
+// 🔹 Ajouter au panier
+const handleAddToCart = async () => {
+  if (product.countInStock === 0) {
+    alert("Produit en rupture de stock !");
+    return;
+  }
+
+  try {
+    await axios.post(
+      `${BASE_URL}/api/cart`,
+      { productId: product._id, quantity: 1 }, // tu peux remplacer 1 par un state si tu veux choisir la quantité
+      { withCredentials: true } // 🔹 envoie le cookie HttpOnly
+    );
+    alert("Produit ajouté au panier !");
+  } catch (error) {
+    console.error("Erreur ajout panier :", error);
+    if (error.response?.status === 401) {
+      console.log("Token absent ou expiré → redirection login");
+      navigate("/login");
+    } else {
+      alert("Impossible d'ajouter le produit au panier.");
+    }
+  }
+};
+
 
   return (
     <div className="container my-5">
@@ -101,18 +156,18 @@ function ProductDetails() {
                 {product.price} DT
               </span>
             )}
-            <span className="h4 fw-bold text-success">
-              {discountedPrice} DT
-            </span>
+            <span className="h4 fw-bold text-success">{discountedPrice} DT</span>
           </div>
 
           <p className="mb-4">{product.description}</p>
 
           <div className="d-flex gap-3 mb-3">
-            <Button variant="primary" className="d-flex align-items-center gap-2">
+            <Button variant="primary" className="d-flex align-items-center gap-2"   onClick={handleAddToCart}>
               <FiShoppingCart /> Ajouter au panier
             </Button>
-            <Button variant="outline-secondary">Ajouter aux favoris</Button>
+            <Button variant="outline-secondary" onClick={handleAddToFavorites}>
+              Ajouter aux favoris
+            </Button>
           </div>
 
           <div>
