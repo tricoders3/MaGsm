@@ -5,7 +5,8 @@ import {
   getUsers,
   getUserByIdController,
   updateUserController,
-  deleteUserController
+  deleteUserController,
+  updateMe
 } from '../controllers/userController.js'
 
 import {protect,isAdmin} from '../middlewares/authMiddleware.js'
@@ -19,6 +20,7 @@ const router = express.Router()
 
  */
 router.get('/me', protect, getProfile)
+router.put("/me", protect, updateMe);
 router.get("/",  getUsers);
 /**
  * ADMIN uniquement

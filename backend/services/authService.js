@@ -46,39 +46,81 @@ export const facebookLogin = async (user) => {
   return { accessToken, refreshToken };
 };
 
-// 🔹 Mettre à jour le mot de passe (utilisateur connecté)
-export const updateUserPassword = async (userId, currentPassword, newPassword) => {
+/**
+ * 🔹 Update password (LOCAL users only)
+ */
+export const updateUserPassword = async (
+  userId,
+  currentPassword,
+  newPassword
+) => {
   const user = await User.findById(userId).select("+password");
   if (!user) throw new Error("Utilisateur non trouvé");
+
+  if (user.provider !== "local") {
+    throw new Error("Connexion sociale : création du mot de passe requise");
+  }
 
   const isMatch = await bcrypt.compare(currentPassword, user.password);
   if (!isMatch) throw new Error("Mot de passe actuel incorrect");
 
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(newPassword, salt);
+  user.passwordCreated = true;
 
   await user.save();
   return true;
 };
 
-// 🔹 Générer token pour reset password (forgot password)
+/**
+ * 🔹 Create password for SOCIAL user
+ */
+export const createPasswordForSocialUser = async (userId, newPassword) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("Utilisateur non trouvé");
+
+  if (user.passwordCreated) {
+    throw new Error("Mot de passe déjà créé");
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(newPassword, salt);
+
+  user.provider = "local";
+  user.passwordCreated = true;
+
+  await user.save();
+  return true;
+};
+
+/**
+ * 🔹 Generate reset password token (ALL users)
+ */
 export const generatePasswordResetToken = async (email) => {
   const user = await User.findOne({ email });
   if (!user) throw new Error("Utilisateur non trouvé");
 
   const resetToken = crypto.randomBytes(32).toString("hex");
-  const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
 
   user.resetPasswordToken = hashedToken;
-  user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 min
-  await user.save();
+  user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
 
-  return resetToken; // à envoyer par email
+  await user.save();
+  return resetToken;
 };
 
-// 🔹 Réinitialiser le mot de passe avec token
+/**
+ * 🔹 Reset password (ALL users)
+ */
 export const resetUserPassword = async (token, newPassword) => {
-  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
 
   const user = await User.findOne({
     resetPasswordToken: hashedToken,
@@ -90,6 +132,8 @@ export const resetUserPassword = async (token, newPassword) => {
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(newPassword, salt);
 
+  user.provider = "local";
+  user.passwordCreated = true;
   user.resetPasswordToken = undefined;
   user.resetPasswordExpire = undefined;
 

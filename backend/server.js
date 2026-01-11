@@ -14,7 +14,8 @@ import userRoutes from './routes/userRoutes.js';
 import promotionRoutes from './routes/promotionRoutes.js';
 import cartRoutes from "./routes/cartRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
-import favoriteRoutes from './routes/favoriteRoutes.js'
+import favoriteRoutes from './routes/favoriteRoutes.js';
+import settingsRoutes from './routes/siteSettingsRoutes.js';
 // ------------------
 // Load .env from root (MaGsm/.env)
 // ------------------
@@ -73,6 +74,7 @@ app.use("/api/promotions",promotionRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/favorites', favoriteRoutes)
 app.use('/api/orders', orderRoutes);
+app.use("/api/site-settings", settingsRoutes);  
 
 // ------------------
 // Start Server
