@@ -19,6 +19,8 @@ const siteContentSchema = new mongoose.Schema(
     },
 
     contact: {
+      title: String,
+      description: String,
       phone: String,
       email: String,
       address: String,
