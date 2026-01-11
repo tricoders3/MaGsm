@@ -5,7 +5,9 @@ import {
   login,
   logout,
   googleLoginSuccess,
-  facebookLoginSuccess,changePassword, forgotPassword, resetPassword
+  facebookLoginSuccess,updatePassword,
+  forgotPassword,
+  resetPassword, createPassword
 } from "../controllers/authController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 
@@ -18,11 +20,12 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/me", protect, (req, res) => res.json(req.user));
 router.post("/logout", logout);
-//Utilisateur connecté change mot de passe
-router.put("/update-password", protect, changePassword);
-//Mot de passe oublié (envoie email)
+// 🔐 Auth required
+router.put("/update-password", protect, updatePassword);
+router.put("/create-password", protect, createPassword);
+
+// 🔓 Public
 router.post("/forgot-password", forgotPassword);
-//Réinitialisation du mot de passe via token
 router.put("/reset-password/:token", resetPassword);
 
 /* ======================
