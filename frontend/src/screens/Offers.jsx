@@ -74,7 +74,7 @@ const formatTimeLeft = (endDate) => {
                   <button className="btn-redesign btn-primary-redesign" onClick={() => navigate('/products')}>
                     Voir tout
                   </button>
-                  <button className="btn-redesign btn-outline-promo" onClick={() => navigate('/')}>
+                  <button className="btn-redesign btn-outline-secondary" onClick={() => navigate('/')}>
                     Retour à l'accueil
                   </button>
                 </div>
@@ -104,7 +104,7 @@ const formatTimeLeft = (endDate) => {
         <div className="row">
           {products.map((product) => (
             <div key={product.id} className="col-6 col-md-3 mb-4">
-              <div className="product-card h-100 position-relative shadow-sm rounded-4 p-3 bg-white">
+              <div className="product-card h-100">
                 {product.promotion && (
                   <div className="card-badges position-absolute top-0 start-0 m-2">
                     <span className="badge-offer bg-danger text-white px-2 py-1 rounded">

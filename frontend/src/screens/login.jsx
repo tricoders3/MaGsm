@@ -102,16 +102,15 @@ const loginWithGoogle = () => {
 
                 {/* Facebook */}
                 <button
-                  className="btn btn-facebook w-100 mb-4 d-flex align-items-center justify-content-center gap-2"
-                  onClick={loginWithFacebook}
-                  style={{ backgroundColor: "#1877F2", color: "#fff" }}
-                >
-                  {/* SVG Facebook */}
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-                    <path d="M22.675 0h-21.35C.594 0 0 .593 0 1.326v21.348C0 23.406.594 24 1.325 24h11.495v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.658-4.788 1.325 0 2.463.099 2.795.143v3.24h-1.918c-1.504 0-1.796.715-1.796 1.763v2.313h3.588l-.467 3.622h-3.121V24h6.116c.73 0 1.324-.594 1.324-1.326V1.326C24 .593 23.406 0 22.675 0z"/>
-                  </svg>
-                  Continuer avec Facebook
-                </button>
+  className="btn btn-google w-100 mb-4 d-flex align-items-center justify-content-center gap-2"
+  onClick={loginWithFacebook}
+>
+  {/* SVG Facebook icon in blue */}
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2">
+    <path d="M22.675 0h-21.35C.594 0 0 .593 0 1.326v21.348C0 23.406.594 24 1.325 24h11.495v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.658-4.788 1.325 0 2.463.099 2.795.143v3.24h-1.918c-1.504 0-1.796.715-1.796 1.763v2.313h3.588l-.467 3.622h-3.121V24h6.116c.73 0 1.324-.594 1.324-1.326V1.326C24 .593 23.406 0 22.675 0z"/>
+  </svg>
+  Continuer avec Facebook
+</button>
 
                 <div className="text-center mb-3">
                   <p className="text-muted">

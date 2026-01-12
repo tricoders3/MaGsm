@@ -108,20 +108,17 @@ function NavBar() {
                      <div className="nav-avatar-email">{user.email}</div> 
                     </div> 
                     </div> 
-                  
-              {/* 👉 Profile */}
-        <button
-  className=" nav-avatar-profile"
-  onClick={() => {
-    navigate("/profile");
-    setShowMenu(false);
-  }}
->
-  <FiUser size={18} /> Mon profil
-</button>
+                
+                                <button
+                                     onClick={() => {
+                                      navigate("/profile");
+                                      setShowMenu(false);
+                                    }}
+                                  >
+                                    <FiUser /> Profil
+                                  </button>
 
-          <div className="dropdown-divider"></div>
-                    <button className="nav-avatar-logout" 
+                    <button   className="logout"
                     onClick={() => 
                     { logout(); 
                     setShowMenu(false); 

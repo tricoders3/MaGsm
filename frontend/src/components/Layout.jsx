@@ -5,11 +5,14 @@ import Footer from "./Footer";
 
 export default function Layout() {
   return (
-    <>
-      <TopBar />
-      <Navbar />
+    <div className="app-layout d-flex flex-column min-vh-100">
+    <TopBar />
+    <Navbar />
+    <main className="flex-grow-1">
       <Outlet />
-      <Footer />
-    </>
+    </main>
+    <Footer />
+  </div>
+  
   );
 }

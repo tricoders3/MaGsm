@@ -55,7 +55,7 @@ const AdminNavBar = ({ onToggleSidebar }) => {
                 <button
                   onClick={() => navigate("/admin/profile")}
                 >
-                  <FiUser /> Profile
+                  <FiUser /> Profil
                 </button>
 
                 <button
@@ -65,7 +65,7 @@ const AdminNavBar = ({ onToggleSidebar }) => {
                   }}
                   className="logout"
                 >
-                  <FiLogOut /> Logout
+                  <FiLogOut /> Déconnexion
                 </button>
               </div>
             )}
