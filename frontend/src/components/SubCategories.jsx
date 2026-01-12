@@ -82,7 +82,7 @@ const CategoryView = () => {
                   ) : (
                     <div className="mb-3" style={{ height: "150px", background: "#f0f0f0" }} />
                   )}
-                  <h5>{product.name}</h5>
+                  <h5 className="product-title">{product.name}</h5>
                   <p>{product.price} €</p>
                   <p className="text-muted">{product.subCategoryName}</p>
                 </div>

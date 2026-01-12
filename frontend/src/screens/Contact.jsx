@@ -68,7 +68,7 @@ export default function Contact() {
             <div className="rounded-4 shadow-soft p-3 h-100 bg-white d-flex align-items-start gap-3">
               <FiPhone className="text-primary" size={22} />
               <div>
-                <strong>Téléphone</strong>
+                <strong className="text-secondary">Téléphone</strong>
                 <div className="text-muted small">+216 00 000 000</div>
               </div>
             </div>
@@ -77,7 +77,7 @@ export default function Contact() {
             <div className="rounded-4 shadow-soft p-3 h-100 bg-white d-flex align-items-start gap-3">
               <FiMail className="text-success" size={22} />
               <div>
-                <strong>Email</strong>
+                <strong className="text-secondary">Email</strong>
                 <div className="text-muted small">contact@magsm.tn</div>
               </div>
             </div>
@@ -86,7 +86,7 @@ export default function Contact() {
             <div className="rounded-4 shadow-soft p-3 h-100 bg-white d-flex align-items-start gap-3">
               <FiMapPin className="text-info" size={22} />
               <div>
-                <strong>Adresse</strong>
+                <strong className="text-secondary">Adresse</strong>
                 <div className="text-muted small">Tunis, Tunisie</div>
               </div>
             </div>
@@ -95,7 +95,7 @@ export default function Contact() {
             <div className="rounded-4 shadow-soft p-3 h-100 bg-white d-flex align-items-start gap-3">
               <FiClock className="text-warning" size={22} />
               <div>
-                <strong>Horaires</strong>
+                <strong className="text-secondary">Horaires</strong>
                 <div className="text-muted small">Lun - Sam: 9h - 18h</div>
               </div>
             </div>
@@ -106,41 +106,84 @@ export default function Contact() {
         <div className="row g-4 mt-4">
           <div className="col-lg-6">
             <div className="rounded-4 shadow-soft p-4 bg-white h-100">
-              <h3 className="mb-3">Envoyez-nous un message</h3>
+              <h3 className="text-dark mb-3">Envoyez-nous un message</h3>
               {status.message && (
                 <div className={`alert ${status.type === 'success' ? 'alert-success' : 'alert-danger'}`} role="alert">
                   {status.message}
                 </div>
               )}
-              <form onSubmit={handleSubmit} noValidate>
-                <div className="row g-3">
-                  <div className="col-md-6">
-                    <label className="form-label">Nom complet</label>
-                    <input type="text" className="form-control form-control-modern" name="name" value={form.name} onChange={handleChange} required />
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label">Email</label>
-                    <input type="email" className="form-control form-control-modern" name="email" value={form.email} onChange={handleChange} required />
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label">Téléphone</label>
-                    <input type="tel" className="form-control form-control-modern" name="phone" value={form.phone} onChange={handleChange} />
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label">Objet</label>
-                    <input type="text" className="form-control form-control-modern" name="subject" value={form.subject} onChange={handleChange} />
-                  </div>
-                  <div className="col-12">
-                    <label className="form-label">Message</label>
-                    <textarea className="form-control form-control-modern" name="message" rows={5} value={form.message} onChange={handleChange} required />
-                  </div>
-                </div>
-                <div className="d-flex justify-content-end mt-3">
-                  <button type="submit" className="btn-redesign btn-primary d-inline-flex align-items-center gap-2" disabled={!isValid || submitting}>
-                    <FiSend /> {submitting ? 'Envoi...' : 'Envoyer'}
-                  </button>
-                </div>
-              </form>
+            <form onSubmit={handleSubmit} noValidate>
+  <div className="row g-3">
+    <div className="col-md-6">
+      <label className="form-label">Nom complet</label>
+      <input
+        type="text"
+        className="form-control form-control-modern"
+        name="name"
+        value={form.name}
+        onChange={handleChange}
+        placeholder="Entrez votre nom complet"
+        required
+      />
+    </div>
+    <div className="col-md-6">
+      <label className="form-label">Email</label>
+      <input
+        type="email"
+        className="form-control form-control-modern"
+        name="email"
+        value={form.email}
+        onChange={handleChange}
+        placeholder="Entrez votre email"
+        required
+      />
+    </div>
+    <div className="col-md-6">
+      <label className="form-label">Téléphone</label>
+      <input
+        type="tel"
+        className="form-control form-control-modern"
+        name="phone"
+        value={form.phone}
+        onChange={handleChange}
+        placeholder="Entrez votre numéro de téléphone"
+      />
+    </div>
+    <div className="col-md-6">
+      <label className="form-label">Objet</label>
+      <input
+        type="text"
+        className="form-control form-control-modern"
+        name="subject"
+        value={form.subject}
+        onChange={handleChange}
+        placeholder="Entrez l'objet du message"
+      />
+    </div>
+    <div className="col-12">
+      <label className="form-label">Message</label>
+      <textarea
+        className="form-control form-control-modern"
+        name="message"
+        rows={5}
+        value={form.message}
+        onChange={handleChange}
+        placeholder="Écrivez votre message ici..."
+        required
+      />
+    </div>
+  </div>
+  <div className="d-flex justify-content-end mt-3">
+    <button
+      type="submit"
+      className="btn-redesign btn-primary d-inline-flex align-items-center gap-2"
+      disabled={!isValid || submitting}
+    >
+      <FiSend /> {submitting ? 'Envoi...' : 'Envoyer'}
+    </button>
+  </div>
+</form>
+
             </div>
           </div>
           <div className="col-lg-6">

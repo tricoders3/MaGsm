@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom"; // for getting productId from URL
 import axios from "axios";
 import { Button, Spinner, Badge } from "react-bootstrap";
 import { FiShoppingCart } from "react-icons/fi";
+import { FaHeart } from "react-icons/fa";
+
 import BASE_URL from "../constante"; // your backend URL
 
 function ProductDetails() {
@@ -65,7 +67,7 @@ function ProductDetails() {
       <div className="row g-4">
         {/* Product Images */}
         <div className="col-md-6 text-center">
-          <div className="border rounded-4 p-3 shadow-sm bg-white">
+          <div className="product-card h-100">
             {product.images && product.images.length > 0 ? (
               <img
                 src={product.images[0].url}
@@ -112,11 +114,13 @@ function ProductDetails() {
             <Button variant="primary" className="d-flex align-items-center gap-2">
               <FiShoppingCart /> Ajouter au panier
             </Button>
-            <Button variant="outline-secondary">Ajouter aux favoris</Button>
+            <Button variant="btn btn-primary-redesign" className="d-flex align-items-center gap-2">
+            <FaHeart /> Ajouter aux favoris
+            </Button>
           </div>
 
           <div>
-            <strong>Disponibilité:</strong>{" "}
+            <strong className="text-muted">Disponibilité:</strong>{" "}
             {product.countInStock > 0 ? (
               <span className="text-success">En stock</span>
             ) : (

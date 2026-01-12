@@ -1,48 +1,90 @@
-import { BsBox, BsPeople, BsCart, BsPercent } from "react-icons/bs";
-
-const stats = [
-  {
-    title: "Total Revenue",
-    value: "$45,231.89",
-    change: "+20.1%",
-    icon: <BsBox size={22} />,
-    bg: "bg-success-subtle",
-    text: "text-success",
-  },
-  {
-    title: "Active Users",
-    value: "2,350",
-    change: "+15.3%",
-    icon: <BsPeople size={22} />,
-    bg: "bg-primary-subtle",
-    text: "text-primary",
-  },
-  {
-    title: "Total Orders",
-    value: "1,234",
-    change: "-4.2%",
-    icon: <BsCart size={22} />,
-    bg: "bg-danger-subtle",
-    text: "text-danger",
-  },
-  {
-    title: "Conversion Rate",
-    value: "3.42%",
-    change: "+8.7%",
-    icon: <BsPercent size={22} />,
-    bg: "bg-warning-subtle",
-    text: "text-warning",
-  },
-];
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { BsBox, BsTags, BsPercent, BsPeople } from "react-icons/bs";
+import BASE_URL from "../../constante";
 
 export default function Dashboard() {
+  const [counts, setCounts] = useState({
+    products: 0,
+    categories: 0,
+    promotions: 0,
+    users: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchCounts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const [productsRes, categoriesRes, promotionsRes, usersRes] =
+        await Promise.all([
+          axios.get(`${BASE_URL}/api/products`),
+          axios.get(`${BASE_URL}/api/categories`),
+          axios.get(`${BASE_URL}/api/promotions`),
+          axios.get(`${BASE_URL}/api/user`),
+        ]);
+
+      setCounts({
+        products: productsRes.data.length,
+        categories: categoriesRes.data.length,
+        promotions: promotionsRes.data.length,
+        users: usersRes.data.length,
+      });
+    } catch (err) {
+      console.error(err);
+      setError("Erreur lors de la récupération des données du tableau de bord");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCounts();
+  }, []);
+
+  if (loading) return <p>Chargement du tableau de bord...</p>;
+  if (error) return <p className="text-danger">{error}</p>;
+
+  // Map your counts to modern dashboard cards
+  const stats = [
+    {
+      title: "Produits",
+      value: counts.products,
+      icon: <BsBox size={22} />,
+      bg: "bg-success-subtle",
+      text: "text-success",
+    },
+    {
+      title: "Catégories",
+      value: counts.categories,
+      icon: <BsTags size={22} />,
+      bg: "bg-primary-subtle",
+      text: "text-primary",
+    },
+    {
+      title: "Promotions",
+      value: counts.promotions,
+      icon: <BsPercent size={22} />,
+      bg: "bg-warning-subtle",
+      text: "text-warning",
+    },
+    {
+      title: "Utilisateurs",
+      value: counts.users,
+      icon: <BsPeople size={22} />,
+      bg: "bg-danger-subtle",
+      text: "text-danger",
+    },
+  ];
+
   return (
     <div className="container mt-4">
       {/* Header */}
       <div className="mb-4">
-        <h2 className="fw-semibold">Dashboard Overview</h2>
+        <h2 className="fw-semibold">Tableau de bord</h2>
         <p className="text-muted">
-          Welcome back! Here's what's happening with your business today.
+          Bienvenue ! Voici un aperçu de votre activité récente.
         </p>
       </div>
 
@@ -55,9 +97,6 @@ export default function Dashboard() {
                 <div>
                   <small className="text-muted">{item.title}</small>
                   <h4 className="fw-bold mt-1">{item.value}</h4>
-                  <small className={item.text}>
-                    {item.change} vs last month
-                  </small>
                 </div>
                 <div
                   className={`d-flex align-items-center justify-content-center rounded-3 ${item.bg} ${item.text}`}
@@ -71,14 +110,12 @@ export default function Dashboard() {
         ))}
       </div>
 
-   
-
-      {/* Tables */}
+      {/* Example Tables */}
       <div className="row g-4">
         <div className="col-lg-7">
           <div className="card border-0 shadow-sm">
             <div className="card-body">
-              <h6 className="fw-semibold mb-3">Recent Orders</h6>
+              <h6 className="fw-semibold mb-3">Dernières commandes</h6>
               <table className="table align-middle">
                 <tbody>
                   <tr>
@@ -94,9 +131,7 @@ export default function Dashboard() {
                     <td>Smart Watch</td>
                     <td>$299.99</td>
                     <td>
-                      <span className="badge bg-warning text-dark">
-                        Pending
-                      </span>
+                      <span className="badge bg-warning text-dark">Pending</span>
                     </td>
                   </tr>
                   <tr>
@@ -116,7 +151,7 @@ export default function Dashboard() {
         <div className="col-lg-5">
           <div className="card border-0 shadow-sm">
             <div className="card-body">
-              <h6 className="fw-semibold mb-3">Top Products</h6>
+              <h6 className="fw-semibold mb-3">Top Produits</h6>
               <ul className="list-group list-group-flush">
                 <li className="list-group-item d-flex justify-content-between">
                   Wireless Headphones <span>$160,410</span>

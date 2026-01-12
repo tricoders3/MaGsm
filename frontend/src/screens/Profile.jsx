@@ -166,7 +166,7 @@ const Profile = () => {
                 <div className="card-body">
                   <div className="d-flex align-items-center mb-4">
                     <div
-                      className="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                      className="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
                       style={{ width: 48, height: 48 }}
                     >
                       <FiLock size={22} />
@@ -214,7 +214,7 @@ const Profile = () => {
                     </div>
 
                     <button
-                      className="btn btn-warning w-100"
+                      className="btn btn-primary-redesign w-100"
                       disabled={loading}
                     >
                       Mettre à jour le mot de passe

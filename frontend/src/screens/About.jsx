@@ -19,46 +19,7 @@ export default function About() {
         </div>
       </section>
       {/* Values / Features */}
-      <section className="py-5">
-        <div className="container">
-          <div className="row g-4">
-            <div className="col-12 col-md-6 col-lg-4">
-              <div className="p-4 h-100 rounded-4 shadow-sm" style={{ background: "#fff" }}>
-                <div className="mb-3 d-inline-flex align-items-center justify-content-center" style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(1,171,171,0.1)" }}>
-                  <FiBox style={{ fontSize: 22, color: "#01ABAB" }} />
-                </div>
-                <h5 className="fw-semibold mb-2">Curated Products</h5>
-                <p className="text-muted mb-0">
-                  Carefully selected phones, laptops, and accessories from trusted brands.
-                </p>
-              </div>
-            </div>
-            <div className="col-12 col-md-6 col-lg-4">
-              <div className="p-4 h-100 rounded-4 shadow-sm" style={{ background: "#fff" }}>
-                <div className="mb-3 d-inline-flex align-items-center justify-content-center" style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(1,171,171,0.1)" }}>
-                  <FiUsers style={{ fontSize: 22, color: "#01ABAB" }} />
-                </div>
-                <h5 className="fw-semibold mb-2">Customer First</h5>
-                <p className="text-muted mb-0">
-                  Friendly support and guidance before and after your purchase.
-                </p>
-              </div>
-            </div>
-            <div className="col-12 col-md-6 col-lg-4">
-              <div className="p-4 h-100 rounded-4 shadow-sm" style={{ background: "#fff" }}>
-                <div className="mb-3 d-inline-flex align-items-center justify-content-center" style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(1,171,171,0.1)" }}>
-                  <FiZap style={{ fontSize: 22, color: "#01ABAB" }} />
-                </div>
-                <h5 className="fw-semibold mb-2">Fast Service</h5>
-                <p className="text-muted mb-0">
-                  Quick order handling and reliable fulfillment you can count on.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+   
       {/* Address and Contact */}
       <section id="location" className="py-5" style={{ background: "#f8f9fa" }}>
         <div className="container">
