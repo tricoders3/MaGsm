@@ -1,5 +1,33 @@
 import User from '../models/userModel.js'
 
+
+export const updateUserByHimself = async (userId, data) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("Utilisateur non trouvé");
+
+  // 🔹 Champs autorisés à la modification
+  const allowedFields = ["name", "email"];
+
+  allowedFields.forEach((field) => {
+    if (data[field] !== undefined) {
+      user[field] = data[field];
+    }
+  });
+
+  await user.save();
+
+  // 🔹 Retour sans infos sensibles
+  return {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    provider: user.provider,
+    role: user.role,
+    passwordCreated: user.passwordCreated,
+  };
+};
+
+
 // CLIENT + ADMIN
 export const getMyProfile = async (userId) => {
   const user = await User.findById(userId).select('-password')

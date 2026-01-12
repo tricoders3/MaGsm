@@ -3,18 +3,18 @@ import Product from '../models/productModel.js'
 
 // Récupérer le panier de l'utilisateur ou le créer
 export const getUserCart = async (userId) => {
-  let cart = await Cart.findOne({ user: userId })
-    .populate('items.product')
+  let cart = await Cart.findOne({ user: userId }).populate('items.product');
 
   if (!cart) {
     cart = await Cart.create({
       user: userId,
       items: []
-    })
+    });
   }
 
-  return cart
-}
+  return cart;
+};
+
 
 // Ajouter un produit au panier
 export const addToCart = async (userId, productId, quantity = 1) => {

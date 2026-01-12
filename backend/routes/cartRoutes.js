@@ -10,11 +10,11 @@ import {protect} from '../middlewares/authMiddleware.js'
 
 const router = express.Router()
 
-// Récupérer le panier de l'utilisateur connecté
+// Récupérer le panier de l'utilisateur connecté 
 router.get('/', protect, getMyCart)
 
 // Ajouter un produit au panier
-router.post('/',  addItemToCart)
+router.post('/', protect, addItemToCart)
 
 // Modifier la quantité d’un produit
 router.put('/:productId', protect, updateItemQuantity)

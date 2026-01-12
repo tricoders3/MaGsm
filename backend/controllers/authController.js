@@ -3,7 +3,7 @@ import {
   loginUser,
   googleLogin,
   facebookLogin,
-   updateUserPassword, generatePasswordResetToken, resetUserPassword 
+   updateUserPassword, generatePasswordResetToken, resetUserPassword, createPasswordForSocialUser
 } from "../services/authService.js";
 import { sendEmail } from "../utils/sendEmail.js"; // Ton utils pour envoyer mail
 
@@ -26,14 +26,22 @@ export const login = async (req, res) => {
   try {
     const { user, accessToken, refreshToken } = await loginUser(req.body);
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
-    });
+    // Access token (short life)
+   res.cookie("accessToken", accessToken, {
+  httpOnly: true,
+  sameSite: "strict",
+  secure: process.env.NODE_ENV === "production",
+  maxAge: 15 * 60 * 1000,
+});
+
+res.cookie("refreshToken", refreshToken, {
+  httpOnly: true,
+  sameSite: "strict",
+  secure: process.env.NODE_ENV === "production",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
 
     res.json({
-      accessToken,
       user: {
         id: user._id,
         name: user.name,
@@ -45,6 +53,7 @@ export const login = async (req, res) => {
     res.status(401).json({ message: error.message });
   }
 };
+
 
 /**
  * Google OAuth success
@@ -108,53 +117,81 @@ export const logout = (req, res) => {
     res.status(200).json({ message: "Déconnecté avec succès" });
   });
 };
-// 🔹 Utilisateur connecté change mot de passe
-export const changePassword = async (req, res) => {
+
+/**
+ * 🔹 Update password (local user)
+ */
+export const updatePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    if (!currentPassword || !newPassword)
-      return res.status(400).json({ message: "Les deux champs sont requis" });
+    await updateUserPassword(req.user._id, currentPassword, newPassword);
 
-    await updateUserPassword(req.user.id, currentPassword, newPassword);
-
-    res.status(200).json({ message: "Mot de passe mis à jour ✅" });
+    res.status(200).json({
+      message: "Mot de passe mis à jour avec succès",
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// 🔹 Forgot password
+/**
+ * 🔹 Create password (social user)
+ */
+export const createPassword = async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+    await createPasswordForSocialUser(req.user._id, newPassword);
+
+    res.status(200).json({
+      message: "Mot de passe créé avec succès",
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+/**
+ * 🔹 Forgot password
+ */
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    if (!email) return res.status(400).json({ message: "Email requis" });
-
     const resetToken = await generatePasswordResetToken(email);
 
     const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
     await sendEmail({
       to: email,
-      subject: "Réinitialisation de mot de passe",
-      text: `Cliquez sur ce lien pour réinitialiser votre mot de passe : ${resetUrl}`,
+      subject: "Réinitialisation du mot de passe",
+      html: `
+        <h2>Réinitialisation du mot de passe</h2>
+        <p>Cliquez sur le lien ci-dessous :</p>
+        <a href="${resetUrl}">${resetUrl}</a>
+        <p>Expire dans 10 minutes</p>
+      `,
     });
 
-    res.status(200).json({ message: "Email de réinitialisation envoyé ✅" });
+    res.status(200).json({
+      message: "Email de réinitialisation envoyé",
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
-// 🔹 Reset password
+/**
+ * 🔹 Reset password
+ */
 export const resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
     const { newPassword } = req.body;
-    if (!newPassword) return res.status(400).json({ message: "Nouveau mot de passe requis" });
 
     await resetUserPassword(token, newPassword);
 
-    res.status(200).json({ message: "Mot de passe réinitialisé ✅" });
+    res.status(200).json({
+      message: "Mot de passe réinitialisé avec succès",
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

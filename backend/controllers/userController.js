@@ -3,8 +3,27 @@ import {
   getAllUsers,
   getUserById,
   updateUser,
-  deleteUser
+  deleteUser,updateUserByHimself
 } from '../services/userService.js'
+
+// CLIENT – user himself
+export const updateMe = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const user = await updateUserByHimself(userId, req.body);
+
+    res.status(200).json({
+      message: "Profil mis à jour avec succès",
+      user,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
 
 // CLIENT + ADMIN
 export const getProfile = async (req, res) => {

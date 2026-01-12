@@ -7,6 +7,14 @@ const userSchema = new mongoose.Schema(
     email: { type: String, unique: true },
     password: { type: String, select: false },
     role: { type: String, enum: ["client", "admin"], default: "client" },
+   // 🔹 Permet de savoir si un password local existe
+    passwordCreated: {
+      type: Boolean,
+      default: false,
+    },
+
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
     favorites: [
   {
     type: mongoose.Schema.Types.ObjectId,
@@ -17,7 +25,11 @@ const userSchema = new mongoose.Schema(
 
     // Google
     googleId: { type: String, unique: true, sparse: true },
-    provider: { type: String, default: "local" },
+    provider: {
+    type: String,
+    enum: ["local", "google", "facebook"],
+    default: "local",
+  },
     facebookId: { type: String, unique: true, sparse: true },
 
 
