@@ -3275,7 +3275,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   position: relative;
 }
 
-/* ================= Admin UI Enhancements ================ */
+
 /* Cards */
 .admin-content .card {
   border: none;
@@ -3301,15 +3301,6 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 
 .admin-content .fw-semibold { letter-spacing: -0.01em; }
 
-/* Buttons */
-.admin-content .btn-primary {
-  background: linear-gradient(135deg, #1e293b, #0b1220);
-  border: 0;
-  border-radius: 10px;
-  padding: 0.5rem 1rem;
-}
-
-.admin-content .btn-primary:hover { filter: brightness(1.05); }
 
 .admin-content .btn-outline-promo {
   border-color: #1e293b;

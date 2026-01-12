@@ -12,6 +12,7 @@ import SubCategories from "./components/SubCategories";
 import ProductsCategory from "./components/ProductsCategory";
 import ProductsByCategory from "./components/ProductsByCategoy";
 import OffersModal from "./components/OffersModal";
+import AdminProfile from "./screens/admin/AdminProfile"
 import Offer from "./screens/Offers";
 import Cart from "./screens/Cart";
 import Favoris from "./screens/Favoris";
@@ -93,6 +94,7 @@ function App() {
 <Route element={<AdminRoute />}>
     <Route path="/admin" element={<AdminLayout />}>
       <Route index element={<AdminDashboard />} />
+      <Route path="profile" element={<AdminProfile />} />
       <Route path="categories" element={<Categories />} />
       <Route path="products" element={<ProductsAdmin />} />
       <Route path="promos" element={<Promos />} />
@@ -104,7 +106,6 @@ function App() {
     </Route>
 
   </Route>
-
 </Routes>      
     </>
 

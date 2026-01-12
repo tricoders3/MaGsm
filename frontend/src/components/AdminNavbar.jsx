@@ -53,7 +53,10 @@ const AdminNavBar = ({ onToggleSidebar }) => {
             {openMenu && (
               <div className="admin-user-menu">
                 <button
-                  onClick={() => navigate("/admin/profile")}
+                   onClick={() => {
+                    navigate("/admin/profile");
+                    setOpenMenu(false);
+                  }}
                 >
                   <FiUser /> Profil
                 </button>

@@ -1,4 +1,4 @@
-import ProfileView from "../components/ProfileView";
+import ProfileView from "../../components/ProfileView";
 
 const UserProfile = () => {
   return <ProfileView />;
