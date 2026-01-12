@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom"; // for getting productId from URL
 import axios from "axios";
 import { Button, Spinner, Badge } from "react-bootstrap";
 import { FiShoppingCart } from "react-icons/fi";
-import BASE_URL from "../constante";
+import { FaHeart } from "react-icons/fa";
+
+import BASE_URL from "../constante"; // your backend URL
 
 function ProductDetails() {
-  const navigate = useNavigate();
   const { productId } = useParams();
-
   const [product, setProduct] = useState(null);
   const [promotion, setPromotion] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch product & promotion
   useEffect(() => {
     const fetchProductAndPromo = async () => {
       try {
@@ -25,14 +24,14 @@ function ProductDetails() {
 
         setLoading(false);
       } catch (error) {
-        console.error("Erreur backend :", error);
+        console.error("Erreur fetching product or promotion:", error);
         setLoading(false);
       }
     };
+
     fetchProductAndPromo();
   }, [productId]);
 
-  // Loading state
   if (loading) {
     return (
       <div className="text-center mt-5">
@@ -41,7 +40,6 @@ function ProductDetails() {
     );
   }
 
-  // Product not found
   if (!product) {
     return (
       <div className="text-center mt-5">
@@ -50,7 +48,7 @@ function ProductDetails() {
     );
   }
 
-  // Calculate discounted price
+  // calculate discounted price
   let discountedPrice = product.price;
   let promoText = "";
   if (promotion) {
@@ -64,63 +62,12 @@ function ProductDetails() {
     discountedPrice = Math.max(discountedPrice, 0);
   }
 
-  // Add to favorites
-const handleAddToFavorites = async () => {
-  try {
-    // Juste envoyer la requête avec `withCredentials: true`
-    const res = await axios.post(
-      `${BASE_URL}/api/favorites/${productId}`,
-      {},
-      {
-        withCredentials: true // 🔹 important pour que le cookie HttpOnly soit envoyé
-      }
-    );
-
-   
-  } catch (error) {
-    console.error("Favorites error:", error);
-
-    if (error.response?.status === 401) {
-      console.log("Token absent ou expiré → redirection login");
-      navigate("/login");
-    } else {
-      
-    }
-  }
-};
-
-// 🔹 Ajouter au panier
-const handleAddToCart = async () => {
-  if (product.countInStock === 0) {
-    alert("Produit en rupture de stock !");
-    return;
-  }
-
-  try {
-    await axios.post(
-      `${BASE_URL}/api/cart`,
-      { productId: product._id, quantity: 1 }, // tu peux remplacer 1 par un state si tu veux choisir la quantité
-      { withCredentials: true } // 🔹 envoie le cookie HttpOnly
-    );
-    alert("Produit ajouté au panier !");
-  } catch (error) {
-    console.error("Erreur ajout panier :", error);
-    if (error.response?.status === 401) {
-      console.log("Token absent ou expiré → redirection login");
-      navigate("/login");
-    } else {
-      alert("Impossible d'ajouter le produit au panier.");
-    }
-  }
-};
-
-
   return (
     <div className="container my-5">
       <div className="row g-4">
         {/* Product Images */}
         <div className="col-md-6 text-center">
-          <div className="border rounded-4 p-3 shadow-sm bg-white">
+          <div className="product-card h-100">
             {product.images && product.images.length > 0 ? (
               <img
                 src={product.images[0].url}
@@ -156,22 +103,24 @@ const handleAddToCart = async () => {
                 {product.price} DT
               </span>
             )}
-            <span className="h4 fw-bold text-success">{discountedPrice} DT</span>
+            <span className="h4 fw-bold text-success">
+              {discountedPrice} DT
+            </span>
           </div>
 
           <p className="mb-4">{product.description}</p>
 
           <div className="d-flex gap-3 mb-3">
-            <Button variant="primary" className="d-flex align-items-center gap-2"   onClick={handleAddToCart}>
+            <Button variant="primary" className="d-flex align-items-center gap-2">
               <FiShoppingCart /> Ajouter au panier
             </Button>
-            <Button variant="outline-secondary" onClick={handleAddToFavorites}>
-              Ajouter aux favoris
+            <Button variant="btn btn-primary-redesign" className="d-flex align-items-center gap-2">
+            <FaHeart /> Ajouter aux favoris
             </Button>
           </div>
 
           <div>
-            <strong>Disponibilité:</strong>{" "}
+            <strong className="text-muted">Disponibilité:</strong>{" "}
             {product.countInStock > 0 ? (
               <span className="text-success">En stock</span>
             ) : (
