@@ -58,35 +58,39 @@ const Profile = () => {
   };
 
   // Mise à jour du mot de passe
-  const updatePassword = async (e) => {
-    e.preventDefault();
+const updatePassword = async (e) => {
+  e.preventDefault();
 
-    if (password.newPassword !== password.confirmPassword) {
-      return toast.error("Les mots de passe ne correspondent pas");
-    }
+  if (password.newPassword !== password.confirmPassword) {
+    return toast.error("Les mots de passe ne correspondent pas");
+  }
 
-    try {
-      setLoading(true);
-      await axios.put(
-        `${BASE_URL}/users/update-password`,
-        {
-          currentPassword: password.currentPassword,
-          newPassword: password.newPassword,
-        },
-        { withCredentials: true }
-      );
-      toast.success("Mot de passe modifié avec succès");
-      setPassword({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Erreur lors du changement");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+
+    await axios.put(
+      `${BASE_URL}/api/auth/update-password`,
+      {
+        currentPassword: password.currentPassword,
+        newPassword: password.newPassword,
+      },
+      { withCredentials: true } // 🔐 cookie sent
+    );
+
+    toast.success("Mot de passe modifié avec succès");
+
+    setPassword({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+  } catch (err) {
+    toast.error(err.response?.data?.message || "Erreur lors du changement");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="container py-4">
