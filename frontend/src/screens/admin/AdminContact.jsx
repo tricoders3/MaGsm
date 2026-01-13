@@ -2,21 +2,24 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import BASE_URL from "../../constante";
 import { useAuth } from "../../context/AuthContext"; 
+
 export default function AdminContact() {
-  const [email, setEmail] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
+  const [hours, setHours] = useState("");
   const [mapEmbedUrl, setMapEmbedUrl] = useState("");
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth();
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
- 
     if (loading) return;
+
     if (!user || user.role !== "admin") {
       setError("Accès refusé : administrateur requis.");
       return;
@@ -27,7 +30,7 @@ export default function AdminContact() {
 
       await axios.put(
         `${BASE_URL}/api/site-settings/contact`,
-        { email, phone, address, mapEmbedUrl },
+        { title, description, phone, email, address, hours, mapEmbedUrl },
         { withCredentials: true }
       );
 
@@ -38,10 +41,11 @@ export default function AdminContact() {
       if (err?.response?.status === 403) {
         setError("Accès refusé : droits administrateur requis.");
       } else {
-        setError("Erreur lors de la mise à jour des contacts");
+        setError("Erreur lors de la mise à jour des informations de contact");
       }
     }
   };
+
   useEffect(() => {
     const fetchSettings = async () => {
       try {
@@ -49,9 +53,13 @@ export default function AdminContact() {
         setError(null);
         const { data } = await axios.get(`${BASE_URL}/api/site-settings`, { withCredentials: true });
         const contact = data?.contact || {};
-        setEmail(contact.email || "");
-        setPhone(contact.phone || "");
-        setAddress(contact.address || "");
+
+        setTitle(contact.title || "Contactez-nous");
+        setDescription(contact.description || "Notre équipe vous répond rapidement");
+        setPhone(contact.phone || "+216 00 000 003");
+        setEmail(contact.email || "contact@magsm.tn");
+        setAddress(contact.address || "Tunis, Tunisie");
+        setHours(contact.hours || "Lun - Sam: 9h - 18h");
         setMapEmbedUrl(contact.mapEmbedUrl || "");
       } catch (err) {
         console.error(err);
@@ -60,6 +68,7 @@ export default function AdminContact() {
         setLoading(false);
       }
     };
+
     fetchSettings();
   }, []);
 
@@ -74,7 +83,30 @@ export default function AdminContact() {
         <div className="card-body">
           {loading && <div>Chargement…</div>}
           {error && <div className="text-danger mb-2">{error}</div>}
+
           <form onSubmit={handleSubmit} className="row g-3">
+            <div className="col-12 col-md-6">
+              <label className="form-label">Title</label>
+              <input
+                type="text"
+                className="form-control"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Contactez-nous"
+              />
+            </div>
+
+            <div className="col-12 col-md-6">
+              <label className="form-label">Description</label>
+              <input
+                type="text"
+                className="form-control"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Notre équipe vous répond rapidement"
+              />
+            </div>
+
             <div className="col-12 col-md-6">
               <label className="form-label">Email</label>
               <input
@@ -85,6 +117,7 @@ export default function AdminContact() {
                 placeholder="contact@example.com"
               />
             </div>
+
             <div className="col-12 col-md-6">
               <label className="form-label">Phone</label>
               <input
@@ -92,9 +125,10 @@ export default function AdminContact() {
                 className="form-control"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+212 ..."
+                placeholder="+216 ..."
               />
             </div>
+
             <div className="col-12">
               <label className="form-label">Address</label>
               <input
@@ -105,7 +139,19 @@ export default function AdminContact() {
                 placeholder="Street, City, Country"
               />
             </div>
-            <div className="col-12">
+
+            <div className="col-12 col-md-6">
+              <label className="form-label">Hours</label>
+              <input
+                type="text"
+                className="form-control"
+                value={hours}
+                onChange={(e) => setHours(e.target.value)}
+                placeholder="Lun - Sam: 9h - 18h"
+              />
+            </div>
+
+            <div className="col-12 col-md-6">
               <label className="form-label">Google Maps Embed URL</label>
               <input
                 type="url"
@@ -115,6 +161,7 @@ export default function AdminContact() {
                 placeholder="https://maps.google.com/..."
               />
             </div>
+
             <div className="col-12 d-flex align-items-center gap-3">
               <button type="submit" className="btn btn-primary">Save</button>
               {saved && <span className="text-success">Saved!</span>}
