@@ -26,22 +26,14 @@ export const login = async (req, res) => {
   try {
     const { user, accessToken, refreshToken } = await loginUser(req.body);
 
-    // Access token (short life)
-   res.cookie("accessToken", accessToken, {
-  httpOnly: true,
-  sameSite: "strict",
-  secure: process.env.NODE_ENV === "production",
-  maxAge: 15 * 60 * 1000,
-});
-
-res.cookie("refreshToken", refreshToken, {
-  httpOnly: true,
-  sameSite: "strict",
-  secure: process.env.NODE_ENV === "production",
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-});
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
 
     res.json({
+      accessToken,
       user: {
         id: user._id,
         name: user.name,
@@ -53,7 +45,6 @@ res.cookie("refreshToken", refreshToken, {
     res.status(401).json({ message: error.message });
   }
 };
-
 
 /**
  * Google OAuth success
