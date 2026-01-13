@@ -13,7 +13,7 @@ function Favorites() {
     const fetchFavorites = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/api/favorites`, {
-          withCredentials: true, // 🔹 cookie HttpOnly
+          withCredentials: true, 
         });
 
         const favProducts = await Promise.all(

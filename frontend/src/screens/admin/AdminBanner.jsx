@@ -1,27 +1,47 @@
 import React, { useEffect, useState } from "react";
-import { useContent } from "../../context/ContentContext";
+import axios from "axios";
+import BASE_URL from "../../constante";
 
 export default function AdminBanner() {
-  const { content, updateBanner } = useContent();
   const [headline, setHeadline] = useState("");
   const [subtext, setSubtext] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    updateBanner({ headline, subtext, imageUrl });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 1500);
+    try {
+      setError(null);
+      await axios.put(`${BASE_URL}/api/site-settings/banner`, { headline, subtext, imageUrl }, { withCredentials: true });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 1500);
+    } catch (err) {
+      console.error(err);
+      setError("Erreur lors de la mise à jour de la bannière");
+    }
   };
 
   useEffect(() => {
-    if (content?.banner) {
-      setHeadline(content.banner.headline || "");
-      setSubtext(content.banner.subtext || "");
-      setImageUrl(content.banner.imageUrl || "");
-    }
-  }, [content]);
+    const fetchSettings = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const { data } = await axios.get(`${BASE_URL}/api/site-settings`, { withCredentials: true });
+        const banner = data?.banner || {};
+        setHeadline(banner.headline || "");
+        setSubtext(banner.subtext || "");
+        setImageUrl(banner.imageUrl || "");
+      } catch (err) {
+        console.error(err);
+        setError("Erreur lors du chargement des paramètres du site");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   return (
     <div className="container mt-4">
@@ -32,6 +52,8 @@ export default function AdminBanner() {
 
       <div className="card border-0 shadow-sm">
         <div className="card-body">
+          {loading && <div>Chargement…</div>}
+          {error && <div className="text-danger mb-2">{error}</div>}
           <form onSubmit={handleSubmit} className="row g-3">
             <div className="col-12 col-md-6">
               <label className="form-label">Headline</label>

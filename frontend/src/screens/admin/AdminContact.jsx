@@ -1,29 +1,67 @@
 import React, { useEffect, useState } from "react";
-import { useContent } from "../../context/ContentContext";
-
+import axios from "axios";
+import BASE_URL from "../../constante";
+import { useAuth } from "../../context/AuthContext"; 
 export default function AdminContact() {
-  const { content, updateContact } = useContent();
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [mapEmbedUrl, setMapEmbedUrl] = useState("");
   const [saved, setSaved] = useState(false);
-
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { user } = useAuth();
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    updateContact({ email, phone, address, mapEmbedUrl });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 1500);
-  };
 
-  useEffect(() => {
-    if (content?.contact) {
-      setEmail(content.contact.email || "");
-      setPhone(content.contact.phone || "");
-      setAddress(content.contact.address || "");
-      setMapEmbedUrl(content.contact.mapEmbedUrl || "");
+ 
+    if (loading) return;
+    if (!user || user.role !== "admin") {
+      setError("Accès refusé : administrateur requis.");
+      return;
     }
-  }, [content]);
+
+    try {
+      setError(null);
+
+      await axios.put(
+        `${BASE_URL}/api/site-settings/contact`,
+        { email, phone, address, mapEmbedUrl },
+        { withCredentials: true }
+      );
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 1500);
+    } catch (err) {
+      console.error(err);
+      if (err?.response?.status === 403) {
+        setError("Accès refusé : droits administrateur requis.");
+      } else {
+        setError("Erreur lors de la mise à jour des contacts");
+      }
+    }
+  };
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const { data } = await axios.get(`${BASE_URL}/api/site-settings`, { withCredentials: true });
+        const contact = data?.contact || {};
+        setEmail(contact.email || "");
+        setPhone(contact.phone || "");
+        setAddress(contact.address || "");
+        setMapEmbedUrl(contact.mapEmbedUrl || "");
+      } catch (err) {
+        console.error(err);
+        setError("Erreur lors du chargement des contacts");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   return (
     <div className="container mt-4">
@@ -34,6 +72,8 @@ export default function AdminContact() {
 
       <div className="card border-0 shadow-sm">
         <div className="card-body">
+          {loading && <div>Chargement…</div>}
+          {error && <div className="text-danger mb-2">{error}</div>}
           <form onSubmit={handleSubmit} className="row g-3">
             <div className="col-12 col-md-6">
               <label className="form-label">Email</label>

@@ -16,10 +16,10 @@ const router = express.Router()
 router.get("/", getContent)
 
 // ADMIN
-router.put("/home", protect, isAdmin, updateHome)
-router.put("/banner", protect, isAdmin, updateBanner)
-router.put("/about", protect, isAdmin, updateAbout)
-router.put("/contact", protect, isAdmin, updateContact)
-router.put("/offers", protect, isAdmin, updateOffers)
+router.put("/home", protect, updateHome)
+router.put("/banner", protect, updateBanner)
+router.put("/about", protect, updateAbout)
+router.put("/contact", protect, updateContact)
+router.put("/offers", protect, updateOffers)
 
 export default router
