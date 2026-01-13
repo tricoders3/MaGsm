@@ -1,31 +1,20 @@
-import jwt from 'jsonwebtoken';
-import User from "../models/userModel.js";
+// backend/middlewares/authMiddleware.js
+import jwt from "jsonwebtoken";
 
-export const protect = async (req, res, next) => {
+export const protect = (req, res, next) => {
+  // Lire le token depuis le cookie
+  const token = req.cookies.refreshToken; // 🔹 ton cookie s'appelle refreshToken
+  if (!token) return res.sendStatus(401);
+
   try {
-    const token = req.cookies?.accessToken;
-
-    if (!token) {
-      return res.status(401).json({ message: "Not authorized, no access token" });
-    }
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    req.user = await User.findById(decoded.id).select("-password");
-
-    if (!req.user) {
-      return res.status(401).json({ message: "User not found" });
-    }
-
+    req.user = decoded;
     next();
-  } catch (error) {
-    return res.status(401).json({
-      message: "Not authorized, access token invalid or expired",
-    });
+  } catch (err) {
+    console.log("JWT ERROR:", err.message);
+    return res.sendStatus(403);
   }
 };
-
-
 export const isAdmin = (req, res, next) => {
   if (req.user.role !== 'admin') return res.sendStatus(403);
   next();
