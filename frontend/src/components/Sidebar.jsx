@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaSearch, FaChevronDown, FaChevronRight } from "react-icons/fa";
 import axios from "axios";
 import BASE_URL from "../constante";
@@ -8,6 +8,23 @@ import logo from "../assets/images/logo.png";
 const Sidebar = ({ categories, loading }) => {
   const [openCategoryId, setOpenCategoryId] = useState(null);
   const [subcategories, setSubcategories] = useState({});
+  const navigate = useNavigate();
+
+  const hideOffcanvas = () => {
+    const el = document.getElementById("mobileMenu");
+    if (!el) return;
+    const instance = window.bootstrap?.Offcanvas.getInstance(el) || (window.bootstrap ? new window.bootstrap.Offcanvas(el) : null);
+    if (instance) instance.hide();
+    else {
+      el.classList.remove("show");
+      document.body.classList.remove("offcanvas-backdrop");
+    }
+  };
+
+  const handleNav = (to) => {
+    navigate(to);
+    hideOffcanvas();
+  };
 
   const fetchSubcategories = async (categoryId) => {
     try {
@@ -35,13 +52,13 @@ const Sidebar = ({ categories, loading }) => {
     >
       {/* Header */}
       <div className="offcanvas-header d-flex align-items-center justify-content-between">
-        <Link to="/" className="d-flex align-items-center">
-          <img
-            src={logo}
-            alt="MA GSM Logo"
-            style={{ height: "50px", marginRight: "10px" }}
-          />
-          <span style={{ fontWeight: 600, color: "var(--primary-color)" }}>MA GSM</span>
+            <Link to="/" className="d-flex align-items-center gap-2 logo-link" onClick={(e) => { e.preventDefault(); handleNav("/"); }}>
+            <img
+                src={logo}
+                alt="MA GSM Logo"
+                className="logo-img"
+            />
+            <span className="logo-text">MA GSM</span>
         </Link>
 
         <button
@@ -94,7 +111,7 @@ const Sidebar = ({ categories, loading }) => {
                         key={sub._id}
                         to={`/products/subcategory/${sub._id}`}
                         className="nav-sublink-sidebar"
-                        data-bs-dismiss="offcanvas"
+                        onClick={(e) => { e.preventDefault(); handleNav(`/products/subcategory/${sub._id}`); }}
                       >
                         {sub.name}
                       </Link>
@@ -108,22 +125,22 @@ const Sidebar = ({ categories, loading }) => {
 
         {/* Links */}
         <div className="d-lg-none d-flex flex-column gap-2 mt-2">
-          <Link to="/" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+          <Link to="/" className="nav-link-sidebar" onClick={(e) => { e.preventDefault(); handleNav("/"); }}>
             Home
           </Link>
-          <Link to="/about" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+          <Link to="/about" className="nav-link-sidebar" onClick={(e) => { e.preventDefault(); handleNav("/about"); }}>
             About Us
           </Link>
-          <Link to="/offers" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+          <Link to="/offers" className="nav-link-sidebar" onClick={(e) => { e.preventDefault(); handleNav("/offers"); }}>
             Offres
           </Link>
-          <Link to="/contact" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+          <Link to="/contact" className="nav-link-sidebar" onClick={(e) => { e.preventDefault(); handleNav("/contact"); }}>
             Contact
           </Link>
-          <Link to="/login" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+          <Link to="/login" className="nav-link-sidebar" onClick={(e) => { e.preventDefault(); handleNav("/login"); }}>
             Se connecter
           </Link>
-          <Link to="/register" className="nav-link-sidebar" data-bs-dismiss="offcanvas">
+          <Link to="/register" className="nav-link-sidebar" onClick={(e) => { e.preventDefault(); handleNav("/register"); }}>
             S’inscrire
           </Link>
         </div>

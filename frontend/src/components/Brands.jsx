@@ -12,10 +12,11 @@ const Brands = () => {
 
   return (
     <section className="brands-section py-5">
-      <div className="container text-center mb-5">
-        <h2 className="section-title">Our Brands</h2>
-        <p className="section-subtitle">Discover our trusted brand partners</p>
-      </div>
+   <div className="container">
+    <div className="mb-5">
+      <h2 className="section-title">Our Brands</h2>
+      <p className="section-subtitle">Discover our trusted brand partners</p>
+    </div>
 
       <div className="brands-slider">
         <div className="brands-track">
@@ -25,6 +26,7 @@ const Brands = () => {
             </div>
           ))}
         </div>
+      </div>
       </div>
     </section>
   );

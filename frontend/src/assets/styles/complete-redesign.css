@@ -2362,64 +2362,136 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 
 
 
-.offcanvas {
-  background: #ffffff; 
-  border-right: 1px solid rgba(0, 0, 0, 0.08); 
-  box-shadow: 14px 0 40px rgba(0, 0, 0, 0.12);
-}
-
+/* Sidebar background + full height */
 .offcanvas.offcanvas-start {
-  width: min(70vw, 300px);
+  background-color: #0f1115; /* dark modern theme */
+  color: #f0f0f0;
+  width: 280px; /* slightly wider for modern feel */
 }
 
-/* Header separator */
+/* Header */
 .offcanvas-header {
-  padding: 1rem 1.5rem; /* keep consistent with your base */
-
+ 
+  padding: 1rem 1.5rem;
 }
 
-/* Body spacing */
+.offcanvas-header img {
+  height: 50px;
+}
+
+.offcanvas-header span {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #01ABAB; /* accent color */
+}
+
+/* Close button */
+.btn-close {
+  filter: brightness(0.8);
+  transition: all 0.3s ease;
+}
+
+.btn-close:hover {
+  filter: brightness(1.2);
+}
+
+/* Body */
 .offcanvas-body {
-  padding: 1rem 1.5rem; /* keep consistent with your base */
-  gap: 12px;
-  
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-/* Align with your existing mobile search input */
+/* Search bar */
 .mobile-search-wrapper {
   position: relative;
-  margin-top: 6px;
+  margin-bottom: 1rem;
 }
 
-/* Touch-friendly links with soft hover */
+.mobile-search-input {
+  width: 100%;
+  padding: 0.5rem 2.5rem 0.5rem 1rem;
+  border-radius: 10px;
+  border: none;
+  background-color: #1b1f25;
+  color: #f0f0f0;
+  font-size: 0.95rem;
+}
+
+.mobile-search-input::placeholder {
+  color: #888;
+}
+
+.mobile-search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+/* Category buttons */
 .nav-link-sidebar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border: none;
-  border-radius: 12px;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #f0f0f0;
   background: transparent;
-  text-decoration: underline;
-  color: #333;
-  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.nav-link-sidebar:hover {
-  background: rgba(46, 67, 67, 0.08);
-  transform: translateX(2px);
+.nav-link-sidebar:hover,
+.nav-link-sidebar.active-category {
+  background: rgba(1, 171, 171, 0.15);
+  color: #01ABAB;
 }
 
-/* Subtle tightening between category links */
-.categories-section {
-  gap: 4px;
+/* Subcategories */
+.subcategory-list a {
+  display: block;
+  padding: 0.4rem 1rem;
+  font-size: 0.95rem;
+  color: #c0c0c0;
+  border-radius: 6px;
+  transition: all 0.3s ease;
 }
 
-/* Improve close button contrast on blurred background */
-.offcanvas .btn-close {
-  filter: invert(0.6);
-  opacity: 1;
+.subcategory-list a:hover {
+  color: #01ABAB;
+  background: rgba(1, 171, 171, 0.1);
 }
+
+/* Links */
+.offcanvas-body > .d-flex > .nav-link-sidebar {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #f0f0f0;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.offcanvas-body > .d-flex > .nav-link-sidebar:hover {
+  background: rgba(1, 171, 171, 0.15);
+  color: #01ABAB;
+}
+
+/* Scrollbar */
+.offcanvas-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.offcanvas-body::-webkit-scrollbar-thumb {
+  background-color: rgba(1, 171, 171, 0.5);
+  border-radius: 3px;
+}
+
 
 /* Small-screen width tweak */
 @media (max-width: 575px) {
@@ -3655,7 +3727,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 
 .brand-slide img {
-  height: 60px;
+  height: 100px;
   object-fit: contain;
   opacity: 0.9;
   transition: transform 0.3s ease;
