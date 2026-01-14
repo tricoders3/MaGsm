@@ -3639,3 +3639,40 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 .offer-btn-secondary:hover { background: #e2e8f0; }
 .offer-btn-secondary:focus { box-shadow: 0 0 0 0.25rem rgba(226, 232, 240, 0.6); }
+
+.brands-slider {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  width: 100%;
+}
+
+.brands-track {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  animation: moveBrands 6s ease-in-out infinite;
+}
+
+.brand-slide img {
+  height: 60px;
+  object-fit: contain;
+  opacity: 0.9;
+  transition: transform 0.3s ease;
+}
+
+.brand-slide img:hover {
+  transform: scale(1.1);
+}
+
+@keyframes moveBrands {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(30px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

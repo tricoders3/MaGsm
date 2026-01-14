@@ -14,8 +14,8 @@ router.post("/", protect, createOrderFromCart)
 router.get("/my", protect, getOrdersForUser)
 
 // ADMIN
-router.get("/", protect, isAdmin, getAllOrdersAdmin)
-router.put("/:id/status", protect, isAdmin, updateOrderStatusAdmin)
+router.get("/", protect, getAllOrdersAdmin)
+router.put("/:id/status", protect, updateOrderStatusAdmin)
 
 
 export default router

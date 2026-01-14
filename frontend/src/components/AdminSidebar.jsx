@@ -8,7 +8,8 @@ import {
     FiTag,
     FiImage,
     FiInfo,
-    FiPhone
+    FiPhone,
+    FiShoppingCart
   } from "react-icons/fi";
   
 const AdminSidebar = ({ onToggleSidebar }) => {
@@ -40,7 +41,10 @@ const AdminSidebar = ({ onToggleSidebar }) => {
           <FiBox size={18} />
           <span>Products</span>
         </NavLink>
-
+        <NavLink to="/admin/orders" className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>
+          <FiShoppingCart size={18} />
+          <span>Orders</span>
+        </NavLink>
         <NavLink to="/admin/categories" className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>
           <FiLayers size={18} />
           <span>Categories</span>
@@ -51,10 +55,7 @@ const AdminSidebar = ({ onToggleSidebar }) => {
           <span>Promotions</span>
         </NavLink>
 
-        <NavLink to="/admin/offers-manage" className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>
-          <FiTag size={18} />
-          <span>Offers</span>
-        </NavLink>
+ 
 
         <NavLink to="/admin/about" className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>
           <FiInfo size={18} />

@@ -10,6 +10,8 @@ export default function Dashboard() {
     promotions: 0,
     users: 0,
   });
+  const [recentOrders, setRecentOrders] = useState([]);
+ const [topProducts, setTopProducts] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -17,13 +19,14 @@ export default function Dashboard() {
     try {
       setLoading(true);
       setError(null);
-      const [productsRes, categoriesRes, promotionsRes, usersRes] =
-        await Promise.all([
-          axios.get(`${BASE_URL}/api/products`),
-          axios.get(`${BASE_URL}/api/categories`),
-          axios.get(`${BASE_URL}/api/promotions`),
-          axios.get(`${BASE_URL}/api/user`),
-        ]);
+      const [productsRes, categoriesRes, promotionsRes, usersRes, ordersRes] =
+      await Promise.all([
+        axios.get(`${BASE_URL}/api/products`, { withCredentials: true }),
+        axios.get(`${BASE_URL}/api/categories`, { withCredentials: true }),
+        axios.get(`${BASE_URL}/api/promotions`, { withCredentials: true }),
+        axios.get(`${BASE_URL}/api/user`, { withCredentials: true }),
+        axios.get(`${BASE_URL}/api/orders`, { withCredentials: true }), // admin endpoint
+      ]);
 
       setCounts({
         products: productsRes.data.length,
@@ -31,6 +34,26 @@ export default function Dashboard() {
         promotions: promotionsRes.data.length,
         users: usersRes.data.length,
       });
+      // Recent orders (backend sorts desc by createdAt)
+const recent = Array.isArray(ordersRes.data) ? ordersRes.data.slice(0, 5) : [];
+setRecentOrders(recent);
+
+// Aggregate top products by quantity
+const productMap = new Map();
+(ordersRes.data || []).forEach(order => {
+  (order.items || []).forEach(it => {
+    const p = it.product || {};
+    const key = p._id || p.name || `key-${Math.random()}`;
+    const name = p.name || "Produit";
+    const prev = productMap.get(key) || { name, quantity: 0 };
+    const qty = typeof it.quantity === "number" ? it.quantity : 0;
+    productMap.set(key, { ...prev, quantity: prev.quantity + qty });
+  });
+});
+const top = Array.from(productMap.values())
+  .sort((a, b) => b.quantity - a.quantity)
+  .slice(0, 5);
+setTopProducts(top);
     } catch (err) {
       console.error(err);
       setError("Erreur lors de la récupération des données du tableau de bord");
@@ -115,35 +138,48 @@ export default function Dashboard() {
         <div className="col-lg-7">
           <div className="card border-0 shadow-sm">
             <div className="card-body">
-              <h6 className="fw-semibold mb-3">Dernières commandes</h6>
-              <table className="table align-middle">
-                <tbody>
-                  <tr>
-                    <td>John Doe</td>
-                    <td>Wireless Headphones</td>
-                    <td>$129.99</td>
-                    <td>
-                      <span className="badge bg-success">Completed</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Jane Smith</td>
-                    <td>Smart Watch</td>
-                    <td>$299.99</td>
-                    <td>
-                      <span className="badge bg-warning text-dark">Pending</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Bob Johnson</td>
-                    <td>Laptop Stand</td>
-                    <td>$49.99</td>
-                    <td>
-                      <span className="badge bg-success">Completed</span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <h6 className="text-dark fw-semibold mb-3">Dernières commandes</h6>
+<table className="table align-middle">
+  <thead className="table-light">
+    <tr>
+      <th>Client</th>
+      <th>Total</th>
+      <th>Statut</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {recentOrders.map(o => {
+      const userName = o.user?.name || "Utilisateur";
+      const userEmail = o.user?.email || "";
+      const total = typeof o.total === "number" ? o.total.toFixed(2) : "0.00";
+      const created = o.createdAt ? new Date(o.createdAt).toLocaleString() : "";
+      const status = o.status || "pending";
+      const statusClass =
+        status === "paid" ? "bg-primary" :
+        status === "shipped" ? "bg-info text-dark" :
+        status === "delivered" ? "bg-success" :
+        status === "cancelled" ? "bg-secondary" :
+        "bg-warning text-dark";
+      return (
+        <tr key={o._id}>
+          <td>
+            <div className="fw-semibold">{userName}</div>
+            <small className="text-muted">{userEmail}</small>
+          </td>
+          <td>€ {total}</td>
+          <td><span className={`badge ${statusClass}`}>{status}</span></td>
+          <td>{created}</td>
+        </tr>
+      );
+    })}
+    {recentOrders.length === 0 && (
+      <tr>
+        <td colSpan="4" className="text-center text-muted py-3">Aucune commande récente.</td>
+      </tr>
+    )}
+  </tbody>
+</table>
             </div>
           </div>
         </div>
@@ -151,18 +187,18 @@ export default function Dashboard() {
         <div className="col-lg-5">
           <div className="card border-0 shadow-sm">
             <div className="card-body">
-              <h6 className="fw-semibold mb-3">Top Produits</h6>
-              <ul className="list-group list-group-flush">
-                <li className="list-group-item d-flex justify-content-between">
-                  Wireless Headphones <span>$160,410</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between">
-                  Smart Watch <span>$296,003</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between">
-                  USB-C Hub <span>$51,901</span>
-                </li>
-              </ul>
+            <h6 className="text-dark fw-semibold mb-3">Top Produits</h6>
+<ul className="list-group list-group-flush">
+  {topProducts.map((p, idx) => (
+    <li key={idx} className="list-group-item d-flex justify-content-between">
+      {p.name}
+      <span>{p.quantity} pcs</span>
+    </li>
+  ))}
+  {topProducts.length === 0 && (
+    <li className="list-group-item text-muted">Pas de ventes récentes.</li>
+  )}
+</ul>
             </div>
           </div>
         </div>

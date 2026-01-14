@@ -376,8 +376,8 @@ const Promotions = () => {
                       </div>
                     </td>
                     <td className="text-muted">{p.originalPrice.toFixed(2)} TND</td>
-                    <td className="fw-semibold">
-  <span className="text-success">{p.discountedPrice.toFixed(2)}</span> TND
+                    <td className="text-muted">
+  <span className="text-success">{p.discountedPrice.toFixed(2)} TND</span> 
 </td>
 
                     <td className="text-muted">{p.promotion?.name || "-"}</td>
