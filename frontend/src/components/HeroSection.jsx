@@ -92,7 +92,7 @@ const HeroSlider = () => {
 
                 {/* LEFT TEXT */}
                 <div className="col-lg-6 hero-text">
-                  <span className="hero-badge">Limited Offer</span>
+                  <span className="hero-badge">Offre Limitée</span>
                   <h1 className="hero-title mt-3 mb-4">{slide.title}</h1>
                   <p className="hero-subtitle mb-5">{slide.subtitle}</p>
                   <Link

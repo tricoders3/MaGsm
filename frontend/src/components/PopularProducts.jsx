@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiShoppingCart, FiArrowRight } from "react-icons/fi";
+import { FiArrowRight } from "react-icons/fi";
 import axios from "axios";
 import BASE_URL from "../constante";
+import ProductCard from "../components/ProductCard";
 
 const PopularProducts = () => {
   const [products, setProducts] = useState([]);
+  const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -14,13 +16,14 @@ const PopularProducts = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/products`);
+
         const productsData = response.data.map((product) => ({
           id: product._id,
           name: product.name,
           description: product.description,
           price: product.price,
           image:
-            product.images && product.images.length > 0
+            product.images?.length > 0
               ? product.images[0].url
               : "/assets/images/default.png",
           countInStock: product.countInStock,
@@ -39,11 +42,16 @@ const PopularProducts = () => {
     fetchProducts();
   }, []);
 
+  const toggleFavorite = (productId) => {
+    setFavorites((prev) =>
+      prev.includes(productId)
+        ? prev.filter((id) => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
   if (loading) return null;
   if (error) return <p>{error}</p>;
-
-  // Optional: show only first 4 products as preview
-  const previewProducts = products.slice(0, 4);
 
   return (
     <section className="features-section py-5">
@@ -55,42 +63,19 @@ const PopularProducts = () => {
           </p>
         </div>
 
-        <div className="row">
-          {previewProducts.map((product) => (
-            <div key={product.id} className="col-6 col-md-3 mb-4">
-              <div className="product-card h-100">
-                {/* Badges */}
-                <div className="card-badges">
-                  {product.countInStock > 0 ? (
-                    <span className="badge-stock">EN STOCK</span>
-                  ) : (
-                    <span className="badge-stock out-of-stock">RUPTURE</span>
-                  )}
-                  <button className="cart-btn">
-                    <FiShoppingCart size={18} />
-                  </button>
-                </div>
+        <div className="row g-4">
+          {products.slice(0, 4).map((product) => (
+            <div key={product.id} className="col-12 col-sm-6 col-md-3">
+            <ProductCard
+                product={product}
+                badgeType="stock"
+                stockCount={product.countInStock}
+                isFavorite={favorites.includes(product.id)}
+                onFavoriteSuccess={(id) =>
+                  setFavorites((prev) => [...new Set([...prev, id])])
+                }
+              />
 
-                {/* Image */}
-                <div className="product-image mt-4">
-                  <img src={product.image} alt={product.name} />
-                </div>
-
-                {/* Content */}
-                <div className="product-content text-center">
-                  <h6 className="product-title">{product.name}</h6>
-                  <p className="product-category">{product.category}</p>
-                  <p className="product-description">{product.description}</p>
-                  <p className="product-price">{product.price} DT</p>
-
-                  <button
-                    className="btn-redesign btn-primary-redesign"
-                    onClick={() => navigate(`/products/${product.id}`)}
-                  >
-                    Découvrir les détails
-                  </button>
-                </div>
-              </div>
             </div>
           ))}
         </div>
@@ -100,8 +85,7 @@ const PopularProducts = () => {
             className="btn-plus flex items-center gap-2"
             onClick={() => navigate("/products")}
           >
-            Voir plus
-            <FiArrowRight />
+            Voir plus <FiArrowRight />
           </button>
         </div>
       </div>

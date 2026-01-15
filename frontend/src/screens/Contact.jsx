@@ -78,7 +78,7 @@ export default function Contact() {
             </div>
             <div className="col-lg-5">
               <div className="d-flex flex-wrap gap-3 justify-content-lg-end">
-                <a className="btn btn-promo" href={`tel:${contactInfo.phone}`}>
+                <a className="btn btn-phone" href={`tel:${contactInfo.phone}`}>
                   <FiPhone className="me-2" /> {contactInfo.phone}
                 </a>
                 <a className="btn btn-outline-promo" href={`mailto:${contactInfo.email}`}>

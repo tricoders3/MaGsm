@@ -99,8 +99,8 @@ const handleAddToCart = async () => {
   try {
     await axios.post(
       `${BASE_URL}/api/cart`,
-      { productId: product._id, quantity: 1 }, // tu peux remplacer 1 par un state si tu veux choisir la quantité
-      { withCredentials: true } // 🔹 envoie le cookie HttpOnly
+      { productId: product._id, quantity: 1 }, 
+      { withCredentials: true } 
     );
     alert("Produit ajouté au panier !");
   } catch (error) {

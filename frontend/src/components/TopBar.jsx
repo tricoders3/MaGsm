@@ -3,7 +3,7 @@ import { FaPhoneAlt, FaFacebookF, FaInstagram } from "react-icons/fa";
 
 const TopBar = () => {
   return (
-    <div className="bg-dark text-light py-2">
+    <div className="text-light py-2" style={{ backgroundColor: "#0f1115" }}>
       <div className="container d-flex justify-content-between align-items-center">
         
         

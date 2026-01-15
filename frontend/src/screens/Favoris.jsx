@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Button, Spinner, Badge } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { FiShoppingCart, FiHeart } from "react-icons/fi";
 import { FaHeartBroken } from "react-icons/fa";
 import axios from "axios";
 import BASE_URL from "../constante";
+import AlertToast from "../components/AlertToast";
 
-function Favorites() {
+const Favorites = () => {
+  const navigate = useNavigate();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState({ show: false, message: "", type: "favorite" });
 
-  // Fetch favorites with promotions
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/api/favorites`, {
-          withCredentials: true, 
-        });
+        const res = await axios.get(`${BASE_URL}/api/favorites`, { withCredentials: true });
 
         const favProducts = await Promise.all(
           res.data.map(async (fav) => {
-            // Pour chaque produit, récupérer la promotion si elle existe
             let promotion = null;
             try {
-              const promoRes = await axios.get(
-                `${BASE_URL}/api/promotions/product/${fav._id}`
-              );
+              const promoRes = await axios.get(`${BASE_URL}/api/promotions/product/${fav._id}`);
               promotion = promoRes.data.promotion || null;
             } catch (err) {
               console.log("No promotion for product:", fav._id);
@@ -45,19 +43,41 @@ function Favorites() {
 
   const handleRemoveFavorite = async (productId) => {
     try {
-      await axios.delete(`${BASE_URL}/api/favorites/${productId}`, {
-        withCredentials: true,
-      });
+      await axios.delete(`${BASE_URL}/api/favorites/${productId}`, { withCredentials: true });
       setFavorites((prev) => prev.filter((p) => p._id !== productId));
+      setToast({ show: true, message: "Retiré des favoris", type: "favorite" });
+      setTimeout(() => setToast({ ...toast, show: false }), 1500);
     } catch (error) {
       console.error("Erreur remove favorite:", error);
     }
   };
+  const handleAddToCart = async (product) => {
+    if (product.countInStock === 0) {
+      setToast({ show: true, message: "Produit en rupture de stock", type: "cart" });
+      setTimeout(() => setToast({ ...toast, show: false }), 1500);
+      return;
+    }
 
+    try {
+      await axios.post(
+        `${BASE_URL}/api/cart`,
+        { productId: product._id, quantity: 1 },
+        { withCredentials: true }
+      );
+      setToast({ show: true, message: "Produit ajouté au panier", type: "cart" });
+      setTimeout(() => setToast({ ...toast, show: false }), 1500);
+    } catch (error) {
+      if (error.response?.status === 401) navigate("/login");
+      else {
+        setToast({ show: true, message: "Impossible d'ajouter au panier", type: "cart" });
+        setTimeout(() => setToast({ ...toast, show: false }), 1500);
+      }
+    }
+  };
   if (loading) {
     return (
       <div className="text-center mt-5">
-        <Spinner animation="border" variant="primary" />
+        <div className="spinner-border text-primary" role="status"></div>
       </div>
     );
   }
@@ -65,87 +85,98 @@ function Favorites() {
   if (favorites.length === 0) {
     return (
       <div className="text-center mt-5">
-        <h3>Vous n'avez aucun favori pour le moment </h3>
+        <h3>Vous n'avez aucun favori pour le moment</h3>
       </div>
     );
   }
 
+  const renderBadge = (product) => {
+    if (product.promotion) {
+      const promo = product.promotion;
+      const promoText =
+        promo.discountType === "percentage"
+          ? `-${promo.discountValue}%`
+          : `-${promo.discountValue} DT`;
+      return <span className="badge-offer">{promoText}</span>;
+    }
+    return null;
+  };
+
+  const calculateDiscountedPrice = (product) => {
+    let price = product.price;
+    if (product.promotion) {
+      const promo = product.promotion;
+      if (promo.discountType === "percentage") {
+        price = price - (price * promo.discountValue) / 100;
+      } else {
+        price = price - promo.discountValue;
+      }
+      price = Math.max(price, 0);
+    }
+    return price;
+  };
+
   return (
-    <div className="container mt-4">
-      <h3 className="mb-4 text-dark">❤️ Mes Favoris</h3>
-      <div className="row g-4">
-        {favorites.map((product) => {
-          // Calcul du prix avec promotion
-          let discountedPrice = product.price;
-          let promoText = "";
-          if (product.promotion) {
-            const promo = product.promotion;
-            if (promo.discountType === "percentage") {
-              discountedPrice =
-                product.price - (product.price * promo.discountValue) / 100;
-              promoText = `-${promo.discountValue}%`;
-            } else if (promo.discountType === "fixed") {
-              discountedPrice = product.price - promo.discountValue;
-              promoText = `-${promo.discountValue} DT`;
-            }
-            discountedPrice = Math.max(discountedPrice, 0);
-          }
-
-          return (
-            <div className="col-md-4" key={product._id}>
-              <div className="border rounded-4 p-3 shadow-sm bg-white text-center h-100 d-flex flex-column">
-                {/* Image */}
-                {product.images && product.images.length > 0 ? (
-                  <img
-                    src={product.images[0].url}
-                    alt={product.name}
-                    className="img-fluid rounded-3 mb-3"
-                    style={{ maxHeight: "300px", objectFit: "contain" }}
-                  />
-                ) : (
-                  <div className="bg-light p-5 rounded-3 mb-3">
-                    No image available
-                  </div>
-                )}
-
-                {/* Infos produit */}
-                <h5 className="text-dark">{product.name}</h5>
-                <p className="text-secondary">{product.brand}</p>
-
-                {product.promotion && (
-                  <Badge bg="danger" className="mb-2">
-                    Promo! {promoText}
-                  </Badge>
-                )}
-
-                <div className="mb-3">
-                  {product.promotion && (
-                    <span className="text-decoration-line-through me-2 text-muted">
-                      {product.price} DT
-                    </span>
-                  )}
-                  <span className="fw-bold text-success">{discountedPrice} DT</span>
-                </div>
-
-                <div className="mt-auto d-flex justify-content-between align-items-center">
-                  <span className="fw-bold text-dark">
-                    {product.countInStock > 0 ? "En stock" : "Rupture"}
-                  </span>
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={() => handleRemoveFavorite(product._id)}
-                  >
-                    <FaHeartBroken /> Retirer
-                  </Button>
-                </div>
+    <div className="container mt-4  mb-5">
+    <h3 className="mb-4 text-dark">Mes Favoris</h3>
+    <div className="row g-4">
+      {favorites.map((product) => (
+        <div className="col-12 col-sm-6 col-md-3" key={product._id}>
+          <div className="product-card h-100">
+            {/* Badges & Actions */}
+            <div className="card-badges">
+              {renderBadge(product)}
+              <div className="card-actions">
+                <button className="favorite-btn active" onClick={() => handleRemoveFavorite(product._id)}>
+                  <FaHeartBroken />
+                </button>
+                <button className="cart-btn" onClick={() => handleAddToCart(product)}>
+                  <FiShoppingCart size={18} />
+                </button>
               </div>
             </div>
-          );
-        })}
-      </div>
+
+            {/* Image */}
+            <div className="product-image mt-4" onClick={() => navigate(`/products/${product._id}`)}>
+              {product.images && product.images.length > 0 ? (
+                <img
+                  src={product.images[0].url}
+                  alt={product.name}
+                  style={{ cursor: "pointer", maxHeight: "180px", objectFit: "contain" }}
+                />
+              ) : (
+                <div className="bg-light p-5 rounded-3">No image available</div>
+              )}
+            </div>
+
+            {/* Content */}
+            <div className="product-content text-center">
+              <h6 className="product-title">{product.name}</h6>
+              <p className="product-category">{product.brand}</p>
+              <p className="product-price">
+                {product.promotion && (
+                  <span className="original-price text-decoration-line-through me-2 text-muted">
+                    {product.price} DT
+                  </span>
+                )}
+                <span className="discounted-price fw-bold text-success">
+                  {calculateDiscountedPrice(product)} DT
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
+
+    <AlertToast
+      show={toast.show}
+      onClose={() => setToast({ ...toast, show: false })}
+      type={toast.type}
+      message={toast.message}
+    />
+  </div>
   );
-}
+};
 
 export default Favorites;

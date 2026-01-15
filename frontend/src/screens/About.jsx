@@ -75,7 +75,7 @@ export default function About() {
                   title="MA GSM Location"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  src="https://www.google.com/maps?q=123%20Avenue%20Centrale%2C%20Casablanca%2C%20Morocco&output=embed"
+                  src="https://www.google.com/maps?q=Rue%20Ali%20Belhouane%2C%20Kairouan%203190%2C%20Tunisia&output=embed"
                 ></iframe>
               </div>
             </div>

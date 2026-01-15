@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import { FaTrash, FaMinus, FaPlus } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../constante";
 import EmptyCart from "../assets/images/empty_cart.png";
 
 function Cart() {
+  const navigate = useNavigate();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [creatingOrder, setCreatingOrder] = useState(false);
 
-  // 🔹 Fetch cart from backend
+  // Fetch cart from backend
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/api/cart`, {
-          withCredentials: true,
-        });
+        const res = await axios.get(`${BASE_URL}/api/cart`, { withCredentials: true });
         setCart(res.data.cart.items || []);
         setLoading(false);
       } catch (error) {
@@ -33,16 +33,8 @@ function Cart() {
     const newQty = item.quantity + 1;
 
     try {
-      await axios.put(
-        `${BASE_URL}/api/cart/${productId}`,
-        { quantity: newQty },
-        { withCredentials: true }
-      );
-      setCart((prev) =>
-        prev.map((i) =>
-          i.product._id === productId ? { ...i, quantity: newQty } : i
-        )
-      );
+      await axios.put(`${BASE_URL}/api/cart/${productId}`, { quantity: newQty }, { withCredentials: true });
+      setCart((prev) => prev.map((i) => i.product._id === productId ? { ...i, quantity: newQty } : i));
     } catch (error) {
       console.error("Erreur en augmentant la quantité :", error);
     }
@@ -55,16 +47,8 @@ function Cart() {
     const newQty = item.quantity - 1;
 
     try {
-      await axios.put(
-        `${BASE_URL}/api/cart/${productId}`,
-        { quantity: newQty },
-        { withCredentials: true }
-      );
-      setCart((prev) =>
-        prev.map((i) =>
-          i.product._id === productId ? { ...i, quantity: newQty } : i
-        )
-      );
+      await axios.put(`${BASE_URL}/api/cart/${productId}`, { quantity: newQty }, { withCredentials: true });
+      setCart((prev) => prev.map((i) => i.product._id === productId ? { ...i, quantity: newQty } : i));
     } catch (error) {
       console.error("Erreur en diminuant la quantité :", error);
     }
@@ -72,19 +56,46 @@ function Cart() {
 
   const removeItem = async (productId) => {
     try {
-      await axios.delete(`${BASE_URL}/api/cart/${productId}`, {
-        withCredentials: true,
-      });
+      await axios.delete(`${BASE_URL}/api/cart/${productId}`, { withCredentials: true });
       setCart((prev) => prev.filter((i) => i.product._id !== productId));
     } catch (error) {
       console.error("Erreur en supprimant le produit :", error);
     }
   };
 
-  const totalPrice = cart.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
-    0
-  );
+  const totalPrice = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+
+  // CREATE ORDER FUNCTION (paiement à la livraison)
+  const handleCreateOrder = async () => {
+    if (cart.length === 0) return;
+    setCreatingOrder(true);
+
+    try {
+      const orderData = {
+        items: cart.map((item) => ({
+          product: item.product._id,
+          quantity: item.quantity,
+          price: item.product.price,
+        })),
+        total: totalPrice + 20, // total + shipping + taxes
+        paymentMethod: "Paiement à la livraison",
+        status: "En attente", // order status
+      };
+
+      await axios.post(`${BASE_URL}/api/orders`, orderData, { withCredentials: true });
+
+      // Clear cart after order
+      setCart([]);
+      alert("Commande créée avec succès ! Paiement à la livraison.");
+
+      navigate("/orders"); // redirect to orders page
+    } catch (error) {
+      console.error("Erreur lors de la création de la commande :", error);
+      alert("Impossible de créer la commande, réessayez !");
+    } finally {
+      setCreatingOrder(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -99,21 +110,23 @@ function Cart() {
       <div className="text-center mt-5">
         <h2>Votre panier est vide</h2>
         <img src={EmptyCart} alt="Empty Cart" style={{ width: 200 }} />
+        <div className="mt-3">
+          <Link to="/" className="btn btn-dark">
+            Continuer vos achats
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container mt-4">
-      <h3 className="mb-4 text-dark">🛒 Votre Panier</h3>
+    <div className="container mt-4 mb-5">
+      <h3 className="mb-4 text-dark">Votre Panier</h3>
       <div className="row">
         {/* Produits */}
         <div className="col-md-8">
           {cart.map((item) => (
-            <div
-              className="d-flex align-items-center justify-content-between mb-3 p-3 bg-white rounded shadow-sm"
-              key={item.product._id}
-            >
+            <div className="d-flex align-items-center justify-content-between mb-3 p-3 bg-white rounded shadow-sm" key={item.product._id}>
               <div className="d-flex align-items-center">
                 <img
                   src={item.product.images?.[0]?.url || "https://via.placeholder.com/100"}
@@ -123,38 +136,17 @@ function Cart() {
                 />
                 <div className="ms-3">
                   <h5 className="text-dark">{item.product.name}</h5>
-                  <p className="text-secondary mb-1">
-                    Prix: {item.product.price} TND
-                  </p>
+                  <p className="text-secondary mb-1">Prix: {item.product.price} TND</p>
                   <div className="d-flex align-items-center gap-2">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => decreaseQuantity(item.product._id)}
-                    >
-                      <FaMinus />
-                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => decreaseQuantity(item.product._id)}><FaMinus /></Button>
                     <span className="text-dark">{item.quantity}</span>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => increaseQuantity(item.product._id)}
-                    >
-                      <FaPlus />
-                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => increaseQuantity(item.product._id)}><FaPlus /></Button>
                   </div>
                 </div>
               </div>
               <div className="text-end">
-                <h5 className="text-dark">
-                  {item.product.price * item.quantity} TND
-                </h5>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  className="mt-2"
-                  onClick={() => removeItem(item.product._id)}
-                >
+                <h5 className="text-dark">{item.product.price * item.quantity} TND</h5>
+                <Button variant="danger" size="sm" className="mt-2" onClick={() => removeItem(item.product._id)}>
                   <FaTrash />
                 </Button>
               </div>
@@ -166,47 +158,20 @@ function Cart() {
         <div className="col-md-4">
           <div className="p-3 bg-white rounded shadow-sm">
             <ul className="list-unstyled mb-3">
-              <li className="d-flex justify-content-between text-dark">
-                Sous-total: <span>{totalPrice} TND</span>
-              </li>
-              <li className="d-flex justify-content-between text-dark">
-                Livraison: <span>10 TND</span>
-              </li>
-              <li className="d-flex justify-content-between text-dark">
-                Taxes: <span>10 TND</span>
-              </li>
+              <li className="d-flex justify-content-between text-dark">Sous-total: <span>{totalPrice} TND</span></li>
+              <li className="d-flex justify-content-between text-dark">Livraison: <span>10 TND</span></li>
+              <li className="d-flex justify-content-between text-dark">Taxes: <span>10 TND</span></li>
               <hr />
-              <li className="d-flex justify-content-between fw-bold text-dark">
-                Total: <span>{totalPrice + 20} TND</span>
-              </li>
+              <li className="d-flex justify-content-between fw-bold text-dark">Total: <span>{totalPrice + 20} TND</span></li>
             </ul>
 
-            <Button variant="dark" className="w-100 mb-2">
-              Acheter maintenant
-            </Button>
-            <Button variant="outline-secondary" className="w-100">
-              <Link to={"/"} className="text-decoration-none">
-                Continuer vos achats
-              </Link>
+            <Button variant="dark" className="w-100 mb-2" onClick={handleCreateOrder} disabled={creatingOrder}>
+              {creatingOrder ? "Création de la commande..." : "Acheter maintenant"}
             </Button>
 
-            <div className="d-flex justify-content-center gap-2 mt-3">
-              <img
-                src="https://readymadeui.com/images/master.webp"
-                alt="card1"
-                style={{ width: 40 }}
-              />
-              <img
-                src="https://readymadeui.com/images/visa.webp"
-                alt="card2"
-                style={{ width: 40 }}
-              />
-              <img
-                src="https://readymadeui.com/images/american-express.webp"
-                alt="card3"
-                style={{ width: 40 }}
-              />
-            </div>
+            <Link to="/" className="btn btn-outline-secondary w-100">
+              Continuer vos achats
+            </Link>
           </div>
         </div>
       </div>

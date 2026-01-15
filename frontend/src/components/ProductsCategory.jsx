@@ -1,58 +1,68 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaStar } from 'react-icons/fa';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import BASE_URL from "../constante";
+
+// FRONTEND IMAGE MAP
+import phones from "../assets/images/phones.png";
+import laptops from "../assets/images/laptops.png";
+import accessories from "../assets/images/accessories.png";
+
+
+const categoryImages = {
+  phones,
+  laptops,
+  accessories
+};
 
 const ProductsCategory = () => {
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get(`${BASE_URL}/api/categories`);
-        setCategories(response.data);
-        console.log(response.data)
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching categories:', err);
-        setError('Failed to load categories');
-        setLoading(false);
-      }
-    };
 
-    fetchCategories();
+  useEffect(() => {
+    axios.get(`${BASE_URL}/api/categories`).then((res) => {
+      setCategories(res.data);
+    });
   }, []);
 
-  if (loading) return <p>Loading categories...</p>;
-  if (error) return <p>{error}</p>;
-
   return (
-    <section className="categories-section py-5">
+    <section className="category-editorial py-5">
       <div className="container">
-        <div className="mb-5">
-          <h2 className="section-title">Product Categories</h2>
-        </div>
-        <div className="row g-4">
-          {categories.map((category) => (
-            <div key={category.id} className="col-lg-4 col-md-6"
-            style={{ cursor: 'pointer' }}
-            onClick={() => navigate(`/category/${category._id}`)}>
-              <div className="category-card card-redesign h-100">
-                <div className="card-body-redesign text-center">
-                  {/* Category Name */}
-                  <h4 className="category-title mb-2">{category.name}</h4>
+      <div className="mb-4">
+      <h2 className="section-title">Catégories de produits</h2>
+      <p className="section-subtitle d-inline">
+        Découvrez nos univers soigneusement sélectionnés pour répondre à tous vos besoins.
+      </p>
 
-                  {/* Optional Description */}
-                  {category.description && (
-                    <p className="category-description text-light">{category.description}</p>
-                  )}
+        </div>
+
+
+        <div className="row g-4">
+          {categories.map((cat) => {
+            const key = cat.name.toLowerCase();
+            const image = categoryImages[key];
+
+            return (
+              <div key={cat._id} className="col-lg-4 col-md-6">
+                <div
+                  className="category-white-card"
+                  onClick={() => navigate(`/category/${cat._id}`)}
+                >
+                  {/* TEXT */}
+                  <div className="category-text">
+                    <h3 className="product-title">{cat.name}</h3>
+                    <p className="product-description">{cat.description || "Explore collection"}</p>
+                 
+                  </div>
+
+                  {/* IMAGE */}
+                  <div className="category-img">
+                    <img src={image} alt={cat.name} />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
