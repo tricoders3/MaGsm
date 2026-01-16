@@ -74,62 +74,73 @@ const HeroSlider = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <section className="hero-section position-relative overflow-hidden">
-    <div className="hero-background"></div>
+    <section className="hero-section overflow-hidden">
+    <div className="container">
   
-    {/* TOP HERO TEXT */}
-    <div className="hero-top-text">
-  <div className="container">
-    <span className="hero-eyebrow">Nouveautés & Promotions</span>
-    <h2 className="hero-section-title">
-      Découvrez nos meilleures offres
-    </h2>
-    <p className="hero-section-subtitle">
-      Smartphones, accessoires et technologies au meilleur prix
-    </p>
-  </div>
-</div>
-
-    <Swiper
-      modules={[Autoplay, Pagination, EffectFade]}
-      autoplay={{ delay: 7000, disableOnInteraction: false }}
-      pagination={{ clickable: true }}
-      effect="fade"
-      loop
-      className="hero-swiper"
-    >
-      {slides.map((slide, index) => (
-        <SwiperSlide key={index}>
-          <div className="container">
-            <div className="row align-items-center py-5 custom-height">
-              <div className="col-lg-6 hero-text">
-                <span className="hero-badge">Offre Limitée</span>
-                <h1 className="hero-title mt-3 mb-4">{slide.title}</h1>
-                <p className="hero-subtitle mb-5">{slide.subtitle}</p>
-                <Link
-                  to="/products"
-                  className="btn-redesign btn-primary-redesign btn-lg-redesign"
-                >
-                  En Savoir Plus
-                </Link>
-              </div>
+      <Swiper
+        modules={[Autoplay, Pagination, EffectFade]}
+        autoplay={{ delay: 7000, disableOnInteraction: false }}
+        pagination={{ clickable: true }}
+        effect="fade"
+        loop
+        className="hero-swiper"
+      >
+        {slides.map((slide, index) => (
+          <SwiperSlide key={index}>
+            <div className="row align-items-center min-vh-50">
   
-              <div className="col-lg-6 d-flex justify-content-center hero-product">
-                <div className="hero-product-wrapper">
-                  <span className="promo-badge">{slide.discount}</span>
-                  <img
-                    src={slide.image}
-                    alt={slide.title}
-                    className="hero-product-image"
-                  />
+              {/* LEFT – INTRO */}
+              <div className="col-lg-6">
+                <div className="hero-intro">
+                  <span className="hero-tag">Offre Limitée</span>
+  
+                  <h1 className="hero-heading">
+                    Découvrez nos <br /> meilleures promotions
+                  </h1>
+  
+                  <p className="hero-description">
+                    Des offres sélectionnées pour vous
+                  </p>
+  
+                  <Link
+                    to="/products"
+                    className="btn-redesign btn-primary-redesign btn-lg-redesign"
+                  >
+                    En savoir plus
+                  </Link>
                 </div>
               </div>
+  
+              {/* RIGHT – PRODUCT */}
+              <div className="col-lg-6">
+              <div className="hero-product">
+  <div className="hero-product-wrapper">
+    <div className="badge-container">
+      <span className="promo-badge">{slide.discount}</span>
+      <img
+        src={slide.image}
+        alt={slide.title}
+        className="hero-product-image"
+      />
+    </div>
+  </div>
+  <h2 className="hero-title mt-4">{slide.title}</h2>
+  <p className="hero-subtitle">{slide.subtitle}</p>
+</div>
+
+              </div>
+  
             </div>
-          </div>
-        </SwiperSlide>
-      ))}
-    </Swiper>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+  
+    </div>
   </section>
+  
+  
+  
+  
   
   );
 };

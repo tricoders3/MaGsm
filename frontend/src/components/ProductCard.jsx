@@ -106,7 +106,7 @@ const ProductCard = ({ product, badgeType, stockCount, isFavorite, onFavoriteSuc
     }
     return null;
   };
-
+  
   return (
     <div className="product-card h-100">
       {/* Badges & Actions */}

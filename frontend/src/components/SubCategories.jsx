@@ -72,29 +72,35 @@ const CategoryView = () => {
 
         {/* PRODUCTS */}
         <div className="row g-4">
-          {filteredProducts.map((product) => (
-       <div key={product._id} className="col-12 col-sm-6 col-md-3 mb-4">
-       <ProductCard
-         product={{
-           id: product._id,
-           name: product.name,
-           price: product.price,
-           image: product.images?.[0]?.url || "/assets/images/default.png",
-           category: product.subCategoryName || "N/A",
-           countInStock: product.countInStock,
-           description: product.description,
-         }}
-         badgeType="stock"
-         stockCount={product.countInStock}
-         isFavorite={favorites.includes(product._id)}
-         onFavoriteSuccess={(id) =>
-           setFavorites((prev) => [...new Set([...prev, id])])
-         }
-       />
-     </div>
-     
-          ))}
-        </div>
+  {filteredProducts.map((product) => {
+    // Decide which badge to show
+    const badgeType = product.promotion ? "promo" : "stock";
+
+    return (
+      <div key={product._id} className="col-12 col-sm-6 col-md-3 mb-4">
+        <ProductCard
+          product={{
+            id: product._id,
+            name: product.name,
+            price: product.price,
+            image: product.images?.[0]?.url || "/assets/images/default.png",
+            category: product.subCategoryName || "N/A",
+            countInStock: product.countInStock,
+            description: product.description,
+            promotion: product.promotion || null, // Pass promotion info
+          }}
+          badgeType={badgeType}        // Dynamic badge type
+          stockCount={product.countInStock}
+          isFavorite={favorites.includes(product._id)}
+          onFavoriteSuccess={(id) =>
+            setFavorites((prev) => [...new Set([...prev, id])])
+          }
+        />
+      </div>
+    );
+  })}
+</div>
+
 
         {filteredProducts.length === 0 && (
           <p className="text-center mt-4">Aucun produit trouvé.</p>
