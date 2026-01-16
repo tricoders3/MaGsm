@@ -1,18 +1,49 @@
 import siteSettingsModel from "../models/siteSettingsModel.js";
 
-// get all site content
+// 🔹 Récupérer tout le contenu du site
 export const getSiteContent = async () => {
-  let content = await siteSettingsModel.findOne()
+  let content = await siteSettingsModel.findOne();
   if (!content) {
-    content = await siteSettingsModel.create({})
+    content = await siteSettingsModel.create({
+      about: {
+        title: "About Us",
+        whoWeAre: "",
+        content: "",
+        features: [
+          { title: "Curated Products", description: "" },
+          { title: "Customer First", description: "" },
+          { title: "Fast Service", description: "" },
+        ],
+        mapUrl: "",
+      },
+    });
   }
-  return content
-}
+  return content;
+};
 
-// update any section (home, banner, about, contact, offers)
+// 🔹 Mettre à jour n'importe quelle section
 export const updateSection = async (section, data) => {
-  const content = await getSiteContent()
-  content[section] = { ...content[section], ...data }
-  await content.save()
-  return content
-}
+  const content = await getSiteContent();
+
+  if (!content[section]) {
+    throw new Error(`Section "${section}" inconnue`);
+  }
+
+  // Merge pour About et Features si nécessaire
+  if (section === "about" && data.features) {
+    // Merge chaque feature individuellement
+    const mergedFeatures = content.about.features.map((f, index) => ({
+      ...f,
+      ...(data.features[index] || {}),
+    }));
+    content.about.features = mergedFeatures;
+    // Supprimer features du data pour éviter override
+    delete data.features;
+  }
+
+  // Merge général
+  content[section] = { ...content[section], ...data };
+
+  await content.save();
+  return content;
+};
