@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
 const siteContentSchema = new mongoose.Schema(
   {
@@ -14,8 +14,16 @@ const siteContentSchema = new mongoose.Schema(
     },
 
     about: {
-      title: String,
-      description: String,
+      title: String,           // About Title
+      whoWeAre: String,        // "who we are"
+      content: String,         // About Content
+      features: [
+        {
+          title: String,       // Feature title, ex: "Curated Products"
+          description: String  // Feature Description
+        }
+      ],
+      mapUrl: String           // Google Map Embed URL
     },
 
     contact: {
@@ -37,6 +45,6 @@ const siteContentSchema = new mongoose.Schema(
     },
   },
   { timestamps: true }
-)
+);
 
-export default mongoose.model("SiteContent", siteContentSchema)
+export default mongoose.model("SiteContent", siteContentSchema);

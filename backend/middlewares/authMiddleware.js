@@ -16,6 +16,10 @@ export const protect = (req, res, next) => {
   }
 };
 export const isAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') return res.sendStatus(403);
-  next();
+  if (req.user && req.user.role === "admin") {
+    next(); // OK, c'est un admin
+  } else {
+    res.status(403).json({ message: "Accès interdit : admin seulement" });
+  }
 };
+
