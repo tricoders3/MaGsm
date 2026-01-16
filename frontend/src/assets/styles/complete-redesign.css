@@ -137,6 +137,17 @@ h4 { font-size: clamp(1.25rem, 2.5vw, 1.5rem); }
 h5 { font-size: clamp(1.125rem, 2vw, 1.25rem); }
 h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 
+/* Section title (small, uppercase, modern) */
+.hero-section-title {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #64748b; /* soft gray-blue */
+}
+
 
 .btn-redesign {
   position: relative;

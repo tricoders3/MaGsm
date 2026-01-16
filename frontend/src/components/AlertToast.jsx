@@ -1,4 +1,4 @@
-import { Modal } from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
 import { FiCheckCircle, FiHeart, FiShoppingCart } from "react-icons/fi";
 
 const AlertToast = ({ show, onClose, type, message }) => {
