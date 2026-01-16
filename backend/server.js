@@ -16,6 +16,7 @@ import cartRoutes from "./routes/cartRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import favoriteRoutes from './routes/favoriteRoutes.js';
 import settingsRoutes from './routes/siteSettingsRoutes.js';
+import contactMsgRoutes from "./routes/contactMsgRoutes.js";
 // ------------------
 // Load .env from root (MaGsm/.env)
 // ------------------
@@ -75,6 +76,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/favorites', favoriteRoutes)
 app.use('/api/orders', orderRoutes);
 app.use("/api/site-settings", settingsRoutes);  
+app.use("/api/contact", contactMsgRoutes)
 
 // ------------------
 // Start Server
