@@ -8,45 +8,30 @@ import {
   getProductsByCategory,
   getProductsBySubCategory,
   getBestSellingProducts,
-
-  
-getBrands
+  getBrands
 } from "../controllers/productController.js";
 
 import upload from "../middlewares/uploadMiddleware.js";
 
 const router = express.Router();
 
-
-
+// ---------------- MAIN ROUTE ----------------
 router
   .route("/")
   .get(getProducts)
-  .post(upload.single("image"), createProduct); // ✅ image from device
+  .post(upload.single("image"), createProduct); // single image from device
 
-/**
- * @route   GET /api/products/:id
- * @route   PUT /api/products/:id
- * @route   DELETE /api/products/:id
- */
+// ---------------- PRODUCT BY ID ----------------
 router
   .route("/:id")
   .get(getProductById)
-  .put(upload.single("image"), updateProduct) // ✅ image update
+  .put(upload.single("image"), updateProduct) // single image update
   .delete(deleteProduct);
 
-/**
- * Other routes
- */
-
+// ---------------- OTHER FILTERS ----------------
 router.get("/category/:categoryId", getProductsByCategory);
 router.get("/subcategory/:subCategoryId", getProductsBySubCategory);
 router.get("/best-selling", getBestSellingProducts);
-
-
-
-
-
 router.get("/brands", getBrands);
 
 export default router;

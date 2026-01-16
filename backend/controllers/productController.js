@@ -2,6 +2,7 @@ import Product from "../models/productModel.js"
 import Order from "../models/orderModel.js";
 import Promotion from "../models/Promotion.js";
 import { model } from "mongoose";
+import cloudinary from "../config/cloudinary.js";
 
 /**
  * @desc    Create new product
@@ -10,29 +11,18 @@ import { model } from "mongoose";
  */
 export const createProduct = async (req, res) => {
   try {
-    const {
-      name,
-      model,
-      images,
-      brand,
-      category,
-      subCategory,
-      description,
-      price,
-      countInStock,
-    } = req.body;
+    let imageUrl = "";
+
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "products",
+      });
+      imageUrl = result.secure_url;
+    }
 
     const product = new Product({
-
-      name,
-      model,
-      images,
-      brand,
-      category,
-      subCategory,
-      description,
-      price,
-      countInStock,
+      ...req.body,
+      images: imageUrl ? [{ url: imageUrl }] : [],
     });
 
     const createdProduct = await product.save();
@@ -42,6 +32,8 @@ export const createProduct = async (req, res) => {
     res.status(500).json({ message: "Error creating product" });
   }
 };
+
+
 
 /**
  * @desc    Get all products
@@ -118,14 +110,11 @@ export const getProductById = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
+    // update fields
     product.name = req.body.name || product.name;
     product.model = req.body.model || product.model;
-    product.images = req.body.images || product.images;
     product.brand = req.body.brand || product.brand;
     product.category = req.body.category || product.category;
     product.subCategory = req.body.subCategory || product.subCategory;
@@ -133,9 +122,18 @@ export const updateProduct = async (req, res) => {
     product.price = req.body.price ?? product.price;
     product.countInStock = req.body.countInStock ?? product.countInStock;
 
+    // handle image
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "products",
+      });
+      product.images = [{ url: result.secure_url }];
+    }
+
     const updatedProduct = await product.save();
     res.json(updatedProduct);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Error updating product" });
   }
 };
@@ -169,7 +167,8 @@ export const getProductsByCategory = async (req, res) => {
   try {
     const products = await Product.find({
       category: req.params.categoryId,
-    }).populate("category", "name subCategories");
+    }).populate("category", "name subCategories")
+     .populate("promotion");
 
     // Map subCategory id to name
     const result = products.map((p) => {
@@ -179,6 +178,7 @@ export const getProductsByCategory = async (req, res) => {
       return {
         ...p._doc,
         subCategoryName: subCat ? subCat.name : null,
+        promotion: p.promotion || null,
       };
     });
 
@@ -197,7 +197,8 @@ export const getProductsByCategory = async (req, res) => {
 export const getProductsBySubCategory = async (req, res) => {
   try {
     // Find all products
-    const products = await Product.find().populate("category", "name subCategories");
+    const products = await Product.find().populate("category", "name subCategories")
+    .populate("promotion"); ;
 
     // Filter by subCategory id
     const filtered = products.filter(
@@ -209,6 +210,7 @@ export const getProductsBySubCategory = async (req, res) => {
       return {
         ...p._doc,
         subCategoryName: subCat ? subCat.name : null,
+        promotion: p.promotion || null,
       };
     });
 
