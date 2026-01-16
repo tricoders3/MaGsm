@@ -74,9 +74,7 @@ const ProductForm = ({ show, onClose, onSaved, product }) => {
     formData.append("price", price);
     formData.append("countInStock", countInStock);
 
-    if (imageFile) {
-      formData.append("image", imageFile); // ⚠️ نفس الاسم في backend
-    }
+     if (imageFile) formData.append("image", imageFile);
 
     if (product) {
       await axios.put(

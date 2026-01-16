@@ -1,5 +1,6 @@
 // controllers/categoryController.js
 import Category from "../models/CategoryModels.js";
+import cloudinary from "../config/cloudinary.js";
 
 /**
  * @desc    Get all categories with subCategories
@@ -23,13 +24,24 @@ export const getCategories = async (req, res) => {
 export const createCategory = async (req, res) => {
   try {
     const { name } = req.body;
-    const category = new Category({ name, subCategories: [] });
+
+    if (!req.file) {
+      return res.status(400).json({ message: "Image is required" });
+    }
+
+    const category = new Category({
+      name,
+      subCategories: [],
+      image: req.file.path,
+    });
+
     const createdCategory = await category.save();
     res.status(201).json(createdCategory);
   } catch (error) {
     res.status(500).json({ message: "Error creating category" });
   }
 };
+
 
 /**
  * @desc    Update category
@@ -41,7 +53,26 @@ export const updateCategory = async (req, res) => {
     const category = await Category.findById(req.params.id);
     if (!category) return res.status(404).json({ message: "Category not found" });
 
+    // Update name
     category.name = req.body.name || category.name;
+
+    // Update image if a new file is uploaded
+    if (req.file) {
+      // Delete old image from Cloudinary
+      if (category.image) {
+        try {
+          const urlParts = category.image.split("/");
+          const filename = urlParts[urlParts.length - 1];
+          const publicId = `categories/${filename.split(".")[0]}`;
+          await cloudinary.uploader.destroy(publicId);
+        } catch (err) {
+          console.error("Failed to delete old image from Cloudinary", err);
+        }
+      }
+
+      category.image = req.file.path;
+    }
+
     const updatedCategory = await category.save();
     res.json(updatedCategory);
   } catch (error) {
@@ -58,6 +89,18 @@ export const deleteCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (!category) return res.status(404).json({ message: "Category not found" });
+
+    // Delete image from Cloudinary
+    if (category.image) {
+      try {
+        const urlParts = category.image.split("/");
+        const filename = urlParts[urlParts.length - 1];
+        const publicId = `categories/${filename.split(".")[0]}`;
+        await cloudinary.uploader.destroy(publicId);
+      } catch (err) {
+        console.error("Failed to delete image from Cloudinary", err);
+      }
+    }
 
     await category.deleteOne();
     res.json({ message: "Category removed" });

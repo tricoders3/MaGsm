@@ -12,6 +12,7 @@ export const applyPromotion = async (req, res) => {
   try {
     let {
       name,
+      
       discountType,
       discountValue,
       category,
@@ -33,6 +34,7 @@ export const applyPromotion = async (req, res) => {
     // 1️⃣ Create the promotion
     const promotion = await Promotion.create({
       name,
+      description: req.body.description || "",
       discountType,
       discountValue,
       category,
@@ -131,7 +133,7 @@ export const getActivePromotions = async (req, res) => {
 export const updatePromotion = async (req, res) => {
   try {
     const { id } = req.params;
-    let { category, subCategory, ...payload } = req.body;
+    let { category, subCategory,description, ...payload } = req.body;
 
     // Convert empty strings to null
     if (category === "") category = null;
@@ -139,7 +141,7 @@ export const updatePromotion = async (req, res) => {
 
     const updatedPromotion = await Promotion.findByIdAndUpdate(
       id,
-      { ...payload, category, subCategory },
+      { ...payload, category, subCategory,description  },
       { new: true }
     );
 
@@ -201,6 +203,7 @@ export const getProductsWithPromo = async (req, res) => {
           promotion: {
             _id: promo._id,
             name: promo.name,
+            description: promo.description,
             discountType: promo.discountType,
             discountValue: promo.discountValue,
             isActive: promo.isActive,
@@ -260,6 +263,7 @@ export const getPromotionByProduct = async (req, res) => {
       promotion: {
         _id: promo._id,
         name: promo.name,
+        description: promo.description,
         discountType: promo.discountType,
         discountValue: promo.discountValue,
         startDate: promo.startDate,
