@@ -746,7 +746,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 
 .min-vh-50 {
-  min-height: 50vh;
+  min-height: 70vh;
 }
 
 /* INTRO */
@@ -816,8 +816,8 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 .badge-container {
   position: relative;
   display: inline-block;
-  padding-top: 1.5em; 
-  padding-right: 1.5em; 
+  padding-top: 1.7em; 
+  padding-right: 1.7em; 
 }
 /* PROMO BADGE */
 .promo-badge {
