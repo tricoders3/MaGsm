@@ -738,9 +738,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 .hero-section {
   position: relative;
   width: 100%;
-  min-height: 100vh; /* full viewport height */
-  display: flex;
-  align-items: center;
+  min-height: 100vh;
   background: radial-gradient(800px 300px at 10% 20%, rgba(20,184,166,0.10), transparent 60%),
               radial-gradient(700px 280px at 90% 10%, rgba(59,130,246,0.10), transparent 60%),
               radial-gradient(900px 420px at 50% 100%, rgba(139,92,246,0.12), transparent 60%),
@@ -750,6 +748,43 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   padding: 2rem 0;
 }
 
+.hero-top-text {
+  position: absolute;
+  top: 2rem; /* distance from top */
+  left: 0;
+  width: 100%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Align text left inside container */
+.hero-top-text .container {
+  text-align: left;
+}
+
+.hero-intro {
+  padding-top: 3rem;
+  padding-bottom: 1.5rem;
+}
+
+.hero-eyebrow {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--dark-bg);
+}
+
+.hero-section-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.5rem 0;
+}
+
+.hero-section-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+}
 
 .hero-text,
 .hero-product {
@@ -2419,7 +2454,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 .offcanvas.offcanvas-start {
   background-color: #0f1115;
   color: #f0f0f0;
-  width: 280px; /* slightly wider for modern feel */
+  width: 320px;
 }
 
 /* Header */
@@ -2429,12 +2464,12 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 
 .offcanvas-header img {
-  height: 50px;
+  height: 60px;
 }
 
 .offcanvas-header span {
   font-weight: 700;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   color: #01ABAB; /* accent color */
 }
 
@@ -2490,6 +2525,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   justify-content: space-between;
   align-items: center;
   padding: 0.55rem 1rem;
+  font-size: 1rem;
   border-radius: 8px;
   font-weight: 500;
   color: #f0f0f0;
