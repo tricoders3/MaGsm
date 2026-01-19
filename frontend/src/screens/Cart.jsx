@@ -89,7 +89,7 @@ function Cart() {
       setCart([]);
       alert("Commande créée avec succès ! Paiement à la livraison.");
 
-      navigate("/orders"); // redirect to orders page
+      navigate("/orders"); 
     } catch (error) {
       console.error("Erreur lors de la création de la commande :", error);
       alert("Impossible de créer la commande, réessayez !");

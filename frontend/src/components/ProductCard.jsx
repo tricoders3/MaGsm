@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FiShoppingCart, FiHeart } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import BASE_URL from "../constante";
 import AlertToast from "./AlertToast";
@@ -8,6 +9,7 @@ import AlertToast from "./AlertToast";
 
 const ProductCard = ({ product, badgeType, stockCount, isFavorite, onFavoriteSuccess }) => {
   const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const [toast, setToast] = useState({
     show: false,
@@ -111,16 +113,23 @@ const ProductCard = ({ product, badgeType, stockCount, isFavorite, onFavoriteSuc
     <div className="product-card h-100">
       {/* Badges & Actions */}
       <div className="card-badges">
-        {renderBadge()}
-        <div className="card-actions">
-          <button className={`favorite-btn ${isFavorite ? "active" : ""}`} onClick={handleAddToFavorites}>
-            <FiHeart />
-          </button>
-          <button className="cart-btn" onClick={handleAddToCart}>
-            <FiShoppingCart size={18} />
-          </button>
-        </div>
-      </div>
+  {renderBadge()}
+
+  {isAuthenticated && (
+    <div className="card-actions">
+      <button
+        className={`favorite-btn ${isFavorite ? "active" : ""}`}
+        onClick={handleAddToFavorites}
+      >
+        <FiHeart />
+      </button>
+
+      <button className="cart-btn" onClick={handleAddToCart}>
+        <FiShoppingCart size={18} />
+      </button>
+    </div>
+  )}
+</div>
 
       {/* Image */}
       <div className="product-image mt-4" onClick={() => navigate(`/products/${product.id}`)}>
@@ -132,15 +141,44 @@ const ProductCard = ({ product, badgeType, stockCount, isFavorite, onFavoriteSuc
         <h6 className="product-title">{product.name}</h6>
         <p className="product-category">{product.category}</p>
         {product.description && <p className="product-description">{product.description}</p>}
-        <p className="product-price">
-          {product.price ? `${product.price} DT` : <>
-            <span className="original-price">{product.originalPrice} DT</span>{" "}
-            <span className="discounted-price">{product.discountedPrice} DT</span>
-          </>}
-        </p>
-        <button className="btn-redesign btn-primary-redesign" onClick={() => navigate(`/products/${product.id}`)}>
-          Découvrir les détails
-        </button>
+        {!isAuthenticated ? (
+  <>
+    {/* Voir prix */}
+    <p className="product-price">
+      <button
+        className="btn-redesign btn-primary-redesign"
+        onClick={() => navigate("/login")}
+      >
+        Voir prix
+      </button>
+    </p>
+  </>
+) : (
+  <>
+    {/* Price */}
+    <p className="product-price">
+      {product.price ? (
+        `${product.price} DT`
+      ) : (
+        <>
+          <span className="original-price">{product.originalPrice} DT</span>{" "}
+          <span className="discounted-price">
+            {product.discountedPrice} DT
+          </span>
+        </>
+      )}
+    </p>
+
+    {/* Details button */}
+    <button
+      className="btn-redesign btn-primary-redesign"
+      onClick={() => navigate(`/products/${product.id}`)}
+    >
+      Découvrir les détails
+    </button>
+  </>
+)}
+
       </div>
 
       {/* Modern AlertToast */}

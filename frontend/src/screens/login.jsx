@@ -25,7 +25,7 @@ const Login = () => {
       if (res.data.user) {
         // Stocke l'utilisateur dans le state 
         localStorage.setItem("user", JSON.stringify(res.data.user));
-        navigate("/dashboard");
+        navigate("/");
       }
     } catch (err) {
       console.error(err);

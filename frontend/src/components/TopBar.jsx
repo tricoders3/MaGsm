@@ -9,7 +9,7 @@ const TopBar = () => {
         
         <div className="small d-flex align-items-center">
   <FaPhoneAlt className="me-2" />
-  +216 12 345 678
+  +216 20 771 717
 </div>
 
 

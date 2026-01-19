@@ -32,7 +32,7 @@ const OAuthSuccess = () => {
           picture: payload.picture || null,
         });
 
-        navigate("/dashboard");
+        navigate("/");
         toast.success("Connexion réussie !");
       } catch (err) {
         console.error("Failed to parse token:", err);

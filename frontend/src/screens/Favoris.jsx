@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiShoppingCart, FiHeart } from "react-icons/fi";
+import { FiShoppingCart } from "react-icons/fi";
 import { FaHeartBroken } from "react-icons/fa";
 import axios from "axios";
 import BASE_URL from "../constante";
@@ -31,9 +31,9 @@ const Favorites = () => {
         );
 
         setFavorites(favProducts);
-        setLoading(false);
       } catch (error) {
         console.error("Erreur favorites:", error);
+      } finally {
         setLoading(false);
       }
     };
@@ -51,6 +51,7 @@ const Favorites = () => {
       console.error("Erreur remove favorite:", error);
     }
   };
+
   const handleAddToCart = async (product) => {
     if (product.countInStock === 0) {
       setToast({ show: true, message: "Produit en rupture de stock", type: "cart" });
@@ -74,21 +75,6 @@ const Favorites = () => {
       }
     }
   };
-  if (loading) {
-    return (
-      <div className="text-center mt-5">
-        <div className="spinner-border text-primary" role="status"></div>
-      </div>
-    );
-  }
-
-  if (favorites.length === 0) {
-    return (
-      <div className="text-center mt-5">
-        <h3>Vous n'avez aucun favori pour le moment</h3>
-      </div>
-    );
-  }
 
   const renderBadge = (product) => {
     if (product.promotion) {
@@ -116,59 +102,85 @@ const Favorites = () => {
     return price;
   };
 
+  if (loading) {
+    return (
+      <div className="text-center mt-5">
+        <div className="spinner-border text-primary" role="status"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mt-4  mb-5">
-    <h3 className="mb-4 text-dark">Mes Favoris</h3>
-    <div className="row g-4">
-      {favorites.map((product) => (
-        <div className="col-12 col-sm-6 col-md-3" key={product._id}>
-          <div className="product-card h-100">
-            {/* Badges & Actions */}
-            <div className="card-badges">
-              {renderBadge(product)}
-              <div className="card-actions">
-                <button className="favorite-btn active" onClick={() => handleRemoveFavorite(product._id)}>
-                  <FaHeartBroken />
-                </button>
-                <button className="cart-btn" onClick={() => handleAddToCart(product)}>
-                  <FiShoppingCart size={18} />
-                </button>
+    <div className="container mt-4 mb-5">
+    {favorites.length > 0 && <h3 className="mb-4 text-dark">Mes Favoris</h3>}
+  
+    {favorites.length === 0 ? (
+      <div className="text-center py-5">
+        <h2>Favoris est vide</h2>
+        <p className="text-muted">Ajoutez des produits à vos favoris pour les retrouver ici</p>
+      </div>
+    ) : (
+      <div className="row g-4">
+        {favorites.map((product) => (
+          <div className="col-12 col-sm-6 col-md-3" key={product._id}>
+            <div className="product-card h-100">
+              {/* Badges & Actions */}
+              <div className="card-badges">
+                {renderBadge(product)}
+                <div className="card-actions">
+                  <button
+                    className="favorite-btn active"
+                    onClick={() => handleRemoveFavorite(product._id)}
+                  >
+                    <FaHeartBroken />
+                  </button>
+                  <button className="cart-btn" onClick={() => handleAddToCart(product)}>
+                    <FiShoppingCart size={18} />
+                  </button>
+                </div>
+              </div>
+  
+              {/* Image */}
+              <div
+                className="product-image mt-4"
+                onClick={() => navigate(`/products/${product._id}`)}
+              >
+                {product.images && product.images.length > 0 ? (
+                  <img
+                    src={product.images[0].url}
+                    alt={product.name}
+                    style={{
+                      cursor: "pointer",
+                      maxHeight: "180px",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <div className="bg-light p-5 rounded-3">No image available</div>
+                )}
+              </div>
+  
+              {/* Content */}
+              <div className="product-content text-center">
+                <h6 className="product-title">{product.name}</h6>
+                <p className="product-category">{product.brand}</p>
+                <p className="product-price">
+                  {product.promotion && (
+                    <span className="original-price text-decoration-line-through me-2 text-muted">
+                      {product.price} DT
+                    </span>
+                  )}
+                  <span className="discounted-price fw-bold text-success">
+                    {calculateDiscountedPrice(product)} DT
+                  </span>
+                </p>
               </div>
             </div>
-
-            {/* Image */}
-            <div className="product-image mt-4" onClick={() => navigate(`/products/${product._id}`)}>
-              {product.images && product.images.length > 0 ? (
-                <img
-                  src={product.images[0].url}
-                  alt={product.name}
-                  style={{ cursor: "pointer", maxHeight: "180px", objectFit: "contain" }}
-                />
-              ) : (
-                <div className="bg-light p-5 rounded-3">No image available</div>
-              )}
-            </div>
-
-            {/* Content */}
-            <div className="product-content text-center">
-              <h6 className="product-title">{product.name}</h6>
-              <p className="product-category">{product.brand}</p>
-              <p className="product-price">
-                {product.promotion && (
-                  <span className="original-price text-decoration-line-through me-2 text-muted">
-                    {product.price} DT
-                  </span>
-                )}
-                <span className="discounted-price fw-bold text-success">
-                  {calculateDiscountedPrice(product)} DT
-                </span>
-              </p>
-            </div>
           </div>
-        </div>
-      ))}
-    </div>
-
+        ))}
+      </div>
+    )}
+  
     <AlertToast
       show={toast.show}
       onClose={() => setToast({ ...toast, show: false })}
@@ -176,6 +188,7 @@ const Favorites = () => {
       message={toast.message}
     />
   </div>
+  
   );
 };
 
