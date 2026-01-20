@@ -5,7 +5,7 @@ import {
   getAllOrders,
   updateOrderStatus, deleteOrderById, deleteAllOrders
 } from "../services/orderService.js"
-import { sendAdminOrderNotification } from "../utils/sendEmail.js"
+import { sendAdminOrderNotification , sendClientOrderConfirmation} from "../utils/sendEmail.js"
 import { calculateLoyaltyPoints } from "../utils/loyalty.js"
 import User from "../models/userModel.js"
 
@@ -36,9 +36,14 @@ export const createOrderFromCart = async (req, res) => {
     // 3️⃣ envoyer mail admin (non bloquant)
     try {
       await sendAdminOrderNotification({
-        user: req.user,
+        user,
         order,
       });
+        // envoyer mail client
+  await sendClientOrderConfirmation({
+    user,
+    order,
+  });
     } catch (mailError) {
       console.error("Erreur email admin:", mailError.message);
     }
