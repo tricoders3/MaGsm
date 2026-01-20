@@ -44,3 +44,14 @@ export const updateOrderStatus = async (orderId, status) => {
 
   return order
 }
+// Supprimer une seule commande
+export const deleteOrderById = async (orderId) => {
+  const order = await Order.findByIdAndDelete(orderId);
+  return order; // retourne null si non trouvé
+}
+
+// Supprimer toutes les commandes
+export const deleteAllOrders = async () => {
+  const result = await Order.deleteMany({});
+  return result; // result.deletedCount = nombre de documents supprimés
+}

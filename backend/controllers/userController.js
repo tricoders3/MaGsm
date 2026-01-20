@@ -4,7 +4,8 @@ import {
   getUserById,
   updateUser,
   deleteUser,updateUserByHimself
-} from '../services/userService.js'
+} from '../services/userService.js';
+import User from '../models/userModel.js';
 
 // CLIENT – user himself
 export const updateMe = async (req, res) => {
@@ -83,3 +84,16 @@ export const deleteUserController = async (req, res) => {
     res.status(404).json({ message: error.message })
   }
 }
+export const getLoyaltyPoints = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id); // tu récupères l'user via le token
+    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+
+    res.status(200).json({
+      loyaltyPoints: user.loyaltyPoints,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};

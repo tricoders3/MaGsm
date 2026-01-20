@@ -3,7 +3,7 @@ import {
   addToCart,
   updateCartItem,
   removeFromCart,
-  clearCart
+  clearCart,  updateCartLoyaltyPoints
 } from '../services/cartService.js'
 
 // CLIENT
@@ -26,44 +26,33 @@ export const getMyCart = async (req, res) => {
 
 
 // CLIENT
+// Ajouter un produit
 export const addItemToCart = async (req, res) => {
   try {
     const { productId, quantity } = req.body
 
-    if (!productId) {
-      return res.status(400).json({ message: 'ProductId is required' })
-    }
+    const cart = await addToCart(req.user.id, productId, quantity || 1)
 
-    const cart = await addToCart(
-      req.user.id,
-      productId,
-      quantity || 1
-    )
+    // 🔹 Mettre à jour les points fidélité
+    const loyaltyPoints = await updateCartLoyaltyPoints(req.user.id)
 
-    res.status(200).json(cart)
+    res.status(200).json({ cart, loyaltyPoints })
   } catch (error) {
     res.status(400).json({ message: error.message })
   }
 }
 
-// CLIENT
+// Modifier quantité
 export const updateItemQuantity = async (req, res) => {
   try {
     const { quantity } = req.body
 
-    if (!quantity || quantity < 1) {
-      return res
-        .status(400)
-        .json({ message: 'Quantity must be at least 1' })
-    }
+    const cart = await updateCartItem(req.user.id, req.params.productId, quantity)
 
-    const cart = await updateCartItem(
-      req.user.id,
-      req.params.productId,
-      quantity
-    )
+    // 🔹 Mettre à jour les points fidélité
+    const loyaltyPoints = await updateCartLoyaltyPoints(req.user.id)
 
-    res.status(200).json(cart)
+    res.status(200).json({ cart, loyaltyPoints })
   } catch (error) {
     res.status(400).json({ message: error.message })
   }

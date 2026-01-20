@@ -22,10 +22,10 @@ const orderSchema = new mongoose.Schema(
     ],
 
     total: { type: Number, required: true },
-
+    pointsEarned: { type: Number, default: 0 }, // points gagnés sur cette commande
     status: {
       type: String,
-      enum: ["pending", "paid", "shipped", "delivered", "cancelled"],
+      enum: ["pending","delivered","cancelled"],
       default: "pending",
     },
   },

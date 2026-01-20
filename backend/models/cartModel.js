@@ -22,7 +22,13 @@ const cartSchema = new mongoose.Schema(
       required: true,
       unique: true
     },
-    items: [cartItemSchema]
+    items: [cartItemSchema],
+
+    // 🔹 Champ pour stocker les points fidélité du panier
+    loyaltyPoints: {
+      type: Number,
+      default: 0
+    }
   },
   { timestamps: true }
 )
