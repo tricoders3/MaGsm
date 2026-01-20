@@ -1,5 +1,6 @@
 import Cart from '../models/cartModel.js'
 import Product from '../models/productModel.js'
+import { calculateLoyaltyPoints } from '../utils/loyalty.js'
 
 // Récupérer le panier de l'utilisateur ou le créer
 export const getUserCart = async (userId) => {
@@ -15,7 +16,19 @@ export const getUserCart = async (userId) => {
   return cart;
 };
 
+export const updateCartLoyaltyPoints = async (userId) => {
+  const cart = await Cart.findOne({ user: userId }).populate('items.product')
 
+  if (!cart || cart.items.length === 0) {
+    cart.loyaltyPoints = 0
+  } else {
+    const total = cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+    cart.loyaltyPoints = calculateLoyaltyPoints(total)
+  }
+
+  await cart.save()
+  return cart.loyaltyPoints
+}
 // Ajouter un produit au panier
 export const addToCart = async (userId, productId, quantity = 1) => {
   const product = await Product.findById(productId)

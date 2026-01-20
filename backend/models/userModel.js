@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-
+    loyaltyPoints: { type: Number, default: 0 }, // <- points fidélité
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     favorites: [

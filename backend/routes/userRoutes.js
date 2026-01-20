@@ -6,7 +6,7 @@ import {
   getUserByIdController,
   updateUserController,
   deleteUserController,
-  updateMe
+  updateMe ,  getLoyaltyPoints
 } from '../controllers/userController.js'
 
 import {protect,isAdmin} from '../middlewares/authMiddleware.js'
@@ -27,6 +27,7 @@ router.get("/",  getUsers);
  * @route   GET /api/users
  */
 router.get('/', protect, isAdmin, getUsers)
+router.get("/loyalty-points", protect, getLoyaltyPoints);
 
 /**
  * ADMIN uniquement
