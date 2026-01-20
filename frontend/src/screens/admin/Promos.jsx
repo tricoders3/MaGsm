@@ -8,6 +8,12 @@ const Promotions = () => {
   const [promotions, setPromotions] = useState([]);
   const [productsWithPromo, setProductsWithPromo] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [products, setProducts] = useState([]);
+
+const fetchProducts = async () => {
+  const { data } = await axios.get(`${BASE_URL}/api/products`);
+  setProducts(data);
+};
 
   const [form, setForm] = useState({
     name: "",
@@ -16,6 +22,7 @@ const Promotions = () => {
     discountValue: "",
     category: "",
     subCategory: "",
+    productId: "",
     startDate: "",
     endDate: "",
   });
@@ -50,6 +57,7 @@ const Promotions = () => {
     fetchCategories();
     fetchPromotions();
     fetchProductsWithPromo();
+    fetchProducts();
   }, []);
 
   useEffect(() => {
@@ -75,6 +83,7 @@ const Promotions = () => {
       category: form.category || null,
       subCategory: form.subCategory || null,
       description: form.description || "",
+      productId: form.productId || null,
     };
 
     try {
@@ -151,8 +160,10 @@ const Promotions = () => {
                   discountValue: "",
                   category: "",
                   subCategory: "",
+                  productId: "",
                   startDate: "",
                   endDate: "",
+                  productId: "",
                 });
               }}
             >
@@ -222,16 +233,35 @@ const Promotions = () => {
                   onChange={handleChange}
                 />
               </div>
+{/* Product */}
+<div className="col-md-6">
+  <label className="form-label">Product (optional)</label>
+  <select
+    className="form-select"
+    name="productId"
+    value={form.productId}
+    onChange={handleChange}
+  >
+    <option value="">All products</option>
+    {products.map((p) => (
+      <option key={p._id} value={p._id}>
+        {p.name}
+      </option>
+    ))}
+  </select>
+</div>
 
               {/* Category */}
               <div className="col-md-6">
                 <label className="form-label">Category</label>
-                <select
-                  className="form-select"
-                  name="category"
-                  value={form.category}
-                  onChange={handleChange}
-                >
+               <select
+  className="form-select"
+  name="category"
+  value={form.category}
+  onChange={handleChange}
+  disabled={!!form.productId}
+>
+
                   <option value="">All categories</option>
                   {categories.map((c) => (
                     <option key={c._id} value={c._id}>
@@ -244,13 +274,14 @@ const Promotions = () => {
               {/* SubCategory */}
               <div className="col-md-6">
                 <label className="form-label">Sub-category</label>
-                <select
-                  className="form-select"
-                  name="subCategory"
-                  value={form.subCategory}
-                  onChange={handleChange}
-                  disabled={!form.category}
-                >
+               <select
+  className="form-select"
+  name="subCategory"
+  value={form.subCategory}
+  onChange={handleChange}
+  disabled={!form.category || !!form.productId}
+>
+
                   <option value="">All sub-categories</option>
                   {subCategories.map((sc) => (
                     <option key={sc._id} value={sc._id}>

@@ -12,29 +12,31 @@ export const applyPromotion = async (req, res) => {
   try {
     let {
       name,
-      
+      description,
       discountType,
       discountValue,
       category,
       subCategory,
       brand,
+      productId, // 👈 NOUVEAU
       startDate,
       endDate,
     } = req.body;
+
+    if (!name || !discountType || discountValue == null) {
+      return res.status(400).json({ message: "Champs requis manquants" });
+    }
 
     // Convert empty strings to null
     category = category || null;
     subCategory = subCategory || null;
     brand = brand || null;
+    productId = productId || null;
 
-    if (!name || !discountType || discountValue == null) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
-
-    // 1️⃣ Create the promotion
+    // 1️⃣ Créer la promotion
     const promotion = await Promotion.create({
       name,
-      description: req.body.description || "",
+      description: description || "",
       discountType,
       discountValue,
       category,
@@ -45,19 +47,26 @@ export const applyPromotion = async (req, res) => {
       isActive: true,
     });
 
-    // 2️⃣ Build filter to select products to apply the promotion
-    const filter = {};
-    if (category) filter.category = category;
-    if (subCategory) filter.subCategory = subCategory;
-    if (brand) filter.brand = brand;
+    // 2️⃣ Construire le filtre produit
+    let filter = {};
 
-    // 3️⃣ Update products to reference this promotion
+    if (productId) {
+      // 🎯 Promo pour UN seul produit
+      filter._id = productId;
+    } else {
+      // 🎯 Promo globale
+      if (category) filter.category = category;
+      if (subCategory) filter.subCategory = subCategory;
+      if (brand) filter.brand = brand;
+    }
+
+    // 3️⃣ Appliquer la promotion
     const result = await Product.updateMany(filter, {
       $set: { promotion: promotion._id },
     });
 
     res.json({
-      message: "Promotion applied to products successfully",
+      message: "Promotion appliquée avec succès",
       promotion,
       modifiedCount: result.modifiedCount,
     });
@@ -66,6 +75,7 @@ export const applyPromotion = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 
