@@ -24,17 +24,7 @@ export const registerUser = async ({ name, email, password }) => {
 
   return user;
 };
-export const requestAccess = async (userId) => {
-  const user = await User.findById(userId);
-  if (!user) throw new Error("Utilisateur non trouvé");
-  if (user.pendingRequest) throw new Error("Vous avez déjà une demande en attente");
 
-  user.pendingRequest = true;
-  await user.save();
-
-  await sendAdminRequestEmail(user);
-  return user;
-};
 
 export const approveUser = async (userId) => {
   const user = await User.findById(userId);
@@ -44,12 +34,21 @@ export const approveUser = async (userId) => {
   user.pendingRequest = false;
   user.isApproved = true;
   user.role = "client";
+  user.loyaltyPoints = 100; // Bonus de bienvenue
   await user.save();
 
+  // Email pour prévenir l'utilisateur
   await sendApprovalEmail(user.email, user.name);
+
   return user;
 };
-
+/**
+ * Récupère toutes les demandes d'accès en attente
+ */
+export const getPendingRequestsService = async () => {
+  const requests = await User.find({ isApproved: false, pendingRequest: true });
+  return requests;
+};
 export const loginUser = async ({ email, password }) => {
   const user = await User.findOne({ email }).select("+password");
   if (!user) throw new Error("Invalid credentials");

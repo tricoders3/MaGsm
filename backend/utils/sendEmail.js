@@ -70,27 +70,37 @@ export const sendEmail = async ({ to, subject, text, html }) => {
 };
 
 export const sendAdminRequestEmail = async (user) => {
-  const approveLink = `${process.env.BACKEND_URL}/api/approve-user/${user._id}`;
-
   const mailOptions = {
-    from: user.email,
+    from: process.env.EMAIL_USER, // ton email d’envoi
     to: process.env.ADMIN_EMAIL,
-   subject: "Nouvelle inscription sur le site",
-    html: `<p>L'utilisateur <b>${user.name}</b> (${user.email}) vient de s'inscrire sur le site.</p>
-           <p>Cliquez sur ce lien pour approuver son compte : 
-           <a href="${approveLink}">Approuver l'utilisateur</a></p>`,
+    subject: "Nouvelle inscription sur le site",
+    html: `
+      <p>Bonjour Admin,</p>
+      <p>L'utilisateur <b>${user.name}</b> (${user.email}) vient de s'inscrire sur le site.</p>
+      <p>Vous pouvez consulter les demandes en attente dans le dashboard admin pour approuver ce compte.</p>
+    `,
   };
 
   await transporter.sendMail(mailOptions);
 };
 
+
 export const sendApprovalEmail = async (email, name) => {
+  const clientLoginUrl = `${process.env.CLIENT_URL}/login`; // lien vers le frontend login
+
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: email,
-    subject: "Votre compte a été approuvé",
-    html: `<p>Bonjour <b>${name}</b>,</p>
-           <p>Votre compte a été validé. Vous pouvez maintenant accéder aux prix sur notre site.</p>`,
+    subject: "Votre compte a été approuvé et vous avez reçu 100 points fidélité !",
+    html: `
+      <p>Bonjour <b>${name}</b>,</p>
+      <p>Félicitations ! Votre compte a été validé par l'administrateur de MaGsm.</p>
+      <p>Vous bénéficiez de <b>100 points fidélité</b> sur votre compte.</p>
+      <p>Vous pouvez maintenant vous connecter et accéder aux prix en cliquant ici : 
+         <a href="${clientLoginUrl}">Se connecter</a>
+      </p>
+      <p>Merci de votre confiance et bon shopping !</p>
+    `,
   };
 
   await transporter.sendMail(mailOptions);

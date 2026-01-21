@@ -98,3 +98,15 @@ export const getLoyaltyPoints = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
+/**
+ * GET /api/admin/pending-requests
+ * Retourne toutes les demandes en attente
+ */
+export const getPendingRequests = async (req, res) => {
+  try {
+    const requests = await User.find({ isApproved: false, pendingRequest: true });
+    res.json(requests);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

@@ -1,7 +1,7 @@
 import {
   registerUser,
   loginUser, googleLogin, facebookLogin,
- requestAccess, approveUser,
+approveUser,getPendingRequestsService,
    updateUserPassword, generatePasswordResetToken, resetUserPassword, createPasswordForSocialUser
 } from "../services/authService.js";
 import { sendEmail } from "../utils/sendEmail.js"; // Ton utils pour envoyer mail
@@ -18,24 +18,26 @@ export const register = async (req, res) => {
   }
 };
 
-export const requestPriceAccess = async (req, res) => {
+export const approveUserByAdmin = async (req, res) => {
   try {
-    const user = await requestAccess(req.user.id);
-    res.json({ message: "Demande envoyée à l'admin.", user });
+    const user = await approveUser(req.params.id);
+    res.json({ message: "Utilisateur approuvé avec succès", user });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
-
-export const approveUserByLink = async (req, res) => {
+/**
+ * GET /api/admin/pending-requests
+ * Retourne toutes les demandes en attente
+ */
+export const getPendingRequests = async (req, res) => {
   try {
-    const user = await approveUser(req.params.userId);
-    res.send("Utilisateur approuvé avec succès !");
+    const requests = await getPendingRequestsService();
+    res.json(requests);
   } catch (err) {
-    res.status(400).send(err.message);
+    res.status(500).json({ message: err.message });
   }
 };
-
 /**
  * Login (email / password)
  */
