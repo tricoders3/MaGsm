@@ -71,7 +71,7 @@ export const sendEmail = async ({ to, subject, text, html }) => {
 
 export const sendAdminRequestEmail = async (user) => {
   const mailOptions = {
-    from: process.env.EMAIL_USER, // ton email d’envoi
+    from: `"MA GSM - Inscription" <${process.env.SMTP_USER}>`,
     to: process.env.ADMIN_EMAIL,
     subject: "Nouvelle inscription sur le site",
     html: `
@@ -89,7 +89,7 @@ export const sendApprovalEmail = async (email, name) => {
   const clientLoginUrl = `${process.env.CLIENT_URL}/login`; // lien vers le frontend login
 
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: `"MA GSM" <${process.env.SMTP_USER}>`,
     to: email,
     subject: "Votre compte a été approuvé et vous avez reçu 100 points fidélité !",
     html: `

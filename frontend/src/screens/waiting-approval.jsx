@@ -7,7 +7,7 @@ function WaitingApproval() {
         <h1 className="mb-3">Compte en attente</h1>
         <p className="mb-2">
           Merci pour votre inscription ! <br />
-          Votre compte est actuellement en attente d'approbation par un administrateur.
+          Votre compte est actuellement en attente d'approbation par l'administrateur de MaGsm.
         </p>
         <p>
           Vous recevrez un email dès que votre compte sera activé.
