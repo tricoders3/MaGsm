@@ -6,8 +6,8 @@ import {
   logout,
   googleLoginSuccess,
   facebookLoginSuccess,updatePassword,
-  forgotPassword, requestPriceAccess, approveUserByLink,
-  resetPassword, createPassword
+  forgotPassword,getPendingRequests,
+  resetPassword, createPassword,approveUserByAdmin
 } from "../controllers/authController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 
@@ -27,9 +27,11 @@ router.put("/create-password", protect, createPassword);
 // 🔓 Public
 router.post("/forgot-password", forgotPassword);
 router.put("/reset-password/:token", resetPassword);
-router.post("/request-access", protect, requestPriceAccess);
-router.get("/approve-user/:userId", approveUserByLink);
 
+
+// Approve depuis dashboard (admin)
+router.post("/approve-user/:id", approveUserByAdmin);
+router.get("/pending-requests", protect, getPendingRequests);
 /* ======================
    GOOGLE OAUTH
 ====================== */
