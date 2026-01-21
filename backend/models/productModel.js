@@ -10,7 +10,7 @@ const productSchema = mongoose.Schema({
   price: { type: Number, required: true },
    countInStock: {
     type: String,
-    enum: ["in", "out"], // in = En stock, out = Préteur / rupture
+    enum: ["in", "out"], 
     default: "in",
   },
 promotion: { type: mongoose.Schema.Types.ObjectId, ref: "Promotion", default: null }

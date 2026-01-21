@@ -14,6 +14,8 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    phone: { type: String },
+    address: { type: String },
     loyaltyPoints: { type: Number, default: 0 }, // <- points fidélité
     resetPasswordToken: String,
     resetPasswordExpire: Date,

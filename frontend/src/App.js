@@ -26,6 +26,7 @@ import ProductsAdmin from "./screens/admin/Products";
 import Promos from "./screens/admin/Promos";
 import Products from "./screens/products.jsx";
 import Users from "./screens/admin/Users";
+import WaitingApproval from "./screens/waiting-approval.jsx";
 
 import AdminAbout from "./screens/admin/AdminAbout";
 import AdminBanner from "./screens/admin/AdminBanner";
@@ -67,9 +68,11 @@ function App() {
       />
 
        <Routes>
+        <Route path="/waiting-approval" element={<WaitingApproval/>} />
        <Route element={<Layout />}>
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
+      
       <Route path="/contact" element={<Contact />} />
       <Route path="/offers" element={<Offer />} />
   <Route path="/register" element={<Register />} />
