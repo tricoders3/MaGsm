@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Spinner, Button } from "react-bootstrap";
@@ -6,12 +7,11 @@ import ProductCard from "../components/ProductCard";
 import { useGlobalSearch } from "../context/SearchContext";
 
 function Products() {
-  const { query, categoryId, subCategoryId } = useGlobalSearch();
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const { query } = useGlobalSearch();
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8; // nombre de produits par page
@@ -26,8 +26,6 @@ function Products() {
           name: product.name,
           description: product.description,
           category: product.category?.name || "N/A",
-          categoryId: product.category?._id || product.category || "",
-          subCategoryId: product.subCategory || product.subCategory?._id || "",
           image: product.images?.[0]?.url || "/assets/images/default.png",
           price: product.price,
           originalPrice: product.promotion ? product.price : null,
@@ -56,12 +54,9 @@ function Products() {
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-  const filteredCurrent = currentProducts.filter((p) => {
-    const matchesName = p.name?.toLowerCase().includes(query.toLowerCase());
-    const matchesCat = !categoryId || p.categoryId === categoryId;
-    const matchesSub = !subCategoryId || p.subCategoryId === subCategoryId;
-    return matchesName && matchesCat && matchesSub;
-  });
+  const filteredCurrent = currentProducts.filter((p) =>
+    p.name?.toLowerCase().includes(query.toLowerCase())
+  );
   const totalPages = Math.ceil(products.length / productsPerPage);
 
   const handlePrev = () => {
