@@ -6,7 +6,7 @@ import {
   logout,
   googleLoginSuccess,
   facebookLoginSuccess,updatePassword,
-  forgotPassword,
+  forgotPassword, requestPriceAccess, approveUserByLink,
   resetPassword, createPassword
 } from "../controllers/authController.js";
 import { protect } from "../middlewares/authMiddleware.js";
@@ -27,6 +27,8 @@ router.put("/create-password", protect, createPassword);
 // 🔓 Public
 router.post("/forgot-password", forgotPassword);
 router.put("/reset-password/:token", resetPassword);
+router.post("/request-access", protect, requestPriceAccess);
+router.get("/approve-user/:userId", approveUserByLink);
 
 /* ======================
    GOOGLE OAUTH
