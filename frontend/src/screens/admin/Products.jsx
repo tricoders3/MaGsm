@@ -93,12 +93,18 @@ const Products = () => {
   >
     <FiPlus /> Ajouter
   </button>
+ 
 </div>
-
-        </div>
+</div>
 
         {/* Body */}
         <div className="card-body p-0">
+             <ProductForm
+        show={showForm}
+        product={selectedProduct}
+        onClose={() => setShowForm(false)}
+        onSaved={fetchProducts}
+      />
           {loading ? (
             <div className="text-center py-5">
               <div className="spinner-border text-primary" />
@@ -193,12 +199,7 @@ const Products = () => {
       </div>
 
       {/* Product Form Modal */}
-      <ProductForm
-        show={showForm}
-        product={selectedProduct}
-        onClose={() => setShowForm(false)}
-        onSaved={fetchProducts}
-      />
+    
     </div>
   );
 };

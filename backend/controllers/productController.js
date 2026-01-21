@@ -24,7 +24,9 @@ export const createProduct = async (req, res) => {
       ...req.body,
       images: imageUrl ? [{ url: imageUrl }] : [],
     });
-
+ let stockStatus = req.body.countInStock;
+    if (!["in", "out"].includes(stockStatus)) {
+      stockStatus = "in";}
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
   } catch (error) {
@@ -120,7 +122,11 @@ export const updateProduct = async (req, res) => {
     product.subCategory = req.body.subCategory || product.subCategory;
     product.description = req.body.description || product.description;
     product.price = req.body.price ?? product.price;
-    product.countInStock = req.body.countInStock ?? product.countInStock;
+
+    // validate stock status
+    if (req.body.countInStock && ["in", "out"].includes(req.body.countInStock)) {
+      product.countInStock = req.body.countInStock;
+    }
 
     // handle image
     if (req.file) {
@@ -137,6 +143,7 @@ export const updateProduct = async (req, res) => {
     res.status(500).json({ message: "Error updating product" });
   }
 };
+
 
 /**
  * @desc    Delete product

@@ -8,7 +8,11 @@ const productSchema = mongoose.Schema({
   subCategory: { type: mongoose.Schema.Types.ObjectId, ref: "SubCategory" },
   description: String,
   price: { type: Number, required: true },
-  countInStock: Number,
+   countInStock: {
+    type: String,
+    enum: ["in", "out"], // in = En stock, out = Préteur / rupture
+    default: "in",
+  },
 promotion: { type: mongoose.Schema.Types.ObjectId, ref: "Promotion", default: null }
 }, { timestamps: true });
 
