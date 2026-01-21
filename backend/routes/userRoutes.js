@@ -19,8 +19,8 @@ const router = express.Router()
  * @route   GET /api/users/me
 
  */
-router.get('/me', protect, getProfile)
-router.put("/me", protect, updateMe);
+router.get('/me',  getProfile)
+router.put("/me",  updateMe);
 router.get("/",  getUsers);
 /**
  * ADMIN uniquement
@@ -28,23 +28,24 @@ router.get("/",  getUsers);
  */
 router.get('/', protect, isAdmin, getUsers)
 router.get("/loyalty-points", protect, getLoyaltyPoints);
+router.get('/',  getUsers)
 
 /**
  * ADMIN uniquement
  * @route   GET /api/users/:id
  */
-router.get('/:id', protect, isAdmin, getUserByIdController)
+router.get('/:id',  getUserByIdController)
 
 /**
  * ADMIN uniquement
  * @route   PUT /api/users/:id
  */
-router.put('/:id', protect,isAdmin, updateUserController)
+router.put('/:id',  updateUserController)
 
 /**
  * ADMIN uniquement
  * @route   DELETE /api/users/:id
  */
-router.delete('/:id', protect, isAdmin, deleteUserController)
+router.delete('/:id',  deleteUserController)
 
 export default router

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Select from "react-select";
+
 import BASE_URL from "../../constante";
 
 const Promotions = () => {
@@ -236,20 +238,39 @@ const fetchProducts = async () => {
 {/* Product */}
 <div className="col-md-6">
   <label className="form-label">Product (optional)</label>
-  <select
-    className="form-select"
-    name="productId"
-    value={form.productId}
-    onChange={handleChange}
-  >
-    <option value="">All products</option>
-    {products.map((p) => (
-      <option key={p._id} value={p._id}>
-        {p.name}
-      </option>
-    ))}
-  </select>
+
+  <Select
+    options={products.map((p) => ({
+      value: p._id,
+      label: p.name,
+    }))}
+    value={
+      form.productId
+        ? {
+            value: form.productId,
+            label: products.find((p) => p._id === form.productId)?.name,
+          }
+        : null
+    }
+    onChange={(selected) =>
+      setForm({
+        ...form,
+        productId: selected ? selected.value : "",
+        category: "",
+        subCategory: "",
+      })
+    }
+    isClearable
+    placeholder="Search product..."
+  />
+
+  {form.productId && (
+    <small className="text-muted">
+      Promotion will apply only to this product.
+    </small>
+  )}
 </div>
+
 
               {/* Category */}
               <div className="col-md-6">
