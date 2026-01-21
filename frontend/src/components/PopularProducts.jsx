@@ -4,6 +4,7 @@ import { FiArrowRight } from "react-icons/fi";
 import axios from "axios";
 import BASE_URL from "../constante";
 import ProductCard from "../components/ProductCard";
+import { useGlobalSearch } from "../context/SearchContext";
 
 const PopularProducts = () => {
   const [products, setProducts] = useState([]);
@@ -11,6 +12,7 @@ const PopularProducts = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { query } = useGlobalSearch();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -64,8 +66,11 @@ const PopularProducts = () => {
         </div>
 
         <div className="row g-4">
-          {products.slice(0, 4).map((product) => (
-            <div key={product.id} className="col-12 col-sm-6 col-md-3">
+          {products
+            .slice(0, 4)
+            .filter((p) => p.name?.toLowerCase().includes(query.toLowerCase()))
+            .map((product) => (
+            <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
             <ProductCard
                 product={product}
                 badgeType="stock"
