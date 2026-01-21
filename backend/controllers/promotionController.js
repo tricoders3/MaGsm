@@ -143,15 +143,44 @@ export const getActivePromotions = async (req, res) => {
 export const updatePromotion = async (req, res) => {
   try {
     const { id } = req.params;
-    let { category, subCategory,description, ...payload } = req.body;
 
-    // Convert empty strings to null
-    if (category === "") category = null;
-    if (subCategory === "") subCategory = null;
+    let {
+      name,
+      description,
+      discountType,
+      discountValue,
+      category,
+      subCategory,
+      brand,
+      productId,
+      startDate,
+      endDate,
+    } = req.body;
 
+    if (!name || !discountType || discountValue == null) {
+      return res.status(400).json({ message: "Champs requis manquants" });
+    }
+
+    // Normalize empty values
+    category = category || null;
+    subCategory = subCategory || null;
+    brand = brand || null;
+    productId = productId || null;
+
+    // 1️⃣ Update promotion itself
     const updatedPromotion = await Promotion.findByIdAndUpdate(
       id,
-      { ...payload, category, subCategory,description  },
+      {
+        name,
+        description: description || "",
+        discountType,
+        discountValue,
+        category,
+        subCategory,
+        brand,
+        startDate,
+        endDate,
+      },
       { new: true }
     );
 
@@ -159,12 +188,39 @@ export const updatePromotion = async (req, res) => {
       return res.status(404).json({ message: "Promotion not found" });
     }
 
-    res.json(updatedPromotion);
+    // 2️⃣ REMOVE promotion from all products first (important!)
+    await Product.updateMany(
+      { promotion: id },
+      { $unset: { promotion: "" } }
+    );
+
+    // 3️⃣ Build new filter
+    let filter = {};
+
+    if (productId) {
+      filter._id = productId;
+    } else {
+      if (category) filter.category = category;
+      if (subCategory) filter.subCategory = subCategory;
+      if (brand) filter.brand = brand;
+    }
+
+    // 4️⃣ Apply promotion again
+    const result = await Product.updateMany(filter, {
+      $set: { promotion: id },
+    });
+
+    res.json({
+      message: "Promotion mise à jour avec succès",
+      promotion: updatedPromotion,
+      affectedProducts: result.modifiedCount,
+    });
   } catch (error) {
-    console.error("Error updating promotion:", error.message);
+    console.error("Update promotion error:", error);
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 /**
