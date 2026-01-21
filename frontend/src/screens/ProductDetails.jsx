@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Spinner, Badge } from "react-bootstrap";
-import { FiShoppingCart } from "react-icons/fi";
+import { FiShoppingCart, FiHeart } from "react-icons/fi";
 import BASE_URL from "../constante";
-
+import ProductCard
+ from "../components/ProductCard";
 function ProductDetails() {
   const navigate = useNavigate();
   const { productId } = useParams();
@@ -12,6 +13,8 @@ function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [promotion, setPromotion] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [similarProducts, setSimilarProducts] = useState([]);
+
 
   // Fetch product & promotion
   useEffect(() => {
@@ -31,7 +34,49 @@ function ProductDetails() {
     };
     fetchProductAndPromo();
   }, [productId]);
-
+  useEffect(() => {
+    const fetchProductAndSimilar = async () => {
+      try {
+        // 1️⃣ Fetch product
+        const resProduct = await axios.get(
+          `${BASE_URL}/api/products/${productId}`
+        );
+        const currentProduct = resProduct.data;
+        setProduct(currentProduct);
+  
+        // 2️⃣ Fetch promotion
+        const resPromo = await axios.get(
+          `${BASE_URL}/api/promotions/product/${productId}`
+        );
+        setPromotion(resPromo.data.promotion || null);
+  
+        // 3️⃣ Fetch products of SAME CATEGORY (like CategoryView)
+        if (currentProduct.category?._id) {
+          const res = await axios.get(
+            `${BASE_URL}/api/products/category/${currentProduct.category._id}`
+          );
+  
+          // 4️⃣ Filter similar products
+          const similar = res.data
+            .filter(
+              (p) =>
+                p._id !== currentProduct._id &&
+                p.subCategory === currentProduct.subCategory
+            )
+            .slice(0, 4); // limit
+  
+          setSimilarProducts(similar);
+        }
+      } catch (err) {
+        console.error("Error loading product details", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchProductAndSimilar();
+  }, [productId]);
+  
   // Loading state
   if (loading) {
     return (
@@ -72,7 +117,7 @@ const handleAddToFavorites = async () => {
       `${BASE_URL}/api/favorites/${productId}`,
       {},
       {
-        withCredentials: true // 🔹 important pour que le cookie HttpOnly soit envoyé
+        withCredentials: true 
       }
     );
 
@@ -89,7 +134,7 @@ const handleAddToFavorites = async () => {
   }
 };
 
-// 🔹 Ajouter au panier
+//  Ajouter au panier
 const handleAddToCart = async () => {
   if (product.countInStock === 0) {
     alert("Produit en rupture de stock !");
@@ -120,7 +165,7 @@ const handleAddToCart = async () => {
       <div className="row g-4">
         {/* Product Images */}
         <div className="col-md-6 text-center">
-          <div className="border rounded-4 p-3 shadow-sm bg-white">
+          <div className="product-card h-100">
             {product.images && product.images.length > 0 ? (
               <img
                 src={product.images[0].url}
@@ -165,22 +210,64 @@ const handleAddToCart = async () => {
             <Button variant="primary" className="d-flex align-items-center gap-2"   onClick={handleAddToCart}>
               <FiShoppingCart /> Ajouter au panier
             </Button>
-            <Button variant="outline-secondary" onClick={handleAddToFavorites}>
-              Ajouter aux favoris
+            <Button variant="btn btn-primary-redesign" onClick={handleAddToFavorites}>
+            <FiHeart /> Ajouter aux favoris
             </Button>
           </div>
 
           <div>
+          <p className="text-muted mb-1">
+          
             <strong>Disponibilité:</strong>{" "}
+           
             {product.countInStock > 0 ? (
               <span className="text-success">En stock</span>
             ) : (
               <span className="text-danger">Rupture de stock</span>
             )}
+             </p>
           </div>
         </div>
       </div>
+      {/* SIMILAR PRODUCTS */}
+{similarProducts.length > 0 && (
+  <div className="mt-5">
+     <div className="mb-4">
+          <h2 className="section-title">Produits similaires</h2>
+          <p className="section-subtitle d-inline">
+          Découvrez d'autres articles qui pourraient vous intéresser dans la même catégorie.
+          </p>
+        </div>
+
+    <div className="row g-4">
+      {similarProducts.map((product) => {
+        const badgeType = product.promotion ? "promo" : "stock";
+
+        return (
+          <div key={product._id} className="col-12 col-sm-6 col-md-3">
+            <ProductCard
+              product={{
+                id: product._id,
+                name: product.name,
+                price: product.price,
+                image: product.images?.[0]?.url || "/assets/images/default.png",
+                category: product.subCategoryName || "N/A",
+                countInStock: product.countInStock,
+                description: product.description,
+                promotion: product.promotion || null,
+              }}
+              badgeType={badgeType}
+              stockCount={product.countInStock}
+            />
+          </div>
+        );
+      })}
     </div>
+  </div>
+)}
+
+    </div>
+    
   );
 }
 

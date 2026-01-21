@@ -3,8 +3,10 @@ import axios from "axios";
 import { Spinner, Button } from "react-bootstrap";
 import BASE_URL from "../constante";
 import ProductCard from "../components/ProductCard";
+import { useGlobalSearch } from "../context/SearchContext";
 
 function Products() {
+  const { query, categoryId, subCategoryId } = useGlobalSearch();
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,6 +26,8 @@ function Products() {
           name: product.name,
           description: product.description,
           category: product.category?.name || "N/A",
+          categoryId: product.category?._id || product.category || "",
+          subCategoryId: product.subCategory || product.subCategory?._id || "",
           image: product.images?.[0]?.url || "/assets/images/default.png",
           price: product.price,
           originalPrice: product.promotion ? product.price : null,
@@ -52,6 +56,12 @@ function Products() {
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const filteredCurrent = currentProducts.filter((p) => {
+    const matchesName = p.name?.toLowerCase().includes(query.toLowerCase());
+    const matchesCat = !categoryId || p.categoryId === categoryId;
+    const matchesSub = !subCategoryId || p.subCategoryId === subCategoryId;
+    return matchesName && matchesCat && matchesSub;
+  });
   const totalPages = Math.ceil(products.length / productsPerPage);
 
   const handlePrev = () => {
@@ -83,8 +93,8 @@ function Products() {
       <h2 className="mb-4">Nos Produits</h2>
 
       <div className="row g-4">
-        {currentProducts.map((product) => (
-          <div key={product.id} className="col-12 col-sm-6 col-md-3">
+        {filteredCurrent.map((product) => (
+          <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
             <ProductCard
               product={product}
               badgeType={product.promotion ? "promo" : "stock"}
@@ -97,6 +107,9 @@ function Products() {
           </div>
         ))}
       </div>
+      {filteredCurrent.length === 0 && (
+        <p className="text-center text-muted mt-3">Aucun produit correspondant.</p>
+      )}
 
       {/* Pagination Controls */}
      {/* Modern Pagination */}

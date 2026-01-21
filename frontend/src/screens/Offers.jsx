@@ -4,6 +4,7 @@ import axios from "axios";
 import BASE_URL from "../constante";
 import ProductCard from "../components/ProductCard";
 import "swiper/css";
+import { useGlobalSearch } from "../context/SearchContext";
 
 export default function OfferPage() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function OfferPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [favorites, setFavorites] = useState([]);
+  const { query } = useGlobalSearch();
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -69,6 +71,9 @@ export default function OfferPage() {
   const indexOfLast = currentPage * productsPerPage;
   const indexOfFirst = indexOfLast - productsPerPage;
   const currentProducts = products.slice(indexOfFirst, indexOfLast);
+  const filteredCurrent = currentProducts.filter((p) =>
+    p.name?.toLowerCase().includes(query.toLowerCase())
+  );
   const totalPages = Math.ceil(products.length / productsPerPage);
 
   return (
@@ -124,8 +129,8 @@ export default function OfferPage() {
 
      
         <div className="row g-4">
-          {currentProducts.map((product) => (
-            <div key={product.id} className="col-12 col-sm-6 col-md-3">
+          {filteredCurrent.map((product) => (
+            <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
               <ProductCard
                 product={product}
                 badgeType="promo"
@@ -138,6 +143,9 @@ export default function OfferPage() {
             </div>
           ))}
         </div>
+        {filteredCurrent.length === 0 && (
+          <p className="text-center text-muted mt-3">Aucune offre correspondante.</p>
+        )}
 
         {/* PAGINATION */}
         {products.length > productsPerPage && (

@@ -147,7 +147,7 @@ const ProductCard = ({ product, badgeType, stockCount, isFavorite, onFavoriteSuc
     <p className="product-price">
       <button
         className="btn-redesign btn-primary-redesign"
-        onClick={() => navigate("/login")}
+        onClick={() => navigate("/register")}
       >
         Voir prix
       </button>

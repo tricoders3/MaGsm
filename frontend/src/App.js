@@ -5,6 +5,7 @@ import Home from "./screens/Home";
 import Login from "./screens/login";
 import Register from "./screens/register";
 import Dashboard from "./screens/Dashboard";
+import SearchPage from "./screens/SearchPage";
 import Layout from "./components/Layout";
 import About from "./screens/About";
 import Contact from "./screens/Contact";
@@ -80,6 +81,7 @@ function App() {
   <Route path="/category/:categoryId" element={<SubCategories />} />
   <Route path="/products/category" element={<ProductsCategory />} />
     <Route path="/products" element={<Products />} />
+    <Route path="/recherche" element={<SearchPage />} />
     <Route path="/profile" element={<Profile />} />
 
 
