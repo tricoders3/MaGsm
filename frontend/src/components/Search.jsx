@@ -52,17 +52,11 @@ export default function GlobalSearch() {
         <div className="global-search-box w-100">
           {/* Category */}
           <select
-  className="form-select me-2"
-  style={{ maxWidth: 180, height: 40, borderRadius: 9999 }}
-  value={categoryId}
-  onChange={(e) => {
-    const newCategory = e.target.value;
-    setCategoryId(newCategory);
-    setSubCategoryId("");
-    setQuery("");
-  }}
->
-
+            className="form-select me-2"
+            style={{ maxWidth: 180, height: 40, borderRadius: 9999 }}
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+          >
             <option value="">Toutes catégories</option>
             {categories.map((c) => (
               <option key={c._id} value={c._id}>{c.name}</option>
@@ -72,7 +66,7 @@ export default function GlobalSearch() {
           {/* Subcategory */}
           <select
             className="form-select me-2"
-            style={{ maxWidth: 200, height: 40, borderRadius: 9999 }}
+            style={{ maxWidth: 220, height: 40, borderRadius: 9999 }}
             value={subCategoryId}
             onChange={(e) => setSubCategoryId(e.target.value)}
             disabled={!categoryId}

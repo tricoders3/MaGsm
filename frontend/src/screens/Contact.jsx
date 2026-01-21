@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import { FiMail, FiPhone, FiMapPin, FiClock, FiSend } from 'react-icons/fi';
 import BASE_URL from '../constante';
@@ -7,6 +7,7 @@ export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState({ type: '', message: '' });
+  const statusRef = useRef(null);
   const [contactInfo, setContactInfo] = useState({
     title: '',
     description: '',
@@ -18,9 +19,9 @@ export default function Contact() {
   });
 
   const isValid = useMemo(() => {
-    if (!form.name || !form.email || !form.message) return false;
+    if (!form.name || !form.email || !form.subject || !form.message) return false;
     const emailOk = /.+@.+\..+/.test(form.email);
-    return emailOk && form.message.length >= 10;
+    return emailOk && form.message.length >= 1;
   }, [form]);
 
   const handleChange = (e) => {
@@ -48,6 +49,17 @@ export default function Contact() {
     };
     fetchSettings();
   }, []);
+
+  // Auto-scroll to status and auto-dismiss after 5s
+  useEffect(() => {
+    if (status.message) {
+      // Scroll into view
+      statusRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Auto-dismiss
+      const t = setTimeout(() => setStatus({ type: '', message: '' }), 5000);
+      return () => clearTimeout(t);
+    }
+  }, [status]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -135,8 +147,19 @@ export default function Contact() {
             <div className="rounded-4 shadow-soft p-4 bg-white h-100">
               <h3 className="text-dark mb-3">Envoyez-nous un message</h3>
               {status.message && (
-                <div className={`alert ${status.type === 'success' ? 'alert-success' : 'alert-danger'}`} role="alert">
-                  {status.message}
+                <div
+                  ref={statusRef}
+                  className={`alert ${status.type === 'success' ? 'alert-success' : 'alert-danger'} d-flex justify-content-between align-items-center`}
+                  role="status"
+                  aria-live="polite"
+                >
+                  <span>{status.message}</span>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    aria-label="Fermer"
+                    onClick={() => setStatus({ type: '', message: '' })}
+                  />
                 </div>
               )}
               <form onSubmit={handleSubmit} noValidate>
@@ -185,6 +208,7 @@ export default function Contact() {
                       value={form.subject}
                       onChange={handleChange}
                       placeholder="Entrez l'objet du message"
+                      required
                     />
                   </div>
                   <div className="col-12">

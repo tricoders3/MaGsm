@@ -9,7 +9,17 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 10; 
 
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+
+  // Slice orders for current page
+  const paginatedOrders = orders.slice(
+    (currentPage - 1) * ordersPerPage,
+    currentPage * ordersPerPage
+  );
+  
   const fetchOrders = async () => {
     try {
       setLoading(true);
@@ -66,31 +76,33 @@ const Orders = () => {
 
   return (
     <div className="container py-4">
-      <div className="card border-0 shadow-sm rounded-4">
-        <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-          <div>
-            <h5 className="text-dark fw-bold mb-0 d-flex align-items-center gap-2">
-              Commandes
-              <span className="users-count-pill">{orders.length}</span>
-            </h5>
-            <small className="text-muted">Gérez les commandes et leurs statuts.</small>
-          </div>
-          <button
-            className="btn btn-danger btn-sm"
-            onClick={handleDeleteAllOrders}
-          >
-            Supprimer toutes les commandes
-          </button>
+    <div className="card border-0 shadow-sm rounded-4">
+      <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+        <div>
+          <h5 className="text-dark fw-bold mb-0 d-flex align-items-center gap-2">
+            Commandes
+            <span className="users-count-pill">{orders.length}</span>
+          </h5>
+          <small className="text-muted">Gérez les commandes et leurs statuts.</small>
         </div>
-        <div className="card-body p-0">
-          {loading ? (
-            <div className="text-center py-5">
-              <div className="spinner-border text-primary" />
-              <p className="mt-2 mb-0 text-muted">Chargement des commandes…</p>
-            </div>
-          ) : error ? (
-            <p className="text-danger p-4">{error}</p>
-          ) : (
+        <button
+          className="btn btn-danger btn-sm"
+          onClick={handleDeleteAllOrders}
+        >
+          Supprimer toutes les commandes
+        </button>
+      </div>
+
+      <div className="card-body p-0">
+        {loading ? (
+          <div className="text-center py-5">
+            <div className="spinner-border text-primary" />
+            <p className="mt-2 mb-0 text-muted">Chargement des commandes…</p>
+          </div>
+        ) : error ? (
+          <p className="text-danger p-4">{error}</p>
+        ) : (
+          <>
             <div className="table-responsive">
               <table className="table table-hover table-sm align-middle mb-0">
                 <thead className="table-light">
@@ -106,7 +118,7 @@ const Orders = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.map(order => {
+                  {paginatedOrders.map(order => {
                     const totalQuantity = order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
                     return (
@@ -145,20 +157,20 @@ const Orders = () => {
                             onChange={(e) => handleStatusChange(order._id, e.target.value)}
                           >
                             {statusOptions.map(opt => (
-                              <option key={opt} value={opt}>
-                                {opt}
-                              </option>
+                              <option key={opt} value={opt}>{opt}</option>
                             ))}
                           </select>
                         </td>
                         <td>{new Date(order.createdAt).toLocaleString()}</td>
                         <td className="text-center">
-                          <FiTrash2
-                            className="text-secondary"
-                            style={{ cursor: "pointer" }}
-                            size={18}
+                          <button
+                            className="btn btn-sm btn-light border text-danger action-btn"
+                            title="Supprimer"
                             onClick={() => handleDeleteOrder(order._id)}
-                          />
+                          >
+                            <i className="fas fa-trash" aria-hidden="true"></i>
+                            <span className="visually-hidden">Supprimer</span>
+                          </button>
                         </td>
                       </tr>
                     );
@@ -166,10 +178,40 @@ const Orders = () => {
                 </tbody>
               </table>
             </div>
-          )}
-        </div>
+
+            {/* Pagination */}
+            {orders.length > ordersPerPage && (
+              <div className="d-flex justify-content-center align-items-center gap-2 mt-4 mb-3 flex-wrap">
+                <button
+                  className={`btn btn-outline-secondary btn-sm ${currentPage === 1 ? "disabled" : ""}`}
+                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                >
+                  Préc
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    className={`btn btn-outline-primary btn-sm ${currentPage === p ? "active" : ""}`}
+                    onClick={() => setCurrentPage(p)}
+                  >
+                    {p}
+                  </button>
+                ))}
+
+                <button
+                  className={`btn btn-outline-secondary btn-sm ${currentPage === totalPages ? "disabled" : ""}`}
+                  onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                >
+                  Suiv
+                </button>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
+  </div>
   );
 };
 
