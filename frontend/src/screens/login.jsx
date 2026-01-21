@@ -41,7 +41,7 @@ const loginWithGoogle = () => {
   // Connexion Facebook
   const loginWithFacebook = () => {
     toast.info("Redirection vers Facebook…");
-    window.location.href = `https://0dd4d5a2ec44.ngrok-free.app/api/auth/facebook`;
+    window.location.href = `https://b3088eac387f.ngrok-free.app/api/auth/facebook`;
   };
 
 

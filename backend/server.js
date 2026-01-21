@@ -79,6 +79,17 @@ app.use('/api/orders', orderRoutes);
 app.use("/api/site-settings", settingsRoutes);  
 app.use("/api/contact", contactMsgRoutes);
 app.use("/api/locations", locationRoutes);
+app.get("/facebook-data-deletion", (req, res) => {
+  res.status(200).send(`
+    <h2>Suppression des données utilisateur</h2>
+    <p>
+      Si vous avez utilisé la connexion Facebook et souhaitez
+      supprimer vos données, veuillez nous contacter à :
+    </p>
+    <p><b>support@tonsite.com</b></p>
+    <p>Votre demande sera traitée sous 7 jours.</p>
+  `);
+});
 
 // ------------------
 // Start Server
