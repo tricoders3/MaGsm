@@ -6,9 +6,9 @@ const userSchema = new mongoose.Schema(
     name: String,
     email: { type: String, unique: true },
     password: { type: String, select: false },
-    role: { type: String, enum: ["client", "admin"], default: "client" },
-    phone: { type: String },
-    address: { type: String },
+    role: { type: String, enum: ["guest", "client", "admin"], default: "guest" },
+    isApproved: { type: Boolean, default: false },
+    pendingRequest: { type: Boolean, default: false },
    // 🔹 Permet de savoir si un password local existe
     passwordCreated: {
       type: Boolean,

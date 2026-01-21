@@ -1,8 +1,7 @@
 import {
   registerUser,
-  loginUser,
-  googleLogin,
-  facebookLogin,
+  loginUser, googleLogin, facebookLogin,
+ requestAccess, approveUser,
    updateUserPassword, generatePasswordResetToken, resetUserPassword, createPasswordForSocialUser
 } from "../services/authService.js";
 import { sendEmail } from "../utils/sendEmail.js"; // Ton utils pour envoyer mail
@@ -12,10 +11,28 @@ import { sendEmail } from "../utils/sendEmail.js"; // Ton utils pour envoyer mai
  */
 export const register = async (req, res) => {
   try {
-    await registerUser(req.body);
-    res.status(201).json({ message: "Utilisateur créé avec succès" });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+    const user = await registerUser(req.body);
+    res.status(201).json({ message: "Inscription réussie, en attente de validation.", user });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+export const requestPriceAccess = async (req, res) => {
+  try {
+    const user = await requestAccess(req.user.id);
+    res.json({ message: "Demande envoyée à l'admin.", user });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+export const approveUserByLink = async (req, res) => {
+  try {
+    const user = await approveUser(req.params.userId);
+    res.send("Utilisateur approuvé avec succès !");
+  } catch (err) {
+    res.status(400).send(err.message);
   }
 };
 
@@ -48,50 +65,70 @@ export const login = async (req, res) => {
 
 
 /**
- * Google OAuth success
- * (called AFTER passport authentication)
+ * GOOGLE OAuth SUCCESS
+ * appelé après passport.authenticate("google")
  */
 export const googleLoginSuccess = async (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Unauthorized" });
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { user, accessToken, refreshToken } = await googleLogin(req.user);
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    res.redirect(
+      `${process.env.CLIENT_URL}/oauth-success?token=${accessToken}`
+    );
+  } catch (error) {
+    // ⛔ compte non approuvé
+    if (error.message === "ACCOUNT_NOT_APPROVED") {
+      return res.redirect(
+        `${process.env.CLIENT_URL}/waiting-approval`
+      );
+    }
+
+    console.error("Google login error:", error);
+    res.redirect(`${process.env.CLIENT_URL}/oauth-error`);
   }
-
-  const { accessToken, refreshToken } = await googleLogin(req.user);
-
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
-  });
-
-  res.redirect(
-    `${process.env.CLIENT_URL}/oauth-success?token=${accessToken}`
-  );
 };
 
 /**
- * Facebook OAuth success
- * (same logic as Google)
+ * FACEBOOK OAuth SUCCESS
+ * appelé après passport.authenticate("facebook")
  */
 export const facebookLoginSuccess = async (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Unauthorized" });
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { user, accessToken, refreshToken } = await facebookLogin(req.user);
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    res.redirect(
+      `${process.env.CLIENT_URL}/oauth-success?token=${accessToken}`
+    );
+  } catch (error) {
+    if (error.message === "ACCOUNT_NOT_APPROVED") {
+      return res.redirect(
+        `${process.env.CLIENT_URL}/waiting-approval`
+      );
+    }
+
+    console.error("Facebook login error:", error);
+    res.redirect(`${process.env.CLIENT_URL}/oauth-error`);
   }
-
-  const { accessToken, refreshToken } = await facebookLogin(req.user);
-
-  // Mettre le refresh token dans cookie
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
-  });
-
-  // Redirection vers frontend avec token
-   res.redirect(
-    `${process.env.CLIENT_URL}/oauth-success?token=${accessToken}`
-  );
-
 };
 
 /**
