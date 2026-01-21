@@ -2,23 +2,52 @@ import bcrypt from "bcryptjs";
 import User from "../models/userModel.js";
 import crypto from "crypto";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
+import { sendAdminRequestEmail, sendApprovalEmail } from "../utils/sendEmail.js";
 
 export const registerUser = async ({ name, email, password }) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new Error("Email déjà utilisé");
 
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newUser = new User({
+  const user = await User.create({
     name,
     email,
     password: hashedPassword,
-    role: "client",
+    role: "guest",
+    isApproved: false,
+    pendingRequest: true // on peut mettre true si on veut notifier l’admin directement
   });
 
-  await newUser.save();
-  return newUser;
+  // ENVOI EMAIL À L’ADMIN
+  await sendAdminRequestEmail(user);
+
+  return user;
+};
+export const requestAccess = async (userId) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("Utilisateur non trouvé");
+  if (user.pendingRequest) throw new Error("Vous avez déjà une demande en attente");
+
+  user.pendingRequest = true;
+  await user.save();
+
+  await sendAdminRequestEmail(user);
+  return user;
+};
+
+export const approveUser = async (userId) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("Utilisateur non trouvé");
+  if (!user.pendingRequest) throw new Error("Aucune demande en attente");
+
+  user.pendingRequest = false;
+  user.isApproved = true;
+  user.role = "client";
+  await user.save();
+
+  await sendApprovalEmail(user.email, user.name);
+  return user;
 };
 
 export const loginUser = async ({ email, password }) => {
@@ -35,15 +64,42 @@ export const loginUser = async ({ email, password }) => {
 };
 
 export const googleLogin = async (user) => {
+  // ⛔ utilisateur pas encore approuvé
+  if (!user.isApproved) {
+    // envoyer email admin UNIQUEMENT à la première fois
+    if (!user.pendingRequest) {
+      await sendAdminRequestEmail(user);
+
+      user.pendingRequest = true;
+      await user.save();
+    }
+
+    throw new Error("ACCOUNT_NOT_APPROVED");
+  }
+
+  // ✅ approuvé
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
-  return { accessToken, refreshToken };
+  return { user, accessToken, refreshToken };
 };
+
 export const facebookLogin = async (user) => {
+  if (!user.isApproved) {
+    if (!user.pendingRequest) {
+      await sendAdminRequestEmail(user);
+
+      user.pendingRequest = true;
+      await user.save();
+    }
+
+    throw new Error("ACCOUNT_NOT_APPROVED");
+  }
+
   const accessToken = generateAccessToken(user);
-  const refreshToken = generateRefreshToken(user);  
-  return { accessToken, refreshToken };
+  const refreshToken = generateRefreshToken(user);
+
+  return { user, accessToken, refreshToken };
 };
 
 /**
