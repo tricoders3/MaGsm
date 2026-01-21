@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { FiEdit2, FiTrash2, FiSearch, FiList } from "react-icons/fi";
 import BASE_URL from "../../constante";
 
 const Categories = () => {
@@ -143,7 +144,7 @@ const Categories = () => {
       <div className="card border-0 shadow-sm rounded-4 mb-4">
         <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
           <h4 className="mb-0">Categories</h4>
-          <span className="badge bg-primary-soft">{categories.length} categories</span>
+          <span className="count-pill">{categories.length} categories</span>
         </div>
 
         <div className="card-body">
@@ -187,13 +188,14 @@ const Categories = () => {
                 </div>
                 <div className="d-flex gap-2">
                   <button className="btn btn-sm btn-light border action-btn" onClick={() => handleEditCategory(cat)}>
-                    <i className="fas fa-pen"></i>
+                  <FiEdit2 size={16} />
                   </button>
                   <button className="btn btn-sm btn-light border action-btn text-danger" onClick={() => deleteCategory(cat._id)}>
-                    <i className="fas fa-trash"></i>
+                  <FiTrash2 size={16} />
                   </button>
                   <button className="btn btn-sm btn-light border action-btn" onClick={() => handleSub(cat._id)}>
-                    <i className="fas fa-list"></i>
+                    
+                  <FiList  size={16}/>
                   </button>
                 </div>
               </li>
@@ -207,7 +209,7 @@ const Categories = () => {
         <div className="card border-0 shadow-sm rounded-4">
           <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
             <h5 className="mb-0">Subcategories</h5>
-            <span className="badge bg-info-soft">{subCategories.length} subcategories</span>
+            <span className="count-pill">{subCategories.length} subcategories</span>
           </div>
 
           <div className="card-body">
@@ -238,10 +240,10 @@ const Categories = () => {
                   <span>{sc.name}</span>
                   <div className="d-flex gap-2">
                     <button className="btn btn-sm btn-light border action-btn" onClick={() => handleEditSub(sc)}>
-                      <i className="fas fa-pen"></i>
+                    <FiEdit2 size={16} />
                     </button>
-                    <button className="btn btn-sm btn-light border action-btn text-danger" onClick={() => deleteSubCategory(sc._id)}>
-                      <i className="fas fa-trash"></i>
+                    <button className="btn btn-sm btn-light border text-danger action-btn" onClick={() => deleteSubCategory(sc._id)}>
+                      <FiTrash2 size={16} />
                     </button>
                   </div>
                 </li>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FiTrash2 } from "react-icons/fi"; // trash icon
+import { FiEdit2, FiTrash2, FiSearch, FiDelete } from "react-icons/fi";
 import BASE_URL from "../../constante";
+import ConfirmModal from "../../components/ConfirmModal";
 
 const statusOptions = ["pending", "delivered", "cancelled"];
 
@@ -10,6 +11,10 @@ const Orders = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmMode, setConfirmMode] = useState(null); 
+  const [targetOrderId, setTargetOrderId] = useState(null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
   const ordersPerPage = 10; 
 
   const totalPages = Math.ceil(orders.length / ordersPerPage);
@@ -50,38 +55,47 @@ const Orders = () => {
     }
   };
 
-  const handleDeleteOrder = async (orderId) => {
-    if (!window.confirm("Voulez-vous vraiment supprimer cette commande ?")) return;
-
-    try {
-      await axios.delete(`${BASE_URL}/api/orders/${orderId}`, { withCredentials: true });
-      setOrders(prev => prev.filter(o => o._id !== orderId));
-      alert("Commande supprimée avec succès !");
-    } catch (err) {
-      alert("Impossible de supprimer la commande");
-    }
+  const handleDeleteOrder = (orderId) => {
+    setConfirmMode('single');
+    setTargetOrderId(orderId);
+    setConfirmOpen(true);
   };
 
-  const handleDeleteAllOrders = async () => {
-    if (!window.confirm("Voulez-vous vraiment supprimer toutes les commandes ?")) return;
+  const handleDeleteAllOrders = () => {
+    setConfirmMode('all');
+    setTargetOrderId(null);
+    setConfirmOpen(true);
+  };
 
+  const performConfirm = async () => {
     try {
-      await axios.delete(`${BASE_URL}/api/orders`, { withCredentials: true });
-      setOrders([]);
-      alert("Toutes les commandes ont été supprimées !");
+      setConfirmLoading(true);
+      if (confirmMode === 'single' && targetOrderId) {
+        await axios.delete(`${BASE_URL}/api/orders/${targetOrderId}`, { withCredentials: true });
+        setOrders(prev => prev.filter(o => o._id !== targetOrderId));
+      } else if (confirmMode === 'all') {
+        await axios.delete(`${BASE_URL}/api/orders`, { withCredentials: true });
+        setOrders([]);
+      }
+      setConfirmOpen(false);
+      setConfirmMode(null);
+      setTargetOrderId(null);
     } catch (err) {
-      alert("Impossible de supprimer toutes les commandes");
+      setError("Opération de suppression échouée");
+    } finally {
+      setConfirmLoading(false);
     }
   };
 
   return (
+    <>
     <div className="container py-4">
     <div className="card border-0 shadow-sm rounded-4">
       <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
         <div>
           <h5 className="text-dark fw-bold mb-0 d-flex align-items-center gap-2">
             Commandes
-            <span className="users-count-pill">{orders.length}</span>
+            <span className="count-pill">{orders.length}</span>
           </h5>
           <small className="text-muted">Gérez les commandes et leurs statuts.</small>
         </div>
@@ -89,7 +103,7 @@ const Orders = () => {
           className="btn btn-danger btn-sm"
           onClick={handleDeleteAllOrders}
         >
-          Supprimer toutes les commandes
+          Supprimer tout
         </button>
       </div>
 
@@ -168,8 +182,7 @@ const Orders = () => {
                             title="Supprimer"
                             onClick={() => handleDeleteOrder(order._id)}
                           >
-                            <i className="fas fa-trash" aria-hidden="true"></i>
-                            <span className="visually-hidden">Supprimer</span>
+                              <FiTrash2 size={16} />
                           </button>
                         </td>
                       </tr>
@@ -212,6 +225,27 @@ const Orders = () => {
       </div>
     </div>
   </div>
+    <ConfirmModal
+  open={confirmOpen}
+  title="Confirmer la suppression"
+  description="Voulez-vous vraiment supprimer cet élément ?"
+  confirmText="Supprimer"
+  cancelText="Annuler"
+  loading={confirmLoading}
+  danger
+  onConfirm={performConfirm}
+  onCancel={() => {
+    if (!confirmLoading) {
+      setConfirmOpen(false);
+      setConfirmMode(null);
+      setTargetOrderId(null);
+    }
+  }}
+/>
+
+ 
+ 
+  </>
   );
 };
 

@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import BASE_URL from "../../constante"; 
 import { FiEdit2, FiTrash2, FiSearch } from "react-icons/fi";
+import ConfirmModal from "../../components/ConfirmModal";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [targetUserId, setTargetUserId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({
@@ -42,7 +45,6 @@ const Users = () => {
 
   // Delete user
   const deleteUser = async (id) => {
-    if (!window.confirm("Supprimer cet utilisateur ?")) return;
     try {
       await axios.delete(`${BASE_URL}/api/user/${id}`);
       fetchUsers();
@@ -51,6 +53,13 @@ const Users = () => {
       alert("Erreur lors de la suppression de l'utilisateur");
     }
   };
+
+
+  const handleDeleteUser = (userId) => {
+    setTargetUserId(userId);
+    setConfirmOpen(true);
+  };
+
 
   // Open modal
   const openEditModal = (user) => {
@@ -108,7 +117,7 @@ const Users = () => {
           <div>
             <h5 className="text-dark fw-bold mb-0 d-flex align-items-center gap-2">
               Utilisateurs
-              <span className="users-count-pill">{filteredUsers.length} users</span>
+              <span className="count-pill">{filteredUsers.length} users</span>
             </h5>
             <small className="text-muted">Gérez les comptes et les rôles des utilisateurs.</small>
           </div>
@@ -184,10 +193,9 @@ const Users = () => {
                           <button
                             className="btn btn-sm btn-light border text-danger action-btn"
                             title="Supprimer"
-                            onClick={() => deleteUser(u._id)}
+                            onClick={() => handleDeleteUser(u._id)}
                           >
                             <FiTrash2 size={16} />
-                            <span className="visually-hidden">Supprimer</span>
                           </button>
                         </td>
                       </tr>
@@ -293,6 +301,21 @@ const Users = () => {
           </div>
         </div>
       )}
+        <ConfirmModal
+        open={confirmOpen}
+        loading={confirmLoading}
+        onConfirm={async () => {
+          setConfirmLoading(true);
+          await deleteUser(targetUserId);
+          setConfirmLoading(false);
+          setConfirmOpen(false);
+          setTargetUserId(null);
+        }}
+        onCancel={() => {
+          setConfirmOpen(false);
+          setTargetUserId(null);
+        }}
+      />
     </div>
   );
 };

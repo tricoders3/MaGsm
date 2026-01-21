@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BsBox, BsTags, BsPercent, BsPeople } from "react-icons/bs";
 import BASE_URL from "../../constante";
@@ -14,6 +15,7 @@ export default function Dashboard() {
  const [topProducts, setTopProducts] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const fetchCounts = async () => {
     try {
@@ -115,7 +117,16 @@ setTopProducts(top);
       <div className="row g-4 mb-4">
         {stats.map((item, index) => (
           <div className="col-12 col-md-6 col-xl-3" key={index}>
-            <div className="card border-0 shadow-sm h-100">
+             <div
+        className="card border-0 shadow-sm h-100"
+        style={{ cursor: "pointer" }} 
+        onClick={() => {
+          if (item.title === "Produits") navigate("/admin/products");
+          else if (item.title === "Catégories") navigate("/admin/categories");
+          else if (item.title === "Promotions")  navigate("/admin/promos");
+          else if (item.title === "Utilisateurs") navigate("/admin/users");
+        }}
+      >
               <div className="card-body d-flex justify-content-between">
                 <div>
                   <small className="text-muted">{item.title}</small>

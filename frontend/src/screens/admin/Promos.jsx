@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Select from "react-select";
-
+import { FiEdit2, FiTrash2, FiSearch } from "react-icons/fi";
+import ConfirmModal from "../../components/ConfirmModal";
 import BASE_URL from "../../constante";
 
 const Promotions = () => {
@@ -11,6 +12,9 @@ const Promotions = () => {
   const [productsWithPromo, setProductsWithPromo] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [products, setProducts] = useState([]);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [targetPromotionId, setTargetPromotionId] = useState(null);
   const [currentPagePromo, setCurrentPagePromo] = useState(1);
   const itemsPerPage = 5;
  
@@ -22,7 +26,7 @@ const paginatedProductsWithPromo = productsWithPromo.slice(
   currentPagePromo * itemsPerPage
 );
 const [currentPagePromosTable, setCurrentPagePromosTable] = useState(1);
-const itemsPerPagePromosTable = 2; // adjust as needed
+const itemsPerPagePromosTable = 2; 
 
 const totalPagesPromosTable = Math.ceil(
   promotions.length / itemsPerPagePromosTable
@@ -51,7 +55,7 @@ const fetchProducts = async () => {
 
   const [editingPromoId, setEditingPromoId] = useState(null);
 
-  /* ---------------- FETCH DATA ---------------- */
+  
   const fetchCategories = async () => {
     const { data } = await axios.get(`${BASE_URL}/api/categories`);
     setCategories(data);
@@ -85,10 +89,10 @@ const fetchProducts = async () => {
   useEffect(() => {
     fetchSubCategories(form.category);
     setForm({ ...form, subCategory: "" });
-    // eslint-disable-next-line
+    
   }, [form.category]);
 
-  /* ---------------- FORM HANDLERS ---------------- */
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -152,10 +156,20 @@ const fetchProducts = async () => {
     setShowForm(true);
   };
 
+  const handleDeletePromotion = (id) => {
+    setTargetPromotionId(id);
+    setConfirmOpen(true);
+  };
+
   const deletePromotion = async (id) => {
-    if (!window.confirm("Delete this promotion?")) return;
-    await axios.delete(`${BASE_URL}/api/promotions/${id}`);
-    fetchPromotions();
+    try {
+      await axios.delete(`${BASE_URL}/api/promotions/${id}`);
+      fetchPromotions();
+      fetchProductsWithPromo();
+    } catch (error) {
+      console.error(error);
+      alert("Error deleting promotion");
+    }
   };
 
   return (
@@ -171,7 +185,7 @@ const fetchProducts = async () => {
           </div>
           <div>
             <button
-              className="btn btn-primary"
+              className="btn btn-add-primary"
               onClick={() => {
                 setShowForm(true);
                 setEditingPromoId(null);
@@ -408,17 +422,16 @@ const fetchProducts = async () => {
                             title="Modifier"
                             onClick={() => editPromotion(p)}
                           >
-                            <i className="fas fa-pen" aria-hidden="true"></i>
+                          <FiEdit2 size={16} />
                             <span className="visually-hidden">Modifier</span>
                           </button>
-                          <button
-                            className="btn btn-sm btn-light border text-danger action-btn"
-                            title="Supprimer"
-                            onClick={() => deletePromotion(p._id)}
-                          >
-                            <i className="fas fa-trash" aria-hidden="true"></i>
-                            <span className="visually-hidden">Supprimer</span>
-                          </button>
+                        <button
+                  className="btn btn-sm btn-light border text-danger action-btn"
+                  title="Supprimer"
+                  onClick={() => handleDeletePromotion(p._id)}
+                >
+                 <FiTrash2 size={16} />
+                </button>
                         </td>
             </tr>
           ))}
@@ -561,7 +574,21 @@ const fetchProducts = async () => {
     )}
   </div>
 </div>
-
+<ConfirmModal
+        open={confirmOpen}
+        loading={confirmLoading}
+        onConfirm={async () => {
+          setConfirmLoading(true);
+          await deletePromotion(targetPromotionId);
+          setConfirmLoading(false);
+          setConfirmOpen(false);
+          setTargetPromotionId(null);
+        }}
+        onCancel={() => {
+          setConfirmOpen(false);
+          setTargetPromotionId(null);
+        }}
+      />
     </div>
   );
 };
