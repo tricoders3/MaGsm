@@ -10,7 +10,7 @@ import User from '../models/userModel.js';
 // CLIENT – user himself
 export const updateMe = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     const user = await updateUserByHimself(userId, req.body);
 
@@ -24,6 +24,7 @@ export const updateMe = async (req, res) => {
     });
   }
 };
+
 
 
 // CLIENT + ADMIN

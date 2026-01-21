@@ -5,8 +5,7 @@ export const updateUserByHimself = async (userId, data) => {
   const user = await User.findById(userId);
   if (!user) throw new Error("Utilisateur non trouvé");
 
-  // 🔹 Champs autorisés à la modification
-  const allowedFields = ["name", "email"];
+  const allowedFields = ["name", "email", "phone", "address"];
 
   allowedFields.forEach((field) => {
     if (data[field] !== undefined) {
@@ -16,16 +15,18 @@ export const updateUserByHimself = async (userId, data) => {
 
   await user.save();
 
-  // 🔹 Retour sans infos sensibles
   return {
     _id: user._id,
     name: user.name,
     email: user.email,
+    phone: user.phone,
+    address: user.address,
     provider: user.provider,
     role: user.role,
     passwordCreated: user.passwordCreated,
   };
 };
+
 
 
 // CLIENT + ADMIN

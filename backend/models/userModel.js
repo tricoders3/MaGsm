@@ -7,6 +7,8 @@ const userSchema = new mongoose.Schema(
     email: { type: String, unique: true },
     password: { type: String, select: false },
     role: { type: String, enum: ["client", "admin"], default: "client" },
+    phone: { type: String },
+    address: { type: String },
    // 🔹 Permet de savoir si un password local existe
     passwordCreated: {
       type: Boolean,

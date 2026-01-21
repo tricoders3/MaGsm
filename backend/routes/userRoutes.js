@@ -20,7 +20,7 @@ const router = express.Router()
 
  */
 router.get('/me',  getProfile)
-router.put("/me",  updateMe);
+router.put("/me", protect, updateMe);
 router.get("/",  getUsers);
 /**
  * ADMIN uniquement

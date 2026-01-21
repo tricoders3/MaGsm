@@ -49,28 +49,30 @@ export const facebookLogin = async (user) => {
 /**
  * 🔹 Update password (LOCAL users only)
  */
-export const updateUserPassword = async (
-  userId,
-  currentPassword,
-  newPassword
-) => {
+export const updateUserPassword = async (userId, currentPassword, newPassword) => {
+  // 1️⃣ Find user
   const user = await User.findById(userId).select("+password");
   if (!user) throw new Error("Utilisateur non trouvé");
 
-  if (user.provider !== "local") {
-    throw new Error("Connexion sociale : création du mot de passe requise");
+  // 2️⃣ Local user: check current password
+  if (user.provider === "local") {
+    if (!currentPassword) throw new Error("Veuillez fournir le mot de passe actuel");
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) throw new Error("Mot de passe actuel incorrect");
   }
 
-  const isMatch = await bcrypt.compare(currentPassword, user.password);
-  if (!isMatch) throw new Error("Mot de passe actuel incorrect");
-
+  // 3️⃣ Hash the new password
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(newPassword, salt);
   user.passwordCreated = true;
 
+  // 4️⃣ Save user
   await user.save();
-  return true;
+
+  return true; // ✅ password updated
 };
+
 
 /**
  * 🔹 Create password for SOCIAL user

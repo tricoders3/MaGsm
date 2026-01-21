@@ -116,7 +116,8 @@ export const logout = (req, res) => {
 export const updatePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    await updateUserPassword(req.user._id, currentPassword, newPassword);
+    const userId = req.user.id || req.user._id; // 🔹 works for both
+    await updateUserPassword(userId, currentPassword, newPassword);
 
     res.status(200).json({
       message: "Mot de passe mis à jour avec succès",
@@ -125,6 +126,8 @@ export const updatePassword = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+
 
 /**
  * 🔹 Create password (social user)
