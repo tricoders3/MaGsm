@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import BASE_URL from "../../constante";
 import ProductForm from "../../components/ProductForm";
-import { FiPlus } from "react-icons/fi";
+import { FiEdit2, FiTrash2, FiSearch, FiPlus } from "react-icons/fi";
+import ConfirmModal from "../../components/ConfirmModal";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [targetProductId, setTargetProductId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -36,7 +39,6 @@ const Products = () => {
   }, []);
 
   const deleteProduct = async (id) => {
-    if (!window.confirm("Supprimer ce produit ?")) return;
     try {
       await axios.delete(`${BASE_URL}/api/products/${id}`);
       fetchProducts();
@@ -46,6 +48,11 @@ const Products = () => {
     }
   };
 
+  // Handle delete via confirm modal
+  const handleDeleteProduct = (productId) => {
+    setTargetProductId(productId);
+    setConfirmOpen(true);
+  };
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -70,13 +77,19 @@ const Products = () => {
 
   return (
     <div className="container py-4">
+         <ProductForm
+            show={showForm}
+            product={selectedProduct}
+            onClose={() => setShowForm(false)}
+            onSaved={fetchProducts}
+          />
       <div className="card border-0 shadow-sm rounded-4">
         {/* Header */}
         <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
           <div>
             <h5 className="text-dark fw-bold mb-0 d-flex align-items-center gap-2">
               Produits
-              <span className="users-count-pill">
+              <span className="count-pill">
                 {filteredProducts.length} produits
               </span>
             </h5>
@@ -84,18 +97,24 @@ const Products = () => {
           </div>
 
           <div className="d-flex gap-2 align-items-center mb-3">
-            <input
-              className="form-control rounded-pill ps-4"
-              placeholder="Recherche par nom…"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setCurrentPage(1); // Reset page when searching
-              }}
-              style={{ height: "42px" }}
-            />
+          <div className="position-relative w-100">
+    <FiSearch
+      className="search-icon"
+     
+    />
+    <input
+      className="form-control rounded-pill ps-5"
+      placeholder="Recherche par nom…"
+      value={search}
+      onChange={(e) => {
+        setSearch(e.target.value);
+        setCurrentPage(1); // Reset page when searching
+      }}
+      style={{ height: "42px" }}
+    />
+  </div>
             <button
-              className="btn btn-add-primary d-flex align-items-center justify-content-center gap-1"
+              className="btn btn-add-primary  d-flex align-items-center justify-content-center gap-1"
               onClick={() => {
                 setSelectedProduct(null);
                 setShowForm(true);
@@ -108,13 +127,8 @@ const Products = () => {
         </div>
 
         {/* Body */}
-        <div className="card-body mb-4">
-          <ProductForm
-            show={showForm}
-            product={selectedProduct}
-            onClose={() => setShowForm(false)}
-            onSaved={fetchProducts}
-          />
+        <div className="card-body mb-2">
+       
           {loading ? (
             <div className="text-center py-5">
               <div className="spinner-border text-primary" />
@@ -170,16 +184,15 @@ const Products = () => {
                               setShowForm(true);
                             }}
                           >
-                            <i className="fas fa-pen" aria-hidden="true"></i>
+                            <FiEdit2 size={16} />
                             <span className="visually-hidden">Modifier</span>
                           </button>
                           <button
                             className="btn btn-sm btn-light border text-danger action-btn"
                             title="Supprimer"
-                            onClick={() => deleteProduct(p._id)}
+                            onClick={() => handleDeleteProduct(p._id)}
                           >
-                            <i className="fas fa-trash" aria-hidden="true"></i>
-                            <span className="visually-hidden">Supprimer</span>
+                               <FiTrash2 size={16} />
                           </button>
                         </td>
                       </tr>
@@ -240,6 +253,21 @@ const Products = () => {
           )}
         </div>
       </div>
+      <ConfirmModal
+        open={confirmOpen}
+        loading={confirmLoading}
+        onConfirm={async () => {
+          setConfirmLoading(true);
+          await deleteProduct(targetProductId);
+          setConfirmLoading(false);
+          setConfirmOpen(false);
+          setTargetProductId(null);
+        }}
+        onCancel={() => {
+          setConfirmOpen(false);
+          setTargetProductId(null);
+        }}
+      />
     </div>
   );
 };
