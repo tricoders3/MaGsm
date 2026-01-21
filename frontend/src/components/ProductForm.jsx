@@ -160,9 +160,17 @@ const ProductForm = ({ show, onClose, onSaved, product }) => {
             <input className="form-control" type="number" placeholder="Prix" value={price} onChange={e => setPrice(e.target.value)} />
           </div>
           <div className="col-12 col-md-6">
-            <label className="form-label">Stock</label>
-            <input className="form-control" type="number" placeholder="Stock" value={countInStock} onChange={e => setCountInStock(e.target.value)} />
-          </div>
+  <label className="form-label">Stock</label>
+  <select
+    className="form-select"
+    value={countInStock}
+    onChange={e => setCountInStock(e.target.value)}
+  >
+    <option value="">Choisir statut</option>
+    <option value="in">En stock</option>
+    <option value="out">Rupture de stock</option>
+  </select>
+</div>
         </div>
 
         <div className="d-flex justify-content-end gap-2 mt-4">
