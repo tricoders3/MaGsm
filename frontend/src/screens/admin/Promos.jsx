@@ -11,7 +11,27 @@ const Promotions = () => {
   const [productsWithPromo, setProductsWithPromo] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [products, setProducts] = useState([]);
+  const [currentPagePromo, setCurrentPagePromo] = useState(1);
+  const itemsPerPage = 5;
+ 
+  const totalPagesPromo = Math.ceil(productsWithPromo.length / itemsPerPage);
 
+// Slice products for current page
+const paginatedProductsWithPromo = productsWithPromo.slice(
+  (currentPagePromo - 1) * itemsPerPage,
+  currentPagePromo * itemsPerPage
+);
+const [currentPagePromosTable, setCurrentPagePromosTable] = useState(1);
+const itemsPerPagePromosTable = 2; // adjust as needed
+
+const totalPagesPromosTable = Math.ceil(
+  promotions.length / itemsPerPagePromosTable
+);
+
+const paginatedPromotionsTable = promotions.slice(
+  (currentPagePromosTable - 1) * itemsPerPagePromosTable,
+  currentPagePromosTable * itemsPerPagePromosTable
+);
 const fetchProducts = async () => {
   const { data } = await axios.get(`${BASE_URL}/api/products`);
   setProducts(data);
@@ -139,7 +159,7 @@ const fetchProducts = async () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 mb-4">
       {/* Header */}
       <div className="card border-0 shadow-sm rounded-4 mb-4">
         <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
@@ -344,7 +364,7 @@ const fetchProducts = async () => {
               >
                 Cancel
               </button>
-              <button className="btn btn-primary px-4" onClick={submitHandler}>
+              <button className="btn btn-primary-redesign px-4" onClick={submitHandler}>
                 {editingPromoId ? "Update" : "Create"}
               </button>
             </div>
@@ -353,116 +373,195 @@ const fetchProducts = async () => {
       )}
 
       {/* Promotions List */}
-      <div className="card border-0 shadow-sm rounded-4">
-        <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-hover table-sm align-middle mb-0">
-              <thead className="table-light">
-                <tr>
-                  <th className="ps-4">Name</th>
-                  <th>Description</th>
-                  <th>Discount</th>
-                  <th>Period</th>
-                  <th className="text-end pe-4">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {promotions.map((p) => (
-                  <tr key={p._id}>
-                    <td className="ps-4 fw-semibold">{p.name}</td>
-                    <td className="text-muted">{p.description || "-"}</td>
-                    <td className="text-muted">
-                      {p.discountValue}
-                      {p.discountType === "percentage" ? "%" : " TND"}
-                    </td>
-                    <td className="text-muted">
-                      {new Date(p.startDate).toLocaleDateString()} →{" "}
-                      {new Date(p.endDate).toLocaleDateString()}
-                    </td>
-                    <td className="text-end pe-4">
-                      <button
-                        className="btn btn-sm btn-light border me-2"
-                        onClick={() => editPromotion(p)}
-                        title="Edit"
-                      >
-                        <i className="fas fa-pen"></i>
-                      </button>
-                      <button
-                        className="btn btn-sm btn-light border text-danger"
-                        onClick={() => deletePromotion(p._id)}
-                        title="Delete"
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                {!promotions.length && (
-                  <tr>
-                    <td colSpan={5} className="py-4 text-center text-muted">
-                      No promotions.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <div className="card border-0 shadow-sm rounded-4 mb-4">
+  <div className="card-body p-0">
+    <div className="table-responsive">
+      <table className="table table-hover table-sm align-middle mb-0">
+        <thead className="table-light">
+          <tr>
+            <th className="ps-4">Name</th>
+            <th>Description</th>
+            <th>Discount</th>
+            <th>Period</th>
+            <th className="text-end pe-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {paginatedPromotionsTable.map((p) => (
+            <tr key={p._id}>
+              <td className="ps-4 fw-semibold">{p.name}</td>
+              <td className="text-muted" style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {p.description || "-"}
+              </td>
+
+              <td className="text-muted">
+                {p.discountValue}
+                {p.discountType === "percentage" ? "%" : " TND"}
+              </td>
+              <td className="text-muted">
+                {new Date(p.startDate).toLocaleDateString()} →{" "}
+                {new Date(p.endDate).toLocaleDateString()}
+              </td>
+              <td className="text-end pe-4">
+                          <button
+                            className="btn btn-sm btn-light border me-2 action-btn"
+                            title="Modifier"
+                            onClick={() => editPromotion(p)}
+                          >
+                            <i className="fas fa-pen" aria-hidden="true"></i>
+                            <span className="visually-hidden">Modifier</span>
+                          </button>
+                          <button
+                            className="btn btn-sm btn-light border text-danger action-btn"
+                            title="Supprimer"
+                            onClick={() => deletePromotion(p._id)}
+                          >
+                            <i className="fas fa-trash" aria-hidden="true"></i>
+                            <span className="visually-hidden">Supprimer</span>
+                          </button>
+                        </td>
+            </tr>
+          ))}
+          {!promotions.length && (
+            <tr>
+              <td colSpan={5} className="py-4 text-center text-muted">
+                No promotions.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+
+    {/* Pagination */}
+    {promotions.length > itemsPerPagePromosTable && (
+      <div className="d-flex justify-content-center align-items-center gap-2 mt-3 mb-4 flex-wrap">
+        <button
+          className={`pagination-btn ${
+            currentPagePromosTable === 1 ? "disabled" : ""
+          }`}
+          onClick={() =>
+            setCurrentPagePromosTable((p) => Math.max(p - 1, 1))
+          }
+        >
+          Préc
+        </button>
+
+        {Array.from({ length: totalPagesPromosTable }, (_, i) => i + 1).map(
+          (p) => (
+            <button
+              key={p}
+              className={`pagination-btn ${
+                currentPagePromosTable === p ? "active" : ""
+              }`}
+              onClick={() => setCurrentPagePromosTable(p)}
+            >
+              {p}
+            </button>
+          )
+        )}
+
+        <button
+          className={`pagination-btn ${
+            currentPagePromosTable === totalPagesPromosTable ? "disabled" : ""
+          }`}
+          onClick={() =>
+            setCurrentPagePromosTable((p) =>
+              Math.min(p + 1, totalPagesPromosTable)
+            )
+          }
+        >
+          Suiv
+        </button>
       </div>
+    )}
+  </div>
+</div>
+
 
       {/* Products with Promotion */}
       <div className="card border-0 shadow-sm rounded-4 mt-4">
-        <div className="card-header bg-white border-0">
-          <h6 className="mb-0 fw-semibold">Products with Promotion</h6>
-        </div>
-        <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-hover table-sm align-middle mb-0">
-              <thead className="table-light">
-                <tr>
-                  <th className="ps-4">Product</th>
-                  <th>Original</th>
-                  <th>Promo Price</th>
-                  <th>Promotion</th>
-                </tr>
-              </thead>
-              <tbody>
-                {productsWithPromo.map((p) => (
-                  <tr key={p._id}>
-                    <td className="ps-4">
-                      <div className="d-flex align-items-center gap-3">
-                        {p.image && (
-                          <img
-                            src={p.image}
-                            alt={p.name}
-                            className="rounded"
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              objectFit: "cover",
-                            }}
-                          />
-                        )}
-                        <div className="fw-semibold">{p.name}</div>
-                      </div>
-                    </td>
-                    <td className="text-muted">{p.originalPrice.toFixed(2)} TND</td>
-                    <td className="text-success">{p.discountedPrice.toFixed(2)} TND</td>
-                    <td className="text-muted">{p.promotion?.name || "-"}</td>
-                  </tr>
-                ))}
-                {!productsWithPromo.length && (
-                  <tr>
-                    <td colSpan={4} className="py-4 text-center text-muted">
-                      No products with promotion.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+  <div className="card-header bg-white border-0">
+    <h6 className="mb-0 fw-semibold">Products with Promotion</h6>
+  </div>
+  <div className="card-body p-0">
+    <div className="table-responsive">
+      <table className="table table-hover table-sm align-middle mb-0">
+        <thead className="table-light">
+          <tr>
+            <th className="ps-4">Product</th>
+            <th>Original</th>
+            <th>Promo Price</th>
+            <th>Promotion</th>
+          </tr>
+        </thead>
+        <tbody>
+          {paginatedProductsWithPromo.map((p) => (
+            <tr key={p._id}>
+              <td className="ps-4">
+                <div className="d-flex align-items-center gap-3">
+                  {p.image && (
+                    <img
+                      src={p.image}
+                      alt={p.name}
+                      className="rounded"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        objectFit: "cover",
+                      }}
+                    />
+                  )}
+                  <div className="fw-semibold">{p.name}</div>
+                </div>
+              </td>
+              <td className="text-muted">{p.originalPrice.toFixed(2)} TND</td>
+              <td className="text-success">{p.discountedPrice.toFixed(2)} TND</td>
+              <td className="text-muted">{p.promotion?.name || "-"}</td>
+            </tr>
+          ))}
+          {!productsWithPromo.length && (
+            <tr>
+              <td colSpan={4} className="py-4 text-center text-muted">
+                No products with promotion.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+
+    {/* Pagination */}
+    {productsWithPromo.length > itemsPerPage && (
+      <div className="d-flex justify-content-center align-items-center gap-2 mt-3 mb-2 flex-wrap">
+        <button
+          className={`pagination-btn ${currentPagePromo === 1 ? "disabled" : ""}`}
+          onClick={() => setCurrentPagePromo((p) => Math.max(p - 1, 1))}
+        >
+          Préc
+        </button>
+
+        {Array.from({ length: totalPagesPromo }, (_, i) => i + 1).map((p) => (
+          <button
+            key={p}
+            className={`pagination-btn ${currentPagePromo === p ? "active" : ""}`}
+            onClick={() => setCurrentPagePromo(p)}
+          >
+            {p}
+          </button>
+        ))}
+
+        <button
+          className={`pagination-btn ${currentPagePromo === totalPagesPromo ? "disabled" : ""}`}
+          onClick={() => setCurrentPagePromo((p) => Math.min(p + 1, totalPagesPromo))}
+        >
+          Suiv
+        </button>
       </div>
+    )}
+  </div>
+</div>
+
     </div>
   );
 };

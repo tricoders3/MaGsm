@@ -5,7 +5,8 @@ import ProductCard from "../components/ProductCard";
 import { useGlobalSearch } from "../context/SearchContext";
 
 export default function Recherche() {
-  const { query, categoryId, subCategoryId, setQuery, setCategoryId, setSubCategoryId } = useGlobalSearch();
+  const { query, categoryId, subCategoryId,
+    setSubCategoryId } = useGlobalSearch();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,12 +16,9 @@ export default function Recherche() {
   const [sortBy, setSortBy] = useState("relevance"); 
 
   useEffect(() => {
-    return () => {
-      setQuery("");
-      setCategoryId("");
-      setSubCategoryId("");
-    };
-  }, []);
+    setSubCategoryId("");
+  }, [categoryId]);
+  
 
   useEffect(() => {
     const fetchProducts = async () => {

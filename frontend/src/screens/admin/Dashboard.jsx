@@ -139,7 +139,7 @@ setTopProducts(top);
           <div className="card border-0 shadow-sm">
             <div className="card-body">
             <h6 className="text-dark fw-semibold mb-3">Dernières commandes</h6>
-<table className="table align-middle">
+            <table className="table align-middle table-hover">
   <thead className="table-light">
     <tr>
       <th>Client</th>
@@ -149,37 +149,58 @@ setTopProducts(top);
     </tr>
   </thead>
   <tbody>
-    {recentOrders.map(o => {
-      const userName = o.user?.name || "Utilisateur";
-      const userEmail = o.user?.email || "";
-      const total = typeof o.total === "number" ? o.total.toFixed(2) : "0.00";
-      const created = o.createdAt ? new Date(o.createdAt).toLocaleString() : "";
-      const status = o.status || "pending";
-      const statusClass =
-        status === "paid" ? "bg-primary" :
-        status === "shipped" ? "bg-info text-dark" :
-        status === "delivered" ? "bg-success" :
-        status === "cancelled" ? "bg-secondary" :
-        "bg-warning text-dark";
-      return (
-        <tr key={o._id}>
-          <td>
-            <div className="fw-semibold">{userName}</div>
-            <small className="text-muted">{userEmail}</small>
-          </td>
-          <td>€ {total}</td>
-          <td><span className={`badge ${statusClass}`}>{status}</span></td>
-          <td>{created}</td>
-        </tr>
-      );
-    })}
-    {recentOrders.length === 0 && (
+    {recentOrders.length > 0 ? (
+      recentOrders.map((o) => {
+        const userName = o.user?.name || "Utilisateur";
+        const userEmail = o.user?.email || "";
+        const total = typeof o.total === "number" ? o.total.toFixed(2) : "0.00";
+        const created = o.createdAt ? new Date(o.createdAt).toLocaleString() : "";
+        const status = o.status || "pending";
+
+     
+        return (
+          <tr key={o._id}>
+            <td>
+              <div className="fw-semibold">{userName}</div>
+              <small className="text-muted">{userEmail}</small>
+            </td>
+            <td>{total} TND</td>
+            
+  
+            <td className="text-center">
+  <span
+    className={`status-badge ${
+      status === "paid"
+        ? "status-paid"
+        : status === "shipped"
+        ? "status-shipped"
+        : status === "delivered"
+        ? "status-delivered"
+        : status === "cancelled"
+        ? "status-cancelled"
+        : "status-pending"
+    }`}
+  >
+    {status.charAt(0).toUpperCase() + status.slice(1)}
+  </span>
+</td>
+
+
+            <td>{created}</td>
+          </tr>
+        );
+      })
+    ) : (
       <tr>
-        <td colSpan="4" className="text-center text-muted py-3">Aucune commande récente.</td>
+        <td colSpan={4} className="text-center text-muted py-3">
+          Aucune commande récente.
+        </td>
       </tr>
     )}
   </tbody>
 </table>
+
+
             </div>
           </div>
         </div>
