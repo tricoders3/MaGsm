@@ -6,19 +6,22 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../constante";
 import EmptyCart from "../assets/images/empty_cart.png";
+import { useCart } from "../context/CartContext";
 
 function Cart() {
   const navigate = useNavigate();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creatingOrder, setCreatingOrder] = useState(false);
+  const { setCartCount } = useCart();
 
-  // Fetch cart from backend
+  // Fetch cart from backend on mount
   useEffect(() => {
     const fetchCart = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/api/cart`, { withCredentials: true });
         setCart(res.data.cart.items || []);
+        setCartCount(res.data.cart.items.length); // update badge instantly
         setLoading(false);
       } catch (error) {
         console.error("Erreur en récupérant le panier :", error);
@@ -34,8 +37,18 @@ function Cart() {
     const newQty = item.quantity + 1;
 
     try {
-      await axios.put(`${BASE_URL}/api/cart/${productId}`, { quantity: newQty }, { withCredentials: true });
-      setCart((prev) => prev.map((i) => i.product._id === productId ? { ...i, quantity: newQty } : i));
+      await axios.put(
+        `${BASE_URL}/api/cart/${productId}`,
+        { quantity: newQty },
+        { withCredentials: true }
+      );
+
+      setCart((prev) =>
+        prev.map((i) =>
+          i.product._id === productId ? { ...i, quantity: newQty } : i
+        )
+      );
+      setCartCount(cart.reduce((sum, i) => sum + (i.product._id === productId ? newQty : i.quantity), 0));
     } catch (error) {
       console.error("Erreur en augmentant la quantité :", error);
     }
@@ -48,8 +61,18 @@ function Cart() {
     const newQty = item.quantity - 1;
 
     try {
-      await axios.put(`${BASE_URL}/api/cart/${productId}`, { quantity: newQty }, { withCredentials: true });
-      setCart((prev) => prev.map((i) => i.product._id === productId ? { ...i, quantity: newQty } : i));
+      await axios.put(
+        `${BASE_URL}/api/cart/${productId}`,
+        { quantity: newQty },
+        { withCredentials: true }
+      );
+
+      setCart((prev) =>
+        prev.map((i) =>
+          i.product._id === productId ? { ...i, quantity: newQty } : i
+        )
+      );
+      setCartCount(cart.reduce((sum, i) => sum + (i.product._id === productId ? newQty : i.quantity), 0));
     } catch (error) {
       console.error("Erreur en diminuant la quantité :", error);
     }
@@ -58,7 +81,9 @@ function Cart() {
   const removeItem = async (productId) => {
     try {
       await axios.delete(`${BASE_URL}/api/cart/${productId}`, { withCredentials: true });
-      setCart((prev) => prev.filter((i) => i.product._id !== productId));
+      const newCart = cart.filter((i) => i.product._id !== productId);
+      setCart(newCart);
+      setCartCount(newCart.reduce((sum, i) => sum + i.quantity, 0)); // update badge instantly
     } catch (error) {
       console.error("Erreur en supprimant le produit :", error);
     }
@@ -66,7 +91,6 @@ function Cart() {
 
   const totalPrice = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
-  // CREATE ORDER FUNCTION (paiement à la livraison)
   const handleCreateOrder = async () => {
     if (cart.length === 0) return;
     setCreatingOrder(true);
@@ -78,18 +102,17 @@ function Cart() {
           quantity: item.quantity,
           price: item.product.price,
         })),
-        total: totalPrice + 20, // total + shipping + taxes
+        total: totalPrice + 20, // shipping + taxes
         paymentMethod: "Paiement à la livraison",
-        status: "En attente", // order status
+        status: "En attente",
       };
 
       await axios.post(`${BASE_URL}/api/orders`, orderData, { withCredentials: true });
 
-      // Clear cart after order
       setCart([]);
+      setCartCount(0); // clear badge instantly
       alert("Commande créée avec succès ! Paiement à la livraison.");
-
-      navigate("/orders"); 
+      navigate("/orders");
     } catch (error) {
       console.error("Erreur lors de la création de la commande :", error);
       alert("Impossible de créer la commande, réessayez !");
@@ -124,7 +147,6 @@ function Cart() {
     <div className="container mt-4 mb-5">
       <h3 className="mb-4 text-dark">Votre Panier</h3>
       <div className="row">
-        {/* Produits */}
         <div className="col-md-8">
           {cart.map((item) => (
             <div className="d-flex align-items-center justify-content-between mb-3 p-3 bg-white rounded shadow-sm" key={item.product._id}>
@@ -139,9 +161,13 @@ function Cart() {
                   <h5 className="text-dark">{item.product.name}</h5>
                   <p className="text-secondary mb-1">Prix: {item.product.price} TND</p>
                   <div className="d-flex align-items-center gap-2">
-                    <Button size="sm" variant="secondary" onClick={() => decreaseQuantity(item.product._id)}><FaMinus /></Button>
+                    <Button size="sm" variant="secondary" onClick={() => decreaseQuantity(item.product._id)}>
+                      <FaMinus />
+                    </Button>
                     <span className="text-dark">{item.quantity}</span>
-                    <Button size="sm" variant="secondary" onClick={() => increaseQuantity(item.product._id)}><FaPlus /></Button>
+                    <Button size="sm" variant="secondary" onClick={() => increaseQuantity(item.product._id)}>
+                      <FaPlus />
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -155,7 +181,6 @@ function Cart() {
           ))}
         </div>
 
-        {/* Récapitulatif */}
         <div className="col-md-4">
           <div className="p-3 bg-white rounded shadow-sm">
             <ul className="list-unstyled mb-3">

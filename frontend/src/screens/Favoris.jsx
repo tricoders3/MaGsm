@@ -5,52 +5,56 @@ import { FaHeartBroken } from "react-icons/fa";
 import axios from "axios";
 import BASE_URL from "../constante";
 import AlertToast from "../components/AlertToast";
+import { useCart } from "../context/CartContext";
 
 const Favorites = () => {
   const navigate = useNavigate();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ show: false, message: "", type: "favorite" });
+const { favoritesCount, setFavoritesCount } = useCart();
 
-  useEffect(() => {
-    const fetchFavorites = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/api/favorites`, { withCredentials: true });
-
-        const favProducts = await Promise.all(
-          res.data.map(async (fav) => {
-            let promotion = null;
-            try {
-              const promoRes = await axios.get(`${BASE_URL}/api/promotions/product/${fav._id}`);
-              promotion = promoRes.data.promotion || null;
-            } catch (err) {
-              console.log("No promotion for product:", fav._id);
-            }
-            return { ...fav, promotion };
-          })
-        );
-
-        setFavorites(favProducts);
-      } catch (error) {
-        console.error("Erreur favorites:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFavorites();
-  }, []);
-
-  const handleRemoveFavorite = async (productId) => {
+useEffect(() => {
+  const fetchFavorites = async () => {
     try {
-      await axios.delete(`${BASE_URL}/api/favorites/${productId}`, { withCredentials: true });
-      setFavorites((prev) => prev.filter((p) => p._id !== productId));
-      setToast({ show: true, message: "Retiré des favoris", type: "favorite" });
-      setTimeout(() => setToast({ ...toast, show: false }), 1500);
+      const res = await axios.get(`${BASE_URL}/api/favorites`, { withCredentials: true });
+
+      const favProducts = await Promise.all(
+        res.data.map(async (fav) => {
+          let promotion = null;
+          try {
+            const promoRes = await axios.get(`${BASE_URL}/api/promotions/product/${fav._id}`);
+            promotion = promoRes.data.promotion || null;
+          } catch (err) {}
+          return { ...fav, promotion };
+        })
+      );
+
+      setFavorites(favProducts);
+      setFavoritesCount(favProducts.length); // ✅ update the badge instantly
     } catch (error) {
-      console.error("Erreur remove favorite:", error);
+      console.error("Erreur favorites:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  fetchFavorites();
+}, []);
+
+const handleRemoveFavorite = async (productId) => {
+  try {
+    await axios.delete(`${BASE_URL}/api/favorites/${productId}`, { withCredentials: true });
+    const updatedFavorites = favorites.filter((p) => p._id !== productId);
+    setFavorites(updatedFavorites);
+    setFavoritesCount(updatedFavorites.length); // ✅ update badge instantly
+    setToast({ show: true, message: "Retiré des favoris", type: "favorite" });
+    setTimeout(() => setToast({ ...toast, show: false }), 1500);
+  } catch (error) {
+    console.error("Erreur remove favorite:", error);
+  }
+};
+
 
   const handleAddToCart = async (product) => {
     if (product.countInStock === 0) {
