@@ -242,7 +242,7 @@ export default function Contact() {
               <div className="ratio ratio-16x9">
                 <iframe
                   title="Localisation"
-                  src={contactInfo.mapEmbedUrl || "https://www.google.com/maps?q=Tunisia&output=embed"}
+                  src={contactInfo.mapEmbedUrl || "https://www.google.com/maps?q=35.67322432149297,10.098604243817753&output=embed"}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   style={{ border: 0 }}

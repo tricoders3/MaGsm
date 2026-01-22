@@ -119,7 +119,7 @@ export default function About() {
                   title="MA GSM Location"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  src={about?.mapUrl || "https://www.google.com/maps?q=123%20Avenue%20Centrale%2C%20Casablanca%2C%20Morocco&output=embed"}
+                  src={"https://www.google.com/maps?q=35.67322432149297,10.098604243817753&output=embed"}
                 ></iframe>
               </div>
             </div>

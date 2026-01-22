@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FiSearch } from "react-icons/fi";
 import BASE_URL from "../constante";
@@ -8,8 +8,10 @@ import { useGlobalSearch } from "../context/SearchContext";
 export default function GlobalSearch() {
   const { query, setQuery, categoryId, setCategoryId, subCategoryId, setSubCategoryId } = useGlobalSearch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+  const isCategoryPage = location.pathname.startsWith("/category");
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -25,9 +27,10 @@ export default function GlobalSearch() {
 
   useEffect(() => {
     const loadSubs = async () => {
+      // Always reset subcategory when category changes to avoid stale filters
+      setSubCategoryId("");
       if (!categoryId) {
         setSubCategories([]);
-        setSubCategoryId("");
         return;
       }
       try {
@@ -41,6 +44,16 @@ export default function GlobalSearch() {
   }, [categoryId]);
     
   const handleSearch = () => {
+    const onListingPage =
+      location.pathname.startsWith("/products") ||
+      location.pathname.startsWith("/offers") ||
+      location.pathname.startsWith("/category");
+
+    if (onListingPage) {
+      // Stay on the same page; filtering happens in-page via context consumers
+      return;
+    }
+
     if (query.trim().length > 0 || categoryId || subCategoryId) {
       navigate("/recherche");
     }
@@ -56,6 +69,7 @@ export default function GlobalSearch() {
             style={{ maxWidth: 180, height: 40, borderRadius: 9999 }}
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
+            disabled={isCategoryPage}
           >
             <option value="">Toutes catégories</option>
             {categories.map((c) => (
@@ -69,7 +83,7 @@ export default function GlobalSearch() {
             style={{ maxWidth: 220, height: 40, borderRadius: 9999 }}
             value={subCategoryId}
             onChange={(e) => setSubCategoryId(e.target.value)}
-            disabled={!categoryId}
+            disabled={isCategoryPage || !categoryId}
           >
             <option value="">Toutes sous-catégories</option>
             {subCategories.map((sc) => (

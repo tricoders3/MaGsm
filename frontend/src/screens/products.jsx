@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Spinner, Button } from "react-bootstrap";
 import BASE_URL from "../constante";
@@ -11,7 +11,7 @@ function Products() {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { query } = useGlobalSearch();
+  const { query, categoryId, subCategoryId } = useGlobalSearch();
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8; // nombre de produits par page
@@ -26,6 +26,8 @@ function Products() {
           name: product.name,
           description: product.description,
           category: product.category?.name || "N/A",
+          categoryId: product.category?._id || product.category || "",
+          subCategoryId: product.subCategory || product.subCategory?._id || "",
           image: product.images?.[0]?.url || "/assets/images/default.png",
           price: product.price,
           originalPrice: product.promotion ? product.price : null,
@@ -50,14 +52,26 @@ function Products() {
     fetchProducts();
   }, []);
 
-  // Pagination logic
+  // Filtering then pagination
+  const filtered = useMemo(() => {
+    const q = query.toLowerCase();
+    return products.filter((p) => {
+      const matchesName = p.name?.toLowerCase().includes(q);
+      const matchesCat = !categoryId || p.categoryId === categoryId;
+      const matchesSub = !subCategoryId || p.subCategoryId === subCategoryId;
+      return matchesName && matchesCat && matchesSub;
+    });
+  }, [products, query, categoryId, subCategoryId]);
+
+  const totalPages = Math.ceil(filtered.length / productsPerPage);
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-  const filteredCurrent = currentProducts.filter((p) =>
-    p.name?.toLowerCase().includes(query.toLowerCase())
-  );
-  const totalPages = Math.ceil(products.length / productsPerPage);
+  const paginated = filtered.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query, categoryId, subCategoryId]);
 
   const handlePrev = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -88,7 +102,7 @@ function Products() {
       <h2 className="mb-4">Nos Produits</h2>
 
       <div className="row g-4">
-        {filteredCurrent.map((product) => (
+        {paginated.map((product) => (
           <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
             <ProductCard
               product={product}
@@ -102,7 +116,7 @@ function Products() {
           </div>
         ))}
       </div>
-      {filteredCurrent.length === 0 && (
+      {filtered.length === 0 && (
         <p className="text-center text-muted mt-3">Aucun produit correspondant.</p>
       )}
 
