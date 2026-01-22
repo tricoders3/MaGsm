@@ -4,6 +4,7 @@ import BASE_URL from "../../constante";
 import { FiEdit2, FiTrash2, FiSearch } from "react-icons/fi";
 import ConfirmModal from "../../components/ConfirmModal";
 
+
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");

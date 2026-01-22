@@ -32,6 +32,7 @@ import AdminAbout from "./screens/admin/AdminAbout";
 import AdminBanner from "./screens/admin/AdminBanner";
 import AdminContact from "./screens/admin/AdminContact";
 import Profile from "./screens/Profile.jsx";
+import PendingUsers from "./screens/admin/PendingUsers.jsx";
 
 import ProductDetails from "./screens/ProductDetails.jsx";
 import './assets/css/style.css';
@@ -108,6 +109,7 @@ function App() {
   <Route path="about" element={<AdminAbout />} />
   <Route path="banner" element={<AdminBanner />} />
   <Route path="contact" element={<AdminContact />} />
+  <Route path="pending-users" element={<PendingUsers />} />
     </Route>
 
   </Route>

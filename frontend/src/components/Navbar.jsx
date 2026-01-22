@@ -13,6 +13,7 @@ import axios from "axios";
 import BASE_URL from "../constante";
 import { toast } from "react-toastify";
 import Sidebar from "./Sidebar"; 
+import Badge from "./Badge"; 
 
 function NavBar() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -25,7 +26,8 @@ function NavBar() {
   const isAdmin = isAuthenticated && user?.role === "admin";
   const menuRef = useRef(null);
 
- 
+   const [cartCount, setCartCount] = useState(0);
+  const [favoritesCount, setFavoritesCount] = useState(0);
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
@@ -63,7 +65,29 @@ function NavBar() {
 
     fetchCategories();
   }, []);
+  useEffect(() => {
+    const fetchCounts = async () => {
+      if (!isAuthenticated) return;
 
+      try {
+        // Cart
+        const cartRes = await axios.get(`${BASE_URL}/api/cart`, { withCredentials: true });
+        setCartCount(cartRes.data.cart?.items?.length || 0);
+
+        // Favorites
+        const favRes = await axios.get(`${BASE_URL}/api/favorites`, { withCredentials: true });
+        setFavoritesCount(favRes.data?.length || 0);
+      } catch (err) {
+        console.error("Error fetching cart/favorites counts", err);
+      }
+    };
+
+    fetchCounts();
+
+    // Optional: refresh every 30 seconds
+    const interval = setInterval(fetchCounts, 1);
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
   return (
     <>
 
@@ -138,21 +162,28 @@ function NavBar() {
                 )}
               </div>
 
-              {/* Favorites */}
-              <button
-                className="nav-icon-redesign"
-                onClick={() => navigate("/favoris")}
-              >
-                <FaHeart />
-              </button>
+          {/* Favorites with badge */}
+              <div className="position-relative">
+                <button
+                  className="nav-icon-redesign"
+                  onClick={() => navigate("/favoris")}
+                >
+                  <FaHeart />
+                </button>
+                <Badge count={favoritesCount} />
+              </div>
 
-              {/* Cart */}
-              <button
-                className="nav-icon-redesign"
-                onClick={() => navigate("/cart")}
-              >
-                <FaShoppingBag />
-              </button>
+              {/* Cart with badge */}
+              <div className="position-relative">
+                <button
+                  className="nav-icon-redesign"
+                  onClick={() => navigate("/cart")}
+                >
+                  <FaShoppingBag />
+                </button>
+                <Badge count={cartCount} />
+              </div>
+
 
               {/* Mobile Menu */}
               <button
