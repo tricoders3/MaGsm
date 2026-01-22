@@ -73,14 +73,8 @@ const PendingUsers = () => {
     currentPage * itemsPerPage
   );
 
-  if (loading) {
-    return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-primary" />
-        <p className="mt-2 text-muted">Chargement des demandes…</p>
-      </div>
-    );
-  }
+
+  if (loading) return null;
 
   return (
     <div className="container py-4">
@@ -140,7 +134,7 @@ const PendingUsers = () => {
                         <td className="text-end pe-4">
                           <div className="d-flex gap-2 justify-content-end">
                             <button
-                              className="btn btn-success btn-sm d-flex align-items-center gap-1 px-3"
+                              className="btn btn-light btn-sm border text-success d-flex align-items-center gap-1 px-3"
                               disabled={actionLoading === u._id}
                               onClick={() => approveUser(u._id)}
                             >

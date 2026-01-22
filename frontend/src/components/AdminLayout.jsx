@@ -2,7 +2,8 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import AdminNavBar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
-
+import { LoadingProvider } from "../context/LoadingContext";
+import LoadingBinder from "./LoadingBinder";
 
 const AdminLayout = () => {
   const [isCollapsed, setIsCollapsed] = React.useState(false);
@@ -10,6 +11,8 @@ const AdminLayout = () => {
   const toggleSidebar = () => setIsCollapsed((prev) => !prev);
 
   return (
+      <LoadingProvider>
+       <LoadingBinder />
     <div className={`admin-layout ${isCollapsed ? "is-collapsed" : ""}`}>
       <AdminSidebar onToggleSidebar={toggleSidebar} />
       <div className="admin-main">
@@ -19,6 +22,7 @@ const AdminLayout = () => {
         </div>
       </div>
     </div>
+    </LoadingProvider>
   );
 };
 

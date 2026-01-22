@@ -69,8 +69,9 @@ function App() {
       />
 
        <Routes>
-        <Route path="/waiting-approval" element={<WaitingApproval/>} />
+        
        <Route element={<Layout />}>
+       <Route path="/waiting-approval" element={<WaitingApproval/>} />
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />     
       <Route path="/contact" element={<Contact />} />

@@ -106,13 +106,9 @@ const handleRemoveFavorite = async (productId) => {
     return price;
   };
 
-  if (loading) {
-    return (
-      <div className="text-center mt-5">
-        <div className="spinner-border text-primary" role="status"></div>
-      </div>
-    );
-  }
+  if (loading) return null;
+
+
 
   return (
     <div className="container mt-4 mb-5">

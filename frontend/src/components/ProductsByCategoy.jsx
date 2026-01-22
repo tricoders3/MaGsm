@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import BASE_URL from "../constante";
+import ProductCard from "./ProductCard";
 
 const SubcategoryProducts = () => {
   const { subcategoryId } = useParams(); // updated param
@@ -35,18 +36,20 @@ const SubcategoryProducts = () => {
       <div className="container">
         <h2 className="section-title mb-5">Products</h2>
         <div className="row g-4">
-          {products.map(product => (
-            <div key={product._id} className="col-xl-3 col-lg-4 col-md-6">
-              <div className="product-card h-100">
-                <div className="product-image">
-                  <img src={product.images?.[0]?.url || '/assets/images/default.png'} alt={product.name} />
-                </div>
-                <div className="product-content text-center">
-                  <h6 className="product-title">{product.name}</h6>
-                  <p className="product-description">{product.description}</p>
-                  <p className="product-price">{product.price} DT</p>
-                </div>
-              </div>
+          {products.map((p) => (
+            <div key={p._id} className="col-xl-3 col-lg-4 col-md-6">
+              <ProductCard
+                product={{
+                  id: p._id,
+                  name: p.name,
+                  image: p.images?.[0]?.url || '/assets/images/default.png',
+                  price: p.price,
+                  description: p.description,
+                  promotion: p.promotion || null,
+                }}
+                badgeType={p.promotion ? 'promo' : 'stock'}
+                stockCount={p.countInStock}
+              />
             </div>
           ))}
         </div>

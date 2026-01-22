@@ -15,7 +15,7 @@ import {
   } from "react-icons/fi";
   import axios from "axios";
   import BASE_URL from "../constante";
-  import Badge from "./Badge";
+
   
 const AdminSidebar = ({ onToggleSidebar }) => {
 const [pendingUsersCount, setPendingUsersCount] = useState(0);
@@ -86,7 +86,6 @@ const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
  <NavLink to="/admin/pending-users" className={({ isActive }) => `nav-link position-relative${isActive ? " active" : ""}`}>
           <FiUserPlus size={18} />
           <span className="ms-2">Demandes</span>
-          <Badge count={pendingUsersCount} />
         </NavLink>
 
 
@@ -98,7 +97,6 @@ const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
          <NavLink to="/admin/orders" className={({isActive}) => `nav-link position-relative${isActive ? ' active' : ''}`}>
           <FiShoppingCart size={18} />
           <span className="ms-2">Orders</span>
-          <Badge count={pendingOrdersCount} />
         </NavLink>
         <NavLink to="/admin/categories" className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>
           <FiLayers size={18} />

@@ -74,7 +74,8 @@ const Products = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-
+  if (loading) return null;
+  if (error) return null;
   return (
     <div className="container py-4">
          <ProductForm
@@ -129,14 +130,7 @@ const Products = () => {
         {/* Body */}
         <div className="card-body mb-2">
        
-          {loading ? (
-            <div className="text-center py-5">
-              <div className="spinner-border text-primary" />
-              <p className="mt-2 mb-0 text-muted">Chargement des produits…</p>
-            </div>
-          ) : error ? (
-            <p className="text-danger p-4">{error}</p>
-          ) : (
+         
             <>
               <div className="table-responsive">
                 <table className="table table-hover table-sm align-middle mb-0">
@@ -250,7 +244,7 @@ const Products = () => {
                 </div>
               )}
             </>
-          )}
+         
         </div>
       </div>
       <ConfirmModal

@@ -2234,7 +2234,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   box-shadow: var(--shadow-md);
   border: none;
   border-radius: 8px;
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1.5rem;
   font-weight: 500;
   display: inline-flex;
   align-items: center;
@@ -4332,4 +4332,279 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
     transform: scale(1);
     opacity: 1;
   }
+}
+/* Admin notifications – bell and dropdown */
+
+.admin-notifications {
+  position: relative;
+}
+
+/* Bell button */
+.admin-bell-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #334155;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+
+}
+.admin-bell-btn:hover {
+  box-shadow: 0 6px 22px rgba(16, 24, 40, 0.08);
+  border-color: #e5e7eb;
+}
+.admin-bell-btn:active {
+  transform: translateY(1px);
+}
+
+/* Red count badge */
+.admin-bell-btn .badge-dot {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 9999px;
+  background: #ef4444; /* red-500 */
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+  font-weight: 600;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+/* Dropdown panel */
+.admin-bell-menu {
+  position: absolute;
+  right: 0;
+  margin-top: 10px;
+  width: 360px;              /* wider like the reference */
+  max-height: 60vh;          /* scroll if long */
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #eef2f7;
+  border-radius: 16px;
+  box-shadow:
+    0 20px 40px rgba(16, 24, 40, 0.12),
+    0 2px 6px rgba(16, 24, 40, 0.06);
+  z-index: 1000;
+}
+
+/* Header */
+.admin-bell-menu .menu-header {
+  padding: 14px 16px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #111827;
+  border-bottom: 1px solid #f1f3f5;
+  background: #fff;
+}
+
+/* Items list area (simulate sectioned list) */
+.admin-bell-menu .menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: #ffffff;
+  border: 0;
+  padding: 14px 16px;
+  text-align: left;
+  cursor: pointer;
+  color: #111827;
+  position: relative;
+  transition: background-color .15s ease;
+}
+.admin-bell-menu .menu-item + .menu-item {
+  border-top: 1px solid #f3f4f6;
+}
+.admin-bell-menu .menu-item:hover {
+  background: #f9fafb;
+}
+
+/* Right chevron hint to mimic navigation */
+.admin-bell-menu .menu-item::after {
+  content: "›";
+  font-size: 18px;
+  color: #9ca3af;
+  margin-left: auto;
+}
+
+/* Count pill on items (pending counts) */
+.admin-bell-menu .menu-item .count-pill {
+  background: #111827;
+  color: #fff;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+}
+
+/* Empty state */
+.admin-bell-menu .menu-empty {
+  padding: 18px 16px;
+  color: #6b7280;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Subtle focus (keyboard) */
+.admin-bell-btn:focus-visible,
+.admin-bell-menu .menu-item:focus-visible {
+  outline: 2px solid #2563eb; /* blue-600 */
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+  .admin-bell-menu {
+    width: 92vw;
+    right: 50%;
+    transform: translateX(50%);
+  }
+}
+
+
+.pf-wrap {
+  margin-bottom: 16px;
+}
+
+.pf-bar {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.pf-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Section label */
+.pf-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+/* Vertical list instead of chips */
+.pf-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Chip becomes checkbox row */
+.pf-chip {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+}
+
+/* Fake checkbox */
+.pf-chip::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* Checked state */
+.pf-chip.active {
+  font-weight: 500;
+  color: #111827;
+}
+
+.pf-chip.active::before {
+  background: #16a34a;
+  border-color: #16a34a;
+  content: "✓";
+  color: #fff;
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* Hover */
+.pf-chip:hover {
+  color: #111827;
+}
+
+/* Disabled */
+.pf-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Hints */
+.pf-hint {
+  font-size: 12px;
+  color: #9ca3af;
+  padding-left: 26px;
+}
+
+/* Reset button */
+.pf-actions {
+  margin-top: 10px;
+}
+
+.pf-clear {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.pf-clear:hover {
+  text-decoration: underline;
+}
+
+.status-approve-badge {
+  display: inline-block;
+  padding: 0.45rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  color: #495057;
+  background-color: #f8f9fa;
+
+  border-radius: 999px;
+  border: 1px solid #e9ecef;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.status-approve-badge:hover {
+  background-color: #ffffff;
+  border-color: #dee2e6;
+}
+
+body.dark .status-approve-badge {
+  background-color: #212529;
+  color: #ced4da;
+  border-color: #343a40;
 }

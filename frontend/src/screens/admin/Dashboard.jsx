@@ -68,8 +68,8 @@ setTopProducts(top);
     fetchCounts();
   }, []);
 
-  if (loading) return <p>Chargement du tableau de bord...</p>;
-  if (error) return <p className="text-danger">{error}</p>;
+  if (loading) return null;
+  if (error) return null;
 
   // Map your counts to modern dashboard cards
   const stats = [
@@ -104,7 +104,7 @@ setTopProducts(top);
   ];
 
   return (
-    <div className="container mt-4">
+   <div className="container mt-4 mb-4">
       {/* Header */}
       <div className="mb-4">
         <h2 className="fw-semibold">Tableau de bord</h2>

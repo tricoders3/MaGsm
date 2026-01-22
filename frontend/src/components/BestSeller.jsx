@@ -40,7 +40,7 @@ const BestSeller = () => {
   }, []);
 
   if (loading) return null;
-  if (error) return <p>{error}</p>;
+  if (error) return null;
 
   const previewProducts = products.slice(0, 4);
 

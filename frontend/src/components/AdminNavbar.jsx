@@ -3,6 +3,7 @@ import { FaBars } from "react-icons/fa";
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import AdminNotifications from "./AdminNotifications";
 
 const AdminNavBar = ({ onToggleSidebar }) => {
   const { user, logout } = useAuth();
@@ -37,7 +38,9 @@ const AdminNavBar = ({ onToggleSidebar }) => {
           </div>
 
           {/* Right */}
-          <div className="admin-user-wrapper" ref={menuRef}>
+          <div className="d-flex align-items-center gap-3">
+            <AdminNotifications />
+            <div className="admin-user-wrapper" ref={menuRef}>
             <button
               className="admin-user-btn"
               onClick={() => setOpenMenu(!openMenu)}
@@ -72,6 +75,7 @@ const AdminNavBar = ({ onToggleSidebar }) => {
                 </button>
               </div>
             )}
+            </div>
           </div>
 
         </div>

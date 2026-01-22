@@ -4,6 +4,7 @@ import axios from "axios";
 import { Spinner, Button } from "react-bootstrap";
 import BASE_URL from "../constante";
 import ProductCard from "../components/ProductCard";
+import ProductFilters from "../components/ProductFilters";
 import { useGlobalSearch } from "../context/SearchContext";
 
 function Products() {
@@ -81,29 +82,21 @@ function Products() {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
-  if (loading) {
-    return (
-      <div className="text-center mt-5">
-        <Spinner animation="border" variant="primary" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center mt-5 text-danger">
-        <h3>{error}</h3>
-      </div>
-    );
-  }
-
+  if (loading) return null;
+  if (error) return null;
   return (
-    <div className="container my-5">
-      <h2 className="mb-4">Nos Produits</h2>
+<div className="container my-5">
+    <h2 className="mb-4">Nos Produits</h2>
 
+    <div className="row">
+      {/* LEFT SIDEBAR FILTERS */}
+      <div className="col-12 col-md-3 mb-4">
+        <ProductFilters />
+      </div>
+      <div className="col-12 col-md-9">
       <div className="row g-4">
         {paginated.map((product) => (
-          <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-4">
             <ProductCard
               product={product}
               badgeType={product.promotion ? "promo" : "stock"}
@@ -150,10 +143,11 @@ function Products() {
     >
       Suiv
     </button>
-  </div>
-)}
-
     </div>
+        )}
+      </div>
+    </div>
+  </div>
   );
 }
 

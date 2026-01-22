@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import BASE_URL from "../constante";
 import ProductCard from "../components/ProductCard";
 import { useGlobalSearch } from "../context/SearchContext";
+import SubcategoryFilters from "./SubcategoryFilters";
 
 const PRODUCTS_PER_PAGE = 8;
 
@@ -12,11 +13,11 @@ const CategoryView = () => {
 
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
-  const [activeSubcategory, setActiveSubcategory] = useState("all");
+  // Use global subcategory filter state instead of local
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const { query, setCategoryId, setSubCategoryId } = useGlobalSearch();
+  const { query, subCategoryId, setCategoryId, setSubCategoryId } = useGlobalSearch();
 
  
   useEffect(() => {
@@ -29,7 +30,6 @@ const CategoryView = () => {
 
         setProducts(res.data || []);
         setCategory(res.data[0]?.category || null);
-        setActiveSubcategory("all");
         setCurrentPage(1);
       } catch (err) {
         console.error(err);
@@ -50,12 +50,12 @@ const CategoryView = () => {
  
   const filteredProducts = useMemo(() => {
     const q = (query || "").toLowerCase();
-    const bySub = activeSubcategory === "all"
-      ? products
-      : products.filter((p) => p.subCategory === activeSubcategory);
+    const bySub = subCategoryId
+      ? products.filter((p) => String(p.subCategory) === String(subCategoryId))
+      : products;
     if (!q) return bySub;
     return bySub.filter((p) => p.name?.toLowerCase().includes(q));
-  }, [products, activeSubcategory, query]);
+  }, [products, subCategoryId, query]);
 
 
   const totalPages = Math.ceil(
@@ -71,7 +71,7 @@ const CategoryView = () => {
   
   useEffect(() => {
     setCurrentPage(1);
-  }, [activeSubcategory, query]);
+  }, [subCategoryId, query]);
 
   
   if (loading) return <p className="text-center py-5">Loading...</p>;
@@ -82,30 +82,18 @@ const CategoryView = () => {
       <div className="container">
         <h2 className="section-title mb-4">{category.name}</h2>
 
-        {/* FILTER */}
-        <div className="d-flex gap-2 flex-wrap mb-4">
-          <button
-            className={`filter-btn ${activeSubcategory === "all" ? "active" : ""}`}
-            onClick={() => setActiveSubcategory("all")}
-          >
-            Tous
-          </button>
-
-          {category.subCategories?.map((sub) => (
-            <button
-              key={sub._id}
-              className={`filter-btn ${activeSubcategory === sub._id ? "active" : ""}`}
-              onClick={() => setActiveSubcategory(sub._id)}
-            >
-              {sub.name}
-            </button>
-          ))}
-        </div>
+     
+    <div className="row">
+      {/* FILTER */}
+      <div className="col-12 col-md-3 mb-4">
+        <SubcategoryFilters categoryId={categoryId} />
+      </div>
 
         {/* PRODUCTS */}
+        <div className="col-12 col-md-9">
         <div className="row g-4">
           {paginatedProducts.map((product) => (
-            <div key={product._id} className="col-12 col-sm-6 col-md-3">
+            <div key={product._id} className="col-12 col-sm-6 col-md-4 col-lg-4">
               <ProductCard
                 product={{
                   id: product._id,
@@ -165,7 +153,9 @@ const CategoryView = () => {
   </div>
 )}
 
-      </div>
+</div>
+    </div>
+  </div>
     </section>
   );
 };

@@ -44,8 +44,7 @@ const HeroSlider = () => {
                 : `-${promo.discountValue} DT`;
           }
 
-          // ✅ Log for debugging
-          console.log(`Product: ${p.name}, Discount: ${discountText}`, promo);
+        
 
           return {
             title: p.name,
@@ -71,7 +70,7 @@ const HeroSlider = () => {
   }, []);
 
   if (loading) return null;
-  if (error) return <p>{error}</p>;
+  if (error) return null;
 
   return (
     <section className="hero-section overflow-hidden">

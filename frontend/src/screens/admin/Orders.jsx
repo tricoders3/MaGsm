@@ -86,7 +86,8 @@ const Orders = () => {
       setConfirmLoading(false);
     }
   };
-
+  if (loading) return null;
+  if (error) return null;
   return (
     <>
     <div className="container py-4">
@@ -109,14 +110,7 @@ const Orders = () => {
       </div>
 
       <div className="card-body p-0">
-        {loading ? (
-          <div className="text-center py-5">
-            <div className="spinner-border text-primary" />
-            <p className="mt-2 mb-0 text-muted">Chargement des commandes…</p>
-          </div>
-        ) : error ? (
-          <p className="text-danger p-4">{error}</p>
-        ) : (
+  
           <>
             <div className="table-responsive">
               <table className="table table-hover table-sm align-middle mb-0">
@@ -222,7 +216,7 @@ const Orders = () => {
               </div>
             )}
           </>
-        )}
+       
       </div>
     </div>
   </div>

@@ -5,6 +5,7 @@ import BASE_URL from "../constante";
 import ProductCard from "../components/ProductCard";
 import "swiper/css";
 import { useGlobalSearch } from "../context/SearchContext";
+import ProductFilters from "../components/ProductFilters";
 
 export default function OfferPage() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export default function OfferPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [favorites, setFavorites] = useState([]);
-  const { query } = useGlobalSearch();
+  const { query, categoryId, subCategoryId } = useGlobalSearch();
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,8 +53,13 @@ export default function OfferPage() {
     fetchPromotions();
   }, []);
 
-  if (loading) return <p className="text-center py-5">Chargement des promotions...</p>;
-  if (error) return <p className="text-center py-5 text-danger">{error}</p>;
+  // Reset to first page when filters change (must be before any early returns)
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query, categoryId, subCategoryId]);
+
+  if (loading) return null;
+  if (error) return null;
 
   const heroPromotion = promotions[0];
 
@@ -71,10 +77,15 @@ export default function OfferPage() {
   const indexOfLast = currentPage * productsPerPage;
   const indexOfFirst = indexOfLast - productsPerPage;
   const currentProducts = products.slice(indexOfFirst, indexOfLast);
-  const filteredCurrent = currentProducts.filter((p) =>
-    p.name?.toLowerCase().includes(query.toLowerCase())
-  );
+  const filteredCurrent = currentProducts.filter((p) => {
+    const q = (query || "").toLowerCase();
+    const matchQuery = p.name?.toLowerCase().includes(q);
+    const matchCategory = categoryId ? String(p.category) === String(categoryId) : true;
+    const matchSub = subCategoryId ? String(p.subCategory) === String(subCategoryId) : true;
+    return matchQuery && matchCategory && matchSub;
+  });
   const totalPages = Math.ceil(products.length / productsPerPage);
+
 
   return (
     <section className="offer-page">
@@ -127,10 +138,16 @@ export default function OfferPage() {
           </p>
         </div>
 
-     
-        <div className="row g-4">
+        {/* Filters */}
+        <div className="row">
+      {/* FILTER */}
+      <div className="col-12 col-md-3 mb-4">
+        <ProductFilters />
+      </div>
+      <div className="col-12 col-md-9">
+      <div className="row g-4">
           {filteredCurrent.map((product) => (
-            <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-4">
               <ProductCard
                 product={product}
                 badgeType="promo"
@@ -175,7 +192,9 @@ export default function OfferPage() {
             </button>
           </div>
         )}
-      </div>
+    </div>
+    </div>
+  </div>
     </section>
   );
 }

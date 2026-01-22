@@ -53,7 +53,7 @@ const PopularProducts = () => {
   };
 
   if (loading) return null;
-  if (error) return <p>{error}</p>;
+  if (error) return null;
 
   return (
     <section className="features-section py-5">

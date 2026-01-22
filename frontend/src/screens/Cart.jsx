@@ -121,13 +121,8 @@ function Cart() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="text-center mt-5">
-        <Spinner animation="border" variant="primary" />
-      </div>
-    );
-  }
+  if (loading) return null;
+
 
   if (cart.length === 0) {
     return (
