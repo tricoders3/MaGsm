@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import BASE_URL from "../constante";
 import { FiBox, FiUsers, FiZap } from "react-icons/fi";
-
+import Image from "../assets/images/about.jpeg";
 export default function About() {
   const [about, setAbout] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,21 +29,35 @@ export default function About() {
   const icons = [FiBox, FiUsers, FiZap];
   const ICONS = { FiBox, FiUsers, FiZap };
 
+  if (loading) return null;
+  if (error) return null;
+
   return (
     <main>
       {/* Hero Section */}
       <section className="py-0">
         <div className="container-fluid px-0">
-          <img alt="About MA GSM cover" className="w-100" style={{ display: 'block', objectFit: 'cover', maxHeight: 420, width: '100%' }} />
+        <img 
+  src={Image} 
+  alt="About MA GSM cover" 
+  className="w-100" 
+  style={{ 
+    display: 'block', 
+    objectFit: 'cover', 
+    objectPosition: '50% 75%',   
+    maxHeight: 480, 
+    width: '100%' 
+  }} 
+/>
+
         </div>
       </section>
-      <section className="py-4">
+      <section className="py-4 mt-5">
         <div className="container">
-          {loading && <p className="text-muted mb-0">Chargement…</p>}
-          {error && <p className="text-danger mb-0">{error}</p>}
+      
           {!loading && !error && (
             <>
-              <h2 className="fw-bold mb-2">{about?.title || 'About Us'}</h2>
+              <h2 className="fw-bold mb-2">{about?.title || 'Qui Sommes-nous?'}</h2>
               <p className="text-muted mb-0">{about?.content || 'Carefully selected products, customer-first support and fast service.'}</p>
             </>
           )}
