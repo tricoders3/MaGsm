@@ -148,8 +148,8 @@ const PendingUsers = () => {
                                 <span className="spinner-border spinner-border-sm text-light" />
                               ) : (
                                 <>
-                                  <FiCheck size={14} />
-                                  <span>Approuver</span>
+                                  <FiCheck size={16} />
+                                 
                                 </>
                               )}
                             </button>
@@ -163,8 +163,8 @@ const PendingUsers = () => {
                                 <span className="spinner-border spinner-border-sm text-danger" />
                               ) : (
                                 <>
-                                  <FiTrash2 size={14} />
-                                  <span>Supprimer</span>
+                                  <FiTrash2 size={16} />
+                              
                                 </>
                               )}
                             </button>
