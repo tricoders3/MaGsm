@@ -112,19 +112,22 @@ const Users = () => {
   if (loading) return null;
   if (error) return null;
   return (
-   <div className="container-fluid py-4">
-  <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
+   <div className="container mt-4">
+  <div className="card border-0 shadow-sm">
     {/* Header */}
     <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center flex-wrap">
       <div>
         <h5 className="text-dark fw-bold mb-0 d-flex align-items-center gap-2">
           Utilisateurs
-          <span className="count-pill">{filteredUsers.length} users</span>
+          <span className="count-pill">
+        {filteredUsers.length} {filteredUsers.length === 1 ? "user" : "users"}
+      </span>
+
         </h5>
-        <small className="text-muted">Gérez les comptes et les rôles des utilisateurs.</small>
+        <small className="text-muted d-none d-md-block">Gérez les comptes et les rôles des utilisateurs.</small>
       </div>
 
-      <div className="col-md-4 position-relative mt-3 mt-md-0">
+      <div className="col-md-4 position-relative mt-3 mt-md-0 d-none d-md-block">
         <FiSearch className="search-icon" />
         <input
           className="form-control rounded-pill ps-5"
@@ -140,6 +143,10 @@ const Users = () => {
 
     {/* Body */}
     <div className="card-body p-0">
+      {filteredUsers.length === 0 ? (
+        <div className="py-5 text-center text-muted">Aucun utilisateur trouvé.</div>
+      ) : (
+        <>
       <div className="table-responsive">
         <table className="table table-hover table-sm align-middle mb-0">
           <thead className="table-light">
@@ -205,7 +212,7 @@ const Users = () => {
 
       {/* Pagination */}
       {filteredUsers.length > itemsPerPage && (
-        <div className="d-flex justify-content-center align-items-center gap-2 mt-3 mb-4 flex-wrap">
+        <div className="d-flex justify-content-center align-items-center gap-2 mt-3 mb-4">
           <button
             className={`pagination-btn ${currentPage === 1 ? "disabled" : ""}`}
             onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
@@ -230,10 +237,12 @@ const Users = () => {
             Suiv
           </button>
         </div>
-      )}
-    </div>
-  </div>
-</div>
+         )}
+         </>
+       )}
+     </div>
+   </div>
+ </div>
 
   );
 };

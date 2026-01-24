@@ -124,7 +124,7 @@ const HeroSlider = () => {
     </div>
   </div>
   <h2 className="hero-title mt-4">{slide.title}</h2>
-  <p className="hero-subtitle">{slide.subtitle}</p>
+  <p className="hero-subtitle mb-5">{slide.subtitle}</p>
 </div>
 
               </div>

@@ -77,7 +77,7 @@ const Products = () => {
   if (loading) return null;
   if (error) return null;
   return (
-    <div className="container py-4">
+    <div className="container mt-4">
          <ProductForm
             show={showForm}
             product={selectedProduct}
@@ -91,14 +91,15 @@ const Products = () => {
             <h5 className="text-dark fw-bold mb-0 d-flex align-items-center gap-2">
               Produits
               <span className="count-pill">
-                {filteredProducts.length} produits
-              </span>
+              {filteredProducts.length} {filteredProducts.length === 1 ? "produit" : "produits"}
+            </span>
+
             </h5>
-            <small className="text-muted">Gérez vos produits, photos, prix et promotions.</small>
+            <small className="text-muted d-none d-md-block">Gérez vos produits, photos, prix et promotions.</small>
           </div>
 
           <div className="d-flex gap-2 align-items-center mb-3">
-          <div className="position-relative w-100">
+          <div className="position-relative w-100 d-none d-md-block">
     <FiSearch
       className="search-icon"
      

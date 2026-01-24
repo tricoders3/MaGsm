@@ -70,13 +70,12 @@ export default function AdminAbout() {
       setError("Erreur lors de la mise à jour de la section À propos");
     }
   };
+  if (loading) return null;
+  if (error) return null;
 
   return (
     <div className="container mt-4">
-      <h2 className="fw-semibold mb-3">Edit About Us (Admin)</h2>
-      {loading && <div>Chargement…</div>}
-      {error && <div className="text-danger mb-2">{error}</div>}
-
+      <h2 className="fw-semibold mb-3">About Us</h2>
       <form onSubmit={handleSubmit} className="mb-5">
         {/* About Title & Content */}
         <div className="mb-3">

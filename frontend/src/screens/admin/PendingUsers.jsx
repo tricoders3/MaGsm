@@ -77,20 +77,22 @@ const PendingUsers = () => {
   if (loading) return null;
 
   return (
-    <div className="container py-4">
+    <div className="container mt-4">
       <div className="card border-0 shadow-sm rounded-4">
         {/* Header */}
-        <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+        <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center flex-wrap">
           <div>
             <h5 className="text-dark fw-bold mb-0 d-flex align-items-center gap-2">
               Demandes d’inscription
-              <span className="count-pill">{filteredUsers.length} demandes</span>
+              <span className="count-pill">
+  {filteredUsers.length} {filteredUsers.length === 1 ? "demande" : "demandes"}
+</span>
+
             </h5>
-            <small className="text-muted">Gérez les inscriptions en attente.</small>
+            <small className="text-muted d-none d-md-block">Gérez les inscriptions en attente.</small>
           </div>
 
-          {/* Optional search bar like Users page */}
-          <div className="col-md-4 position-relative">
+          <div className="col-md-4 position-relative mt-3 mt-md-0 d-none d-md-block">
             <FiSearch className="search-icon" />
             <input
               className="form-control rounded-pill ps-5"

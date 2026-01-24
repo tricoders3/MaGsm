@@ -13,6 +13,7 @@ const AdminLayout = () => {
   return (
       <LoadingProvider>
        <LoadingBinder />
+       <div className="app-layout d-flex flex-column min-vh-100">
     <div className={`admin-layout ${isCollapsed ? "is-collapsed" : ""}`}>
       <AdminSidebar onToggleSidebar={toggleSidebar} />
       <div className="admin-main">
@@ -22,6 +23,7 @@ const AdminLayout = () => {
         </div>
       </div>
     </div>
+    </div>  
     </LoadingProvider>
   );
 };

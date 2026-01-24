@@ -90,15 +90,18 @@ const Orders = () => {
   if (error) return null;
   return (
     <>
-    <div className="container py-4">
+    <div className="container mt-4">
     <div className="card border-0 shadow-sm rounded-4">
-      <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-        <div>
-          <h5 className="text-dark fw-bold mb-0 d-flex align-items-center gap-2">
+    <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+    <div>
+        <h5 className="text-dark fw-bold mb-0 d-flex align-items-center gap-2">
             Commandes
-            <span className="count-pill">{orders.length}</span>
+            <span className="count-pill">
+            {orders.length} {orders.length === 1 ? "commande" : "commandes"}
+          </span>
+
           </h5>
-          <small className="text-muted">Gérez les commandes et leurs statuts.</small>
+          <small className="text-muted d-none d-md-block">Gérez les commandes et leurs statuts.</small>
         </div>
         <button
           className="btn btn-light btn-sm border text-danger d-flex align-items-center gap-1 px-3"

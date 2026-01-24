@@ -104,10 +104,10 @@ setTopProducts(top);
   ];
 
   return (
-   <div className="container mt-4 mb-4">
+   <div className="container-fluid py-4">
       {/* Header */}
       <div className="mb-4">
-        <h2 className="fw-semibold">Tableau de bord</h2>
+        <h2 className="ftext-dark fw-bold">Tableau de bord</h2>
         <p className="text-muted">
           Bienvenue ! Voici un aperçu de votre activité récente.
         </p>
@@ -143,15 +143,14 @@ setTopProducts(top);
           </div>
         ))}
       </div>
-
-      {/* Example Tables */}
       <div className="row g-4">
-        <div className="col-lg-7">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body">
-            <h6 className="text-dark fw-semibold mb-3">Dernières commandes</h6>
-            <table className="table align-middle table-hover">
-  <thead className="table-light">
+  <div className="col-lg-7">
+    <div className="card border-0 shadow-sm">
+      <div className="card-body">
+        <h6 className="text-dark fw-semibold mb-3">Dernières commandes</h6>
+        <div className="table-responsive">
+          <table className="table align-middle table-hover">
+            <thead className="table-light">
     <tr>
       <th>Client</th>
       <th>Total</th>
@@ -214,6 +213,7 @@ setTopProducts(top);
 
             </div>
           </div>
+        </div>
         </div>
 
         <div className="col-lg-5">

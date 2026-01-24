@@ -131,7 +131,7 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
     {/* Voir prix */}
     <p className="product-price">
       <button
-        className="btn-redesign btn-primary-redesign"
+        className="btn btn-price"
         onClick={() => navigate("/register")}
       >
         Voir prix

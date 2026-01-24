@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FiEdit2, FiTrash2, FiSearch, FiList } from "react-icons/fi";
 import BASE_URL from "../../constante";
+import ConfirmModal from "../../components/ConfirmModal";
 
 const Categories = () => {
   const [name, setName] = useState("");
@@ -13,6 +14,11 @@ const Categories = () => {
   const [subCategories, setSubCategories] = useState([]);
   const [subName, setSubName] = useState("");
   const [subEditId, setSubEditId] = useState(null);
+
+  // Confirm modal state
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirmTarget, setConfirmTarget] = useState({ type: null, id: null });
 
   // Fetch all categories
   const fetchCategories = async () => {
@@ -66,7 +72,6 @@ const Categories = () => {
   };
 
   const deleteCategory = async (id) => {
-    if (!window.confirm("Delete this category?")) return;
     try {
       await axios.delete(`${BASE_URL}/api/categories/${id}`);
       fetchCategories();
@@ -111,12 +116,41 @@ const Categories = () => {
   };
 
   const deleteSubCategory = async (subId) => {
-    if (!window.confirm("Delete this subcategory?")) return;
     try {
       await axios.delete(`${BASE_URL}/api/categories/${selectedCategory}/subcategories/${subId}`);
       fetchSubCategories(selectedCategory);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  // Open confirm for category deletion
+  const handleConfirmDeleteCategory = (id) => {
+    setConfirmTarget({ type: "category", id });
+    setConfirmOpen(true);
+  };
+
+  // Open confirm for subcategory deletion
+  const handleConfirmDeleteSubcategory = (id) => {
+    setConfirmTarget({ type: "subcategory", id });
+    setConfirmOpen(true);
+  };
+
+  // Perform deletion after confirmation
+  const performConfirm = async () => {
+    try {
+      setConfirmLoading(true);
+      if (confirmTarget.type === "category" && confirmTarget.id) {
+        await deleteCategory(confirmTarget.id);
+      } else if (confirmTarget.type === "subcategory" && confirmTarget.id) {
+        await deleteSubCategory(confirmTarget.id);
+      }
+      setConfirmOpen(false);
+      setConfirmTarget({ type: null, id: null });
+    } catch (e) {
+      // already logged inside delete functions
+    } finally {
+      setConfirmLoading(false);
     }
   };
 
@@ -140,12 +174,31 @@ const Categories = () => {
   }, []);
 
   return (
-    <div className="container py-4">
+    <div className="container mt-4">
       <div className="card border-0 shadow-sm rounded-4 mb-4">
-        <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+        <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center flex-wrap">
           <h4 className="mb-0">Categories</h4>
-          <span className="count-pill">{categories.length} categories</span>
+          <span className="count-pill">
+          {categories.length} {categories.length === 1 ? "catégorie" : "catégories"}
+        </span>
+
         </div>
+    <ConfirmModal
+      open={confirmOpen}
+      title="Confirmer la suppression"
+      description="Voulez-vous vraiment supprimer cet élément ?"
+      confirmText="Supprimer"
+      cancelText="Annuler"
+      loading={confirmLoading}
+      danger
+      onConfirm={performConfirm}
+      onCancel={() => {
+        if (!confirmLoading) {
+          setConfirmOpen(false);
+          setConfirmTarget({ type: null, id: null });
+        }
+      }}
+    />
 
         <div className="card-body">
           {/* Input Category */}
@@ -190,7 +243,7 @@ const Categories = () => {
                   <button className="btn btn-sm btn-light border action-btn" onClick={() => handleEditCategory(cat)}>
                   <FiEdit2 size={16} />
                   </button>
-                  <button className="btn btn-sm btn-light border action-btn text-danger" onClick={() => deleteCategory(cat._id)}>
+                  <button className="btn btn-sm btn-light border action-btn text-danger" onClick={() => handleConfirmDeleteCategory(cat._id)}>
                   <FiTrash2 size={16} />
                   </button>
                   <button className="btn btn-sm btn-light border action-btn" onClick={() => handleSub(cat._id)}>
@@ -242,7 +295,7 @@ const Categories = () => {
                     <button className="btn btn-sm btn-light border action-btn" onClick={() => handleEditSub(sc)}>
                     <FiEdit2 size={16} />
                     </button>
-                    <button className="btn btn-sm btn-light border text-danger action-btn" onClick={() => deleteSubCategory(sc._id)}>
+                    <button className="btn btn-sm btn-light border text-danger action-btn" onClick={() => handleConfirmDeleteSubcategory(sc._id)}>
                       <FiTrash2 size={16} />
                     </button>
                   </div>

@@ -94,8 +94,8 @@ export default function OfferPage() {
           <div className="rounded-4 shadow-soft p-4 p-lg-5 mb-5 offer-hero">
             <div className="row align-items-center g-4">
               <div className="col-lg-8">
-                <h1 className="display-5 fw-bold mb-3">{heroPromotion.name}</h1>
-                <p className="lead mb-4">
+                <h1 className="display-5 fw-bold hero-heading mb-3">{heroPromotion.name}</h1>
+                <p className="lead text-muted mb-2">
                   {heroPromotion.description || "Profitez de remises exclusives sur nos produits"}
                 </p>
                 <div className="d-flex gap-3">
