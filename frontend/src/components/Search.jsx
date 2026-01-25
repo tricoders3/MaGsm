@@ -6,35 +6,47 @@ import BASE_URL from "../constante";
 import { useGlobalSearch } from "../context/SearchContext";
 
 export default function GlobalSearch() {
-  const { query, setQuery, categoryId, setCategoryId, subCategoryId, setSubCategoryId } = useGlobalSearch();
+  const {
+    query,
+    setQuery,
+    categoryId,
+    setCategoryId,
+    subCategoryId,
+    setSubCategoryId,
+  } = useGlobalSearch();
+  
   const navigate = useNavigate();
   const location = useLocation();
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+
   const isCategoryPage = location.pathname.startsWith("/category");
 
+  // 🔹 Load categories
   useEffect(() => {
     const loadCategories = async () => {
       try {
         const { data } = await axios.get(`${BASE_URL}/api/categories`);
         setCategories(data);
       } catch (e) {
-        // silent fail
+        console.error(e);
       }
     };
     loadCategories();
   }, []);
 
+  // 🔹 Load subcategories when category changes
   useEffect(() => {
+    setSubCategoryId("");
+    if (!categoryId) {
+      setSubCategories([]);
+      return;
+    }
     const loadSubs = async () => {
-      // Always reset subcategory when category changes to avoid stale filters
-      setSubCategoryId("");
-      if (!categoryId) {
-        setSubCategories([]);
-        return;
-      }
       try {
-        const { data } = await axios.get(`${BASE_URL}/api/categories/${categoryId}/subcategories`);
+        const { data } = await axios.get(
+          `${BASE_URL}/api/categories/${categoryId}/subcategories`
+        );
         setSubCategories(data);
       } catch (e) {
         setSubCategories([]);
@@ -42,27 +54,57 @@ export default function GlobalSearch() {
     };
     loadSubs();
   }, [categoryId]);
-    
-  const handleSearch = () => {
+
+  // 🔹 Handle search
+  const handleSearch = async () => {
+    const trimmedQuery = query.trim().toLowerCase();
+
     const onListingPage =
       location.pathname.startsWith("/products") ||
       location.pathname.startsWith("/offers") ||
       location.pathname.startsWith("/category");
 
     if (onListingPage) {
-      // Stay on the same page; filtering happens in-page via context consumers
+      // Stay on the page; filtering will happen in-page via context consumers
       return;
     }
 
-    if (query.trim().length > 0 || categoryId || subCategoryId) {
-      navigate("/recherche");
+    try {
+      // Fetch products + promotions filtered by category / subcategory / query
+      const [productsRes, promosRes] = await Promise.all([
+        axios.get(`${BASE_URL}/api/products`, {
+          params: {
+            categoryId: categoryId || undefined,
+            subCategoryId: subCategoryId || undefined,
+            search: trimmedQuery || undefined,
+          },
+        }),
+        axios.get(`${BASE_URL}/api/promotions/promos`, {
+          params: {
+            categoryId: categoryId || undefined,
+            subCategoryId: subCategoryId || undefined,
+            search: trimmedQuery || undefined,
+          },
+        }),
+      ]);
+
+      const productsData = productsRes.data || [];
+      const promosData = promosRes.data || [];
+
+      // Navigate to results page with state
+      navigate("/recherche", {
+        state: { products: productsData, promotions: promosData },
+      });
+    } catch (e) {
+      console.error("Erreur lors de la recherche globale:", e);
+      navigate("/recherche", { state: { products: [], promotions: [] } });
     }
   };
 
   return (
     <div className="global-search-wrapper">
       <div className="container">
-        <div className="global-search-box w-100">
+        <div className="global-search-box w-100 d-flex align-items-center">
           {/* Category */}
           <select
             className="form-select me-2"
@@ -90,21 +132,23 @@ export default function GlobalSearch() {
               <option key={sc._id} value={sc._id}>{sc.name}</option>
             ))}
           </select>
-<div className="search-input-wrapper flex-grow-1">
+
           {/* Search input */}
-          <input
-            type="search"
-            className="global-search-input flex-grow-1"
-            placeholder="Rechercher un produit par nom..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          />
-</div>
-          {/* Search icon as button on the right */}
+          <div className="search-input-wrapper flex-grow-1">
+            <input
+              type="search"
+              className="global-search-input flex-grow-1"
+              placeholder="Rechercher un produit ou promotion..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            />
+          </div>
+
+          {/* Search button */}
           <button
             type="button"
-            className="search-button"
+            className="search-button ms-2"
             onClick={handleSearch}
             aria-label="Rechercher"
             title="Rechercher"

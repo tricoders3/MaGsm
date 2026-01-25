@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../constante";
@@ -66,6 +66,12 @@ export default function OfferPage() {
     setCurrentPage(1);
   };
 
+  // Combine search query with filteredProducts
+  const displayedProducts = useMemo(() => {
+    const q = (query || "").toLowerCase();
+    return filteredProducts.filter((p) => p.name.toLowerCase().includes(q));
+  }, [filteredProducts, query]);
+
   if (loading) return <p>Chargement...</p>;
   if (error) return <p className="text-danger">{error}</p>;
 
@@ -83,10 +89,10 @@ export default function OfferPage() {
   };
 
   // Pagination logic
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const totalPages = Math.ceil(displayedProducts.length / productsPerPage);
   const indexOfLast = currentPage * productsPerPage;
   const indexOfFirst = indexOfLast - productsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirst, indexOfLast);
+  const currentProducts = displayedProducts.slice(indexOfFirst, indexOfLast);
 
   return (
     <section className="offer-page">
