@@ -20,17 +20,22 @@ export default function Checkout() {
     country: "Tunisie",
   });
 
-  const [loading, setLoading] = useState(true); // 🔹 loading state
+  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
-  // Fetch cart if empty
+  const isValid =
+    form.fullAddress && form.street && form.postalCode && form.city;
+
+  // 🔹 Fetch cart if empty
   useEffect(() => {
     const fetchCart = async () => {
       if (!cart || cart.length === 0) {
         try {
           setLoading(true);
-          const res = await axios.get(`${BASE_URL}/api/cart`, { withCredentials: true });
+          const res = await axios.get(`${BASE_URL}/api/cart`, {
+            withCredentials: true,
+          });
           const items = res.data.cart?.items || [];
           setCart(items);
           setCartCount(items.reduce((sum, i) => sum + i.quantity, 0));
@@ -46,41 +51,49 @@ export default function Checkout() {
     fetchCart();
   }, [cart, setCart, setCartCount]);
 
-  const isValid = form.fullAddress && form.street && form.postalCode && form.city;
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
-
   const handleConfirm = async () => {
     if (!isValid || !cart || cart.length === 0) return;
     setSubmitting(true);
-
+  
     try {
-      const { data } = await axios.post(
-        `${BASE_URL}/api/orders`,
-        {
-          shippingAddress: form,
-          items: cart.map((i) => ({
-            product: i.product._id,
-            quantity: i.quantity,
-            name: i.product.name,
-            price: i.product.price,
-          })),
+      // Construct payload with shippingAddress matching backend schema
+      const payload = {
+        shippingAddress: {
+          fullAddress: form.fullAddress,
+          street: form.street,
+          postalCode: form.postalCode,
+          city: form.city,
+          region: form.region,
+          country: form.country,
         },
-        { withCredentials: true }
-      );
-
+        items: cart.map((i) => ({
+          product: i.product._id,
+          quantity: i.quantity,
+          name: i.product.name,
+          price: i.product.price,
+        })),
+      };
+  
+      console.log("Payload sent to backend:", payload); // 🔹 debug
+  
+      // ✅ Correct Axios POST: payload is first, config is second
+      const { data } = await axios.post(`${BASE_URL}/api/orders`, payload, {
+        withCredentials: true,
+      });
+  
       const newOrderId = data?.order?._id;
-
+  
       // Clear cart
       setCart([]);
       setCartCount(0);
-
+  
       // Show success toast
       setShowToast(true);
-
+  
       setTimeout(() => {
         setShowToast(false);
         if (newOrderId) navigate(`/order-confirmation/${newOrderId}`);
@@ -93,8 +106,8 @@ export default function Checkout() {
       setSubmitting(false);
     }
   };
-
-  const totalPrice = cart?.reduce((sum, item) => sum + (item.product.price || 0) * item.quantity, 0) || 0;
+  const totalPrice =
+    cart?.reduce((sum, item) => sum + (item.product.price || 0) * item.quantity, 0) || 0;
 
   if (loading) {
     return (
@@ -122,25 +135,70 @@ export default function Checkout() {
   return (
     <div className="container mt-5 mb-5">
       <div className="row g-4">
-
         {/* LEFT — SHIPPING FORM */}
         <div className="col-lg-7">
           <div className="card border-0 shadow-sm rounded-4 p-4">
             <h4 className="fw-bold mb-3">Adresse de livraison</h4>
 
-            <input type="text" name="fullAddress" value={form.fullAddress} onChange={handleChange} className="form-control mb-3" placeholder="Adresse complète" required />
-            <input type="text" name="street" value={form.street} onChange={handleChange} className="form-control mb-3" placeholder="Rue" required />
-            <input type="text" name="postalCode" value={form.postalCode} onChange={handleChange} className="form-control mb-3" placeholder="Code postal" required />
-            <input type="text" name="city" value={form.city} onChange={handleChange} className="form-control mb-3" placeholder="Ville" required />
-            <input type="text" name="region" value={form.region} onChange={handleChange} className="form-control mb-3" placeholder="Région (optionnel)" />
-            <input type="text" name="country" value={form.country} onChange={handleChange} className="form-control mb-3" placeholder="Pays" />
+            <input
+              type="text"
+              name="fullAddress"
+              value={form.fullAddress}
+              onChange={handleChange}
+              className="form-control mb-3"
+              placeholder="Adresse complète"
+              required
+            />
+            <input
+              type="text"
+              name="street"
+              value={form.street}
+              onChange={handleChange}
+              className="form-control mb-3"
+              placeholder="Rue"
+              required
+            />
+            <input
+              type="text"
+              name="postalCode"
+              value={form.postalCode}
+              onChange={handleChange}
+              className="form-control mb-3"
+              placeholder="Code postal"
+              required
+            />
+            <input
+              type="text"
+              name="city"
+              value={form.city}
+              onChange={handleChange}
+              className="form-control mb-3"
+              placeholder="Ville"
+              required
+            />
+            <input
+              type="text"
+              name="region"
+              value={form.region}
+              onChange={handleChange}
+              className="form-control mb-3"
+              placeholder="Région (optionnel)"
+            />
+            <input
+              type="text"
+              name="country"
+              value={form.country}
+              onChange={handleChange}
+              className="form-control mb-3"
+              placeholder="Pays"
+            />
 
             <button
-                className="btn btn-dark w-100 mt-3"
-                disabled={!isValid || submitting}
-                onClick={handleConfirm} 
-                >
-                {submitting ? "Création de la commande..." : "Confirmer la commande"}
+              className="btn btn-dark w-100 mt-3"
+              disabled={!isValid || submitting}
+              onClick={handleConfirm}
+            >
+              {submitting ? "Création de la commande..." : "Confirmer la commande"}
             </button>
           </div>
         </div>
@@ -151,8 +209,13 @@ export default function Checkout() {
             <h5 className="fw-bold mb-3">Résumé de la commande</h5>
 
             {cart.map((item) => (
-              <div key={item.product._id} className="d-flex justify-content-between mb-2">
-                <span>{item.product.name} × {item.quantity}</span>
+              <div
+                key={item.product._id}
+                className="d-flex justify-content-between mb-2"
+              >
+                <span>
+                  {item.product.name} × {item.quantity}
+                </span>
                 <span>{(item.product.price || 0) * item.quantity} TND</span>
               </div>
             ))}
@@ -167,7 +230,12 @@ export default function Checkout() {
       </div>
 
       {/* SUCCESS TOAST */}
-      <AlertToast show={showToast} onClose={() => setShowToast(false)} type="success" message="Commande créée avec succès !" />
+      <AlertToast
+        show={showToast}
+        onClose={() => setShowToast(false)}
+        type="success"
+        message="Commande créée avec succès !"
+      />
     </div>
   );
 }

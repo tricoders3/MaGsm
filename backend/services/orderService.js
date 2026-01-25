@@ -9,15 +9,12 @@ export const createOrder = async (user, cart, shippingAddress) => {
     price: item.product.price,
   }));
 
-  const total = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return await Order.create({
     user: user.id,
     items,
-    shippingAddress, // ✅ sauvegarde directe
+    shippingAddress, 
     total,
   });
 };

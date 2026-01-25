@@ -19,8 +19,13 @@ export const createOrderFromCart = async (req, res) => {
       return res.status(400).json({ message: "Panier vide" });
     }
 
-    // 1️⃣ créer la commande
-    const order = await createOrder(req.user, cart);
+    const { shippingAddress } = req.body; // 🔹 get shipping address from frontend
+    if (!shippingAddress) {
+      return res.status(400).json({ message: "Adresse de livraison requise" });
+    }
+
+    // 1️⃣ créer la commande avec shippingAddress
+    const order = await createOrder(req.user, cart, shippingAddress);
 
     // 2️⃣ Calculer et ajouter les points fidélité
     const points = calculateLoyaltyPoints(order.total);
@@ -31,8 +36,8 @@ export const createOrderFromCart = async (req, res) => {
       await user.save();
     }
 
-    // Ajouter les points gagnés à l'objet order pour réponse
     order.pointsEarned = points;
+
     // 3️⃣ Générer la facture PDF
     let invoicePath = null;
     try {
@@ -41,23 +46,15 @@ export const createOrderFromCart = async (req, res) => {
       console.error("Erreur génération facture:", pdfError.message);
     }
 
-    // 3️⃣ envoyer mail admin (non bloquant)
+    // 4️⃣ envoyer mail admin et client (non bloquant)
     try {
-      await sendAdminOrderNotification({
-        user,
-        order,
-      });
-        // envoyer mail client
-  await sendClientOrderConfirmation({
-    user,
-    order,
-    invoicePath,
-  });
+      await sendAdminOrderNotification({ user, order });
+      await sendClientOrderConfirmation({ user, order, invoicePath });
     } catch (mailError) {
-      console.error("Erreur email admin:", mailError.message);
+      console.error("Erreur email:", mailError.message);
     }
 
-    // 4️⃣ vider le panier
+    // 5️⃣ vider le panier
     await clearCart(req.user.id);
 
     res.status(201).json({
@@ -69,7 +66,7 @@ export const createOrderFromCart = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: error.message });
   }
-}
+};
 // USER – GET HIS ORDERS
 export const getOrdersForUser = async (req, res) => {
   try {
