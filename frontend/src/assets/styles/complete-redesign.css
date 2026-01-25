@@ -4800,4 +4800,16 @@ body.dark .status-approve-badge {
 }
 }
 
+.summary-box {
+  background: #f8f9fa;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+}
+
+
+
 

@@ -7,12 +7,14 @@ import axios from "axios";
 import BASE_URL from "../constante";
 import EmptyCart from "../assets/images/empty_cart.png";
 import { useCart } from "../context/CartContext";
+import AlertToast from "../components/AlertToast";
 
 function Cart() {
   const navigate = useNavigate();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creatingOrder, setCreatingOrder] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const { setCartCount } = useCart();
 
   // Fetch cart from backend on mount
@@ -97,33 +99,9 @@ setCartCount(count);
 
   const totalPrice = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
-  const handleCreateOrder = async () => {
+  const handleCreateOrder = () => {
     if (cart.length === 0) return;
-    setCreatingOrder(true);
-
-    try {
-      // Create order 
-      const { data } = await axios.post(
-        `${BASE_URL}/api/orders`,
-        {},
-        { withCredentials: true }
-      );
-
-      setCart([]);
-      setCartCount(0); // clear badge instantly
-      alert("Commande créée avec succès ! Paiement à la livraison.");
-      const newOrderId = data?.order?._id;
-      if (newOrderId) {
-        navigate(`/order-confirmation/${newOrderId}`);
-      } else {
-        navigate("/orders");
-      }
-    } catch (error) {
-      console.error("Erreur lors de la création de la commande :", error);
-      alert("Impossible de créer la commande, réessayez !");
-    } finally {
-      setCreatingOrder(false);
-    }
+    navigate("/checkout");
   };
 
   if (loading) return null;
@@ -201,6 +179,12 @@ setCartCount(count);
           </div>
         </div>
       </div>
+      <AlertToast
+  show={showToast}
+  onClose={() => setShowToast(false)}
+  type="success"
+  message="Commande créée avec succès ! Paiement à la livraison."
+/>
     </div>
   );
 }
