@@ -17,7 +17,7 @@ const PopularProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/products`);
+        const response = await axios.get(`${BASE_URL}/api/products/most-purchased`);
 
         const productsData = response.data.map((product) => ({
           id: product._id,
