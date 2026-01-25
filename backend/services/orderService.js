@@ -5,27 +5,21 @@ import { calculateLoyaltyPoints } from "../utils/loyalty.js";
 export const createOrder = async (user, cart, shippingAddress) => {
   const items = cart.items.map(item => ({
     product: item.product._id,
+    quantity: item.quantity,
     name: item.product.name,
     price: item.product.price,
-    quantity: item.quantity,
   }));
 
-  const total = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-
-  // 🔥 calcul des points gagnés ICI
-  const pointsEarned = calculateLoyaltyPoints(total);
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return await Order.create({
     user: user.id,
     items,
-    shippingAddress,
+    shippingAddress, 
     total,
-    pointsEarned, // ✅ sauvegardé directement
   });
 };
+
 // GET USER ORDERS
 export const getOrdersByUser = async (userId) => {
   return await Order.find({ user: userId }).populate("items.product")
