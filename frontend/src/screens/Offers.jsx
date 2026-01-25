@@ -3,29 +3,31 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../constante";
 import ProductCard from "../components/ProductCard";
+import ProductPromoFilters from "../components/ProductPromoFilters"; // Filters component
 import "swiper/css";
 import { useGlobalSearch } from "../context/SearchContext";
-import ProductFilters from "../components/ProductFilters";
 
 export default function OfferPage() {
   const navigate = useNavigate();
+  const { query } = useGlobalSearch();
 
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [promotions, setPromotions] = useState([]);
+  const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [favorites, setFavorites] = useState([]);
-  const { query, categoryId, subCategoryId } = useGlobalSearch();
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
 
+  // Load promotions/products
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/promotions/promos`);
-        const productsData = response.data.map((p) => ({
+        const res = await axios.get(`${BASE_URL}/api/promotions/promos`);
+        const mapped = res.data.map((p) => ({
           id: p._id,
           name: p.name,
           description: p.description,
@@ -37,7 +39,7 @@ export default function OfferPage() {
           promotion: p.promotion,
           countInStock: p.countInStock || 1,
         }));
-        setProducts(productsData);
+        setProducts(mapped);
 
         const promoResp = await axios.get(`${BASE_URL}/api/promotions`);
         setPromotions(promoResp.data.filter((p) => p.isActive));
@@ -45,7 +47,7 @@ export default function OfferPage() {
         setLoading(false);
       } catch (err) {
         console.error(err);
-        setError("Failed to load promotions");
+        setError("Erreur lors du chargement des promotions");
         setLoading(false);
       }
     };
@@ -53,16 +55,23 @@ export default function OfferPage() {
     fetchPromotions();
   }, []);
 
-  // Reset to first page when filters change (must be before any early returns)
+  // Reset page when search changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [query, categoryId, subCategoryId]);
+  }, [query]);
 
-  if (loading) return null;
-  if (error) return null;
+  // Handle filter changes from ProductPromoFilters
+  const handleFilter = (filtered) => {
+    setFilteredProducts(filtered);
+    setCurrentPage(1);
+  };
+
+  if (loading) return <p>Chargement...</p>;
+  if (error) return <p className="text-danger">{error}</p>;
 
   const heroPromotion = promotions[0];
 
+  // Format remaining time
   const formatTimeLeft = (endDate) => {
     if (!endDate) return "";
     const diff = new Date(endDate) - new Date();
@@ -73,23 +82,16 @@ export default function OfferPage() {
     return days > 0 ? `${days}j ${hours}h restants` : `${hours}h restants`;
   };
 
-  // Pagination 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const indexOfLast = currentPage * productsPerPage;
   const indexOfFirst = indexOfLast - productsPerPage;
-  const currentProducts = products.slice(indexOfFirst, indexOfLast);
-  const filteredCurrent = currentProducts.filter((p) => {
-    const q = (query || "").toLowerCase();
-    const matchQuery = p.name?.toLowerCase().includes(q);
-    const matchCategory = categoryId ? String(p.category) === String(categoryId) : true;
-    const matchSub = subCategoryId ? String(p.subCategory) === String(subCategoryId) : true;
-    return matchQuery && matchCategory && matchSub;
-  });
-  const totalPages = Math.ceil(products.length / productsPerPage);
-
+  const currentProducts = filteredProducts.slice(indexOfFirst, indexOfLast);
 
   return (
     <section className="offer-page">
       <div className="container py-5">
+        {/* Hero promotion */}
         {heroPromotion && (
           <div className="rounded-4 shadow-soft p-4 p-lg-5 mb-5 offer-hero">
             <div className="row align-items-center g-4">
@@ -130,7 +132,7 @@ export default function OfferPage() {
           </div>
         )}
 
-       
+        {/* Section title */}
         <div className="mb-4">
           <h2 className="section-title">Offres Spéciales</h2>
           <p className="section-subtitle">
@@ -138,63 +140,64 @@ export default function OfferPage() {
           </p>
         </div>
 
-        {/* Filters */}
+        {/* Filters + Products */}
         <div className="row">
-      {/* FILTER */}
-      <div className="col-12 col-md-3 mb-4">
-        <ProductFilters />
-      </div>
-      <div className="col-12 col-md-9">
-      <div className="row g-4">
-          {filteredCurrent.map((product) => (
-            <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-4">
-              <ProductCard
-                product={product}
-                badgeType="promo"
-                stockCount={product.countInStock}
-                isFavorite={favorites.includes(product.id)}
-                onFavoriteSuccess={(id) =>
-                  setFavorites((prev) => [...new Set([...prev, id])])
-                }
-              />
-            </div>
-          ))}
-        </div>
-        {filteredCurrent.length === 0 && (
-          <p className="text-center text-muted mt-3">Aucune offre correspondante.</p>
-        )}
-
-        {/* PAGINATION */}
-        {products.length > productsPerPage && (
-          <div className="d-flex justify-content-center align-items-center gap-2 mt-5 flex-wrap">
-            <button
-              className={`pagination-btn ${currentPage === 1 ? "disabled" : ""}`}
-              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-            >
-              Préc
-            </button>
-
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-              <button
-                key={p}
-                className={`pagination-btn ${currentPage === p ? "active" : ""}`}
-                onClick={() => setCurrentPage(p)}
-              >
-                {p}
-              </button>
-            ))}
-
-            <button
-              className={`pagination-btn ${currentPage === totalPages ? "disabled" : ""}`}
-              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-            >
-              Suiv
-            </button>
+          <div className="col-12 col-md-3 mb-4">
+            <ProductPromoFilters onFilter={handleFilter} />
           </div>
-        )}
-    </div>
-    </div>
-  </div>
+
+          <div className="col-12 col-md-9">
+            <div className="row g-4">
+              {currentProducts.map((product) => (
+                <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-4">
+                  <ProductCard
+                    product={product}
+                    badgeType="promo"
+                    stockCount={product.countInStock}
+                    isFavorite={favorites.includes(product.id)}
+                    onFavoriteSuccess={(id) =>
+                      setFavorites((prev) => [...new Set([...prev, id])])
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+
+            {currentProducts.length === 0 && (
+              <p className="text-center text-muted mt-3">Aucune offre correspondante.</p>
+            )}
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="d-flex justify-content-center align-items-center gap-2 mt-5 flex-wrap">
+                <button
+                  className={`pagination-btn ${currentPage === 1 ? "disabled" : ""}`}
+                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                >
+                  Préc
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    className={`pagination-btn ${currentPage === p ? "active" : ""}`}
+                    onClick={() => setCurrentPage(p)}
+                  >
+                    {p}
+                  </button>
+                ))}
+
+                <button
+                  className={`pagination-btn ${currentPage === totalPages ? "disabled" : ""}`}
+                  onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                >
+                  Suiv
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

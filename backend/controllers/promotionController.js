@@ -281,7 +281,7 @@ export const getProductsWithPromo = async (req, res) => {
         };
       });
 
-    console.log("Products with active promotion:", activeProducts.length);
+   
     res.json(activeProducts);
   } catch (error) {
     console.error("Error fetching products with promotion:", error);
