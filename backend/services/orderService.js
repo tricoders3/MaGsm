@@ -1,26 +1,27 @@
 import Order from "../models/orderModel.js"
 
 // CREATE ORDER
-export const createOrder = async (user, cart) => {
+export const createOrder = async (user, cart, shippingAddress) => {
   const items = cart.items.map(item => ({
     product: item.product._id,
     quantity: item.quantity,
-    name: item.product.name, 
+    name: item.product.name,
     price: item.product.price,
-    
-  }))
+  }));
 
   const total = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
-  )
+  );
 
   return await Order.create({
     user: user.id,
     items,
+    shippingAddress, // ✅ sauvegarde directe
     total,
-  })
-}
+  });
+};
+
 
 // GET USER ORDERS
 export const getOrdersByUser = async (userId) => {
