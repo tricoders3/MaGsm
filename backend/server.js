@@ -17,7 +17,7 @@ import orderRoutes from "./routes/orderRoutes.js";
 import favoriteRoutes from './routes/favoriteRoutes.js';
 import settingsRoutes from './routes/siteSettingsRoutes.js';
 import contactMsgRoutes from "./routes/contactMsgRoutes.js";
-import locationRoutes from "./routes/locationRoutes.js";
+
 // ------------------
 // Load .env from root (MaGsm/.env)
 // ------------------
@@ -78,7 +78,6 @@ app.use('/api/favorites', favoriteRoutes)
 app.use('/api/orders', orderRoutes);
 app.use("/api/site-settings", settingsRoutes);  
 app.use("/api/contact", contactMsgRoutes);
-app.use("/api/locations", locationRoutes);
 app.get("/facebook-data-deletion", (req, res) => {
   res.status(200).send(`
     <h2>Suppression des données utilisateur</h2>
