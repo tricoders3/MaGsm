@@ -7,12 +7,14 @@ import axios from "axios";
 import BASE_URL from "../constante";
 import EmptyCart from "../assets/images/empty_cart.png";
 import { useCart } from "../context/CartContext";
+import AlertToast from "../components/AlertToast";
 
 function Cart() {
   const navigate = useNavigate();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creatingOrder, setCreatingOrder] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const { setCartCount } = useCart();
 
   // Fetch cart from backend on mount
@@ -89,7 +91,7 @@ setCartCount(count);
       await axios.delete(`${BASE_URL}/api/cart/${productId}`, { withCredentials: true });
       const newCart = cart.filter((i) => i.product._id !== productId);
       setCart(newCart);
-      setCartCount(newCart.reduce((sum, i) => sum + i.quantity, 0)); // update badge instantly
+      setCartCount(newCart.reduce((sum, i) => sum + i.quantity, 0)); 
     } catch (error) {
       console.error("Erreur en supprimant le produit :", error);
     }
@@ -97,34 +99,9 @@ setCartCount(count);
 
   const totalPrice = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
-  const handleCreateOrder = async () => {
+  const handleCreateOrder = () => {
     if (cart.length === 0) return;
-    setCreatingOrder(true);
-
-    try {
-      const orderData = {
-        items: cart.map((item) => ({
-          product: item.product._id,
-          quantity: item.quantity,
-          price: item.product.price,
-        })),
-        total: totalPrice + 7, // shipping + taxes
-        paymentMethod: "Paiement à la livraison",
-        status: "En attente",
-      };
-
-      await axios.post(`${BASE_URL}/api/orders`, orderData, { withCredentials: true });
-
-      setCart([]);
-      setCartCount(0); // clear badge instantly
-      alert("Commande créée avec succès ! Paiement à la livraison.");
-      navigate("/orders");
-    } catch (error) {
-      console.error("Erreur lors de la création de la commande :", error);
-      alert("Impossible de créer la commande, réessayez !");
-    } finally {
-      setCreatingOrder(false);
-    }
+    navigate("/checkout");
   };
 
   if (loading) return null;
@@ -186,10 +163,10 @@ setCartCount(count);
           <div className="p-3 bg-white rounded shadow-sm">
             <ul className="list-unstyled mb-3">
               <li className="d-flex justify-content-between text-dark">Sous-total: <span>{totalPrice} TND</span></li>
-              <li className="d-flex justify-content-between text-dark">Livraison: <span>7 TND</span></li>
-              
+              <li className="d-flex justify-content-between text-dark">Livraison: <span>10 TND</span></li>
+              <li className="d-flex justify-content-between text-dark">Taxes: <span>10 TND</span></li>
               <hr />
-              <li className="d-flex justify-content-between fw-bold text-dark">Total: <span>{totalPrice + 7} TND</span></li>
+              <li className="d-flex justify-content-between fw-bold text-dark">Total: <span>{totalPrice + 20} TND</span></li>
             </ul>
 
             <Button variant="dark" className="w-100 mb-2" onClick={handleCreateOrder} disabled={creatingOrder}>
@@ -202,6 +179,12 @@ setCartCount(count);
           </div>
         </div>
       </div>
+      <AlertToast
+  show={showToast}
+  onClose={() => setShowToast(false)}
+  type="success"
+  message="Commande créée avec succès ! Paiement à la livraison."
+/>
     </div>
   );
 }
