@@ -89,7 +89,7 @@ setCartCount(count);
       await axios.delete(`${BASE_URL}/api/cart/${productId}`, { withCredentials: true });
       const newCart = cart.filter((i) => i.product._id !== productId);
       setCart(newCart);
-      setCartCount(newCart.reduce((sum, i) => sum + i.quantity, 0)); // update badge instantly
+      setCartCount(newCart.reduce((sum, i) => sum + i.quantity, 0)); 
     } catch (error) {
       console.error("Erreur en supprimant le produit :", error);
     }
@@ -102,23 +102,22 @@ setCartCount(count);
     setCreatingOrder(true);
 
     try {
-      const orderData = {
-        items: cart.map((item) => ({
-          product: item.product._id,
-          quantity: item.quantity,
-          price: item.product.price,
-        })),
-        total: totalPrice + 20, // shipping + taxes
-        paymentMethod: "Paiement à la livraison",
-        status: "En attente",
-      };
-
-      await axios.post(`${BASE_URL}/api/orders`, orderData, { withCredentials: true });
+      // Create order 
+      const { data } = await axios.post(
+        `${BASE_URL}/api/orders`,
+        {},
+        { withCredentials: true }
+      );
 
       setCart([]);
       setCartCount(0); // clear badge instantly
       alert("Commande créée avec succès ! Paiement à la livraison.");
-      navigate("/orders");
+      const newOrderId = data?.order?._id;
+      if (newOrderId) {
+        navigate(`/order-confirmation/${newOrderId}`);
+      } else {
+        navigate("/orders");
+      }
     } catch (error) {
       console.error("Erreur lors de la création de la commande :", error);
       alert("Impossible de créer la commande, réessayez !");
