@@ -6,13 +6,11 @@ import {
   updateOrderStatus, deleteOrderById, deleteAllOrders
 } from "../services/orderService.js"
 import { sendAdminOrderNotification , sendClientOrderConfirmation} from "../utils/sendEmail.js"
-import { calculateLoyaltyPoints,applyLoyaltyPoints} from "../utils/loyalty.js"
+import { calculateLoyaltyPoints } from "../utils/loyalty.js"
 import User from "../models/userModel.js"
 import { generateInvoicePDF } from "../utils/generateInvoice.js";
 
-
 // CREATE ORDER FROM CART
-
 export const createOrderFromCart = async (req, res) => {
   try {
     const cart = await getUserCart(req.user.id);
@@ -21,36 +19,21 @@ export const createOrderFromCart = async (req, res) => {
       return res.status(400).json({ message: "Panier vide" });
     }
 
+    // 1️⃣ créer la commande
+    const order = await createOrder(req.user, cart);
+
+    // 2️⃣ Calculer et ajouter les points fidélité
+    const points = calculateLoyaltyPoints(order.total);
+
     const user = await User.findById(req.user.id);
+    if (user) {
+      user.loyaltyPoints += points;
+      await user.save();
+    }
 
-    // 1️⃣ créer la commande (sans remise)
-    let order = await createOrder(req.user, cart);
-
-    // 2️⃣ appliquer les points fidélité si demandés
-    const { discount, finalTotal, pointsUsed } = applyLoyaltyPoints({
-      user,
-      total: order.total,
-      pointsToApply: req.body.pointsToApply
-    });
-
-    // 3️⃣ mettre à jour la commande
-    order.total = finalTotal;
-    order.discount = discount;
-    order.pointsUsed = pointsUsed;
-    await order.save();
-
-    // 4️⃣ MAJ points utilisateur
-    user.loyaltyPoints -= pointsUsed;
-
-    const pointsEarned = calculateLoyaltyPoints(finalTotal);
-    user.loyaltyPoints += pointsEarned;
-
-    await user.save();
-
-    // 5️⃣ enrichir la réponse
-    order.pointsEarned = pointsEarned;
-
-    // 6️⃣ Générer facture PDF
+    // Ajouter les points gagnés à l'objet order pour réponse
+    order.pointsEarned = points;
+    // 3️⃣ Générer la facture PDF
     let invoicePath = null;
     try {
       invoicePath = await generateInvoicePDF(order, user);
@@ -58,28 +41,35 @@ export const createOrderFromCart = async (req, res) => {
       console.error("Erreur génération facture:", pdfError.message);
     }
 
-    // 7️⃣ Emails
+    // 3️⃣ envoyer mail admin (non bloquant)
     try {
-      await sendAdminOrderNotification({ user, order });
-      await sendClientOrderConfirmation({ user, order, invoicePath });
+      await sendAdminOrderNotification({
+        user,
+        order,
+      });
+        // envoyer mail client
+  await sendClientOrderConfirmation({
+    user,
+    order,
+    invoicePath,
+  });
     } catch (mailError) {
-      console.error("Erreur email:", mailError.message);
+      console.error("Erreur email admin:", mailError.message);
     }
 
-    // 8️⃣ vider le panier
+    // 4️⃣ vider le panier
     await clearCart(req.user.id);
 
     res.status(201).json({
       message: "Commande créée avec succès",
       order,
-      loyaltyPoints: user.loyaltyPoints
+      loyaltyPoints: user.loyaltyPoints,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
   }
-};
-
+}
 // USER – GET HIS ORDERS
 export const getOrdersForUser = async (req, res) => {
   try {
