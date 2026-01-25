@@ -10,10 +10,7 @@ export const createOrder = async (user, cart, shippingAddress) => {
     quantity: item.quantity,
   }));
 
-  const total = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   // 🔥 calcul des points gagnés ICI
   const pointsEarned = calculateLoyaltyPoints(total);
@@ -21,7 +18,7 @@ export const createOrder = async (user, cart, shippingAddress) => {
   return await Order.create({
     user: user.id,
     items,
-    shippingAddress,
+    shippingAddress, 
     total,
     pointsEarned, // ✅ sauvegardé directement
   });

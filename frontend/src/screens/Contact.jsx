@@ -236,10 +236,10 @@ export default function Contact() {
               </form>
             </div>
           </div>
-
+       
           <div className="col-lg-6">
             <div className="rounded-4 shadow-soft overflow-hidden  bg-white">
-              <div className="ratio ratio-16x9">
+              <div className="ratio ratio-4x3">
                 <iframe
                   title="Localisation"
                   src={contactInfo.mapEmbedUrl || "https://www.google.com/maps?q=35.67322432149297,10.098604243817753&output=embed"}
