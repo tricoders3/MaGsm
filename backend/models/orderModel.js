@@ -1,6 +1,13 @@
 // models/Order.js
 import mongoose from "mongoose"
-
+const addressSchema = new mongoose.Schema({
+  fullAddress: { type: String, required: true },
+  street: { type: String, required: true },
+  postalCode: { type: String, required: true },
+  city: { type: String, required: true },
+  region: { type: String },
+  country: { type: String, default: "Tunisie" }
+});
 const orderSchema = new mongoose.Schema(
   {
     user: {
@@ -9,18 +16,28 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
-    items: [
-      {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
-          required: true,
-        },
-        quantity: { type: Number, required: true },
-        price: { type: Number, required: true }, // snapshot
-      },
-    ],
-
+   items: [
+  {
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,   // 🔥 C'EST ÇA QUI MANQUAIT
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+    },
+  },
+],
+    shippingAddress: { type: addressSchema, required: true },
     total: { type: Number, required: true },
     pointsEarned: { type: Number, default: 0 }, // points gagnés sur cette commande
     status: {
@@ -29,6 +46,7 @@ const orderSchema = new mongoose.Schema(
       default: "pending",
     },
   },
+  
   { timestamps: true }
 )
 

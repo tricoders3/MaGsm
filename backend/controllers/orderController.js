@@ -8,6 +8,7 @@ import {
 import { sendAdminOrderNotification , sendClientOrderConfirmation} from "../utils/sendEmail.js"
 import { calculateLoyaltyPoints } from "../utils/loyalty.js"
 import User from "../models/userModel.js"
+import { generateInvoicePDF } from "../utils/generateInvoice.js";
 
 // CREATE ORDER FROM CART
 export const createOrderFromCart = async (req, res) => {
@@ -32,6 +33,13 @@ export const createOrderFromCart = async (req, res) => {
 
     // Ajouter les points gagnés à l'objet order pour réponse
     order.pointsEarned = points;
+    // 3️⃣ Générer la facture PDF
+    let invoicePath = null;
+    try {
+      invoicePath = await generateInvoicePDF(order, user);
+    } catch (pdfError) {
+      console.error("Erreur génération facture:", pdfError.message);
+    }
 
     // 3️⃣ envoyer mail admin (non bloquant)
     try {
@@ -43,6 +51,7 @@ export const createOrderFromCart = async (req, res) => {
   await sendClientOrderConfirmation({
     user,
     order,
+    invoicePath,
   });
     } catch (mailError) {
       console.error("Erreur email admin:", mailError.message);

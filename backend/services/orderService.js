@@ -5,7 +5,9 @@ export const createOrder = async (user, cart) => {
   const items = cart.items.map(item => ({
     product: item.product._id,
     quantity: item.quantity,
+    name: item.product.name, 
     price: item.product.price,
+    
   }))
 
   const total = items.reduce(

@@ -12,33 +12,27 @@ const transporter = nodemailer.createTransport({
 })
 
 
-export const sendClientOrderConfirmation = async ({ user, order }) => {
-  if (!user.email) throw new Error("Email du client introuvable");
 
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: false,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-
+export const sendClientOrderConfirmation = async ({ user, order, invoicePath }) => {
   await transporter.sendMail({
     from: `"MaGsm Boutique" <${process.env.SMTP_USER}>`,
     to: user.email,
-    subject: `Confirmation de votre commande ${order._id}`,
+    subject: "Confirmation de commande & facture",
     html: `
-      <h2>Bonjour ${user.name || "Cher client"},</h2>
-      <p>Merci pour votre commande !</p>
-      <ul>
-        <li><strong>ID commande:</strong> ${order._id}</li>
-        <li><strong>Total:</strong> ${order.total} DT</li>
-        <li><strong>Points fidélité gagnés:</strong> ${order.pointsEarned}</li>
-      </ul>
-      <p>Nous vous remercions pour votre confiance !</p>
+      <h3>Bonjour ${user.name},</h3>
+      <p>Votre commande a bien été enregistrée.</p>
+      <p>Vous trouverez votre facture en pièce jointe.</p>
+      <p><strong>Total:</strong> ${order.total} DT</p>
+      <p><strong>Points fidélité gagnés:</strong> ${order.pointsEarned}</p>
+      <br />
+      <p>Merci pour votre confiance 🙏</p>
     `,
+    attachments: [
+      {
+        filename: `facture-${order._id}.pdf`,
+        path: invoicePath,
+      },
+    ],
   });
 };
 

@@ -85,7 +85,7 @@ function NavBar() {
     fetchCounts();
 
     // Optional: refresh every 30 seconds
-    const interval = setInterval(fetchCounts, 1);
+    const interval = setInterval(fetchCounts, 30000);
     return () => clearInterval(interval);
   }, [isAuthenticated]);
   return (
