@@ -6,6 +6,7 @@ import Login from "./screens/login";
 import Register from "./screens/register";
 import Dashboard from "./screens/Dashboard";
 import SearchPage from "./screens/SearchPage";
+import OrderConfirmation from "./screens/OrderConfirmation";
 import Layout from "./components/Layout";
 import About from "./screens/About";
 import Contact from "./screens/Contact";
@@ -80,6 +81,7 @@ function App() {
   <Route path="/login" element={<Login setUser={setUser} />} />
   <Route path="/cart" element={<Cart />} />
   <Route path="/favoris" element={<Favoris />} />
+  <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
   <Route path="/dashboard" element={<Dashboard user={user} />} />
   <Route path="/oauth-success" element={<OAuthSuccess setUser={setUser} />} />
   <Route path="/category/:categoryId" element={<SubCategories />} />

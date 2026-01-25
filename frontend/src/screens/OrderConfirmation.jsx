@@ -54,7 +54,18 @@ export default function OrderConfirmation() {
         <div className="card-body">
           <p className="mb-2 text-muted">Merci pour votre achat. Votre commande a été créée avec succès.</p>
           <div className="mb-3">
-            <div className="d-flex justify-content-between"><span>Statut</span><strong>{order.status}</strong></div>
+            <div className="d-flex justify-content-between"><span>Statut</span>
+                <span
+    className={`status-badge ${
+       order.status === "shipped"
+        ? "status-shipped"
+        : order.status === "delivered"
+        ? "status-delivered"
+        : order.status === "cancelled"
+        ? "status-cancelled"
+        : "status-pending"
+    }`}
+  >{order.status}</span></div>
             <div className="d-flex justify-content-between"><span>Articles</span><strong>{order.items?.length || 0}</strong></div>
             <div className="d-flex justify-content-between"><span>Total</span><strong>{order.total} TND</strong></div>
           </div>
