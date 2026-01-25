@@ -238,7 +238,7 @@ export default function Contact() {
           </div>
 
           <div className="col-lg-6">
-            <div className="rounded-4 shadow-soft overflow-hidden h-100 bg-white">
+            <div className="rounded-4 shadow-soft overflow-hidden  bg-white">
               <div className="ratio ratio-16x9">
                 <iframe
                   title="Localisation"
