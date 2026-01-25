@@ -1,12 +1,13 @@
-import Order from "../models/orderModel.js"
+import Order from "../models/orderModel.js";
+import { calculateLoyaltyPoints } from "../utils/loyalty.js";
 
 // CREATE ORDER
 export const createOrder = async (user, cart, shippingAddress) => {
   const items = cart.items.map(item => ({
     product: item.product._id,
-    quantity: item.quantity,
     name: item.product.name,
     price: item.product.price,
+    quantity: item.quantity,
   }));
 
   const total = items.reduce(
@@ -14,15 +15,17 @@ export const createOrder = async (user, cart, shippingAddress) => {
     0
   );
 
+  // 🔥 calcul des points gagnés ICI
+  const pointsEarned = calculateLoyaltyPoints(total);
+
   return await Order.create({
     user: user.id,
     items,
-    shippingAddress, // ✅ sauvegarde directe
+    shippingAddress,
     total,
+    pointsEarned, // ✅ sauvegardé directement
   });
 };
-
-
 // GET USER ORDERS
 export const getOrdersByUser = async (userId) => {
   return await Order.find({ user: userId }).populate("items.product")

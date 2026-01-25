@@ -68,12 +68,7 @@ doc.moveDown();
 doc.fontSize(14)
    .text(`Total à payer : ${order.total.toFixed(2)} DT`, { align: "right" });
 
-// 🎁 POINTS GAGNÉS
-if (order.pointsEarned > 0) {
-  doc.moveDown(0.5);
-  doc.fontSize(10)
-     .text(`Points gagnés : ${order.pointsEarned}`, { align: "right" });
-}
+
 
 
       doc.end();

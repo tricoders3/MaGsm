@@ -108,7 +108,7 @@ setCartCount(count);
           quantity: item.quantity,
           price: item.product.price,
         })),
-        total: totalPrice + 20, // shipping + taxes
+        total: totalPrice + 7, // shipping + taxes
         paymentMethod: "Paiement à la livraison",
         status: "En attente",
       };
@@ -186,10 +186,10 @@ setCartCount(count);
           <div className="p-3 bg-white rounded shadow-sm">
             <ul className="list-unstyled mb-3">
               <li className="d-flex justify-content-between text-dark">Sous-total: <span>{totalPrice} TND</span></li>
-              <li className="d-flex justify-content-between text-dark">Livraison: <span>10 TND</span></li>
-              <li className="d-flex justify-content-between text-dark">Taxes: <span>10 TND</span></li>
+              <li className="d-flex justify-content-between text-dark">Livraison: <span>7 TND</span></li>
+              
               <hr />
-              <li className="d-flex justify-content-between fw-bold text-dark">Total: <span>{totalPrice + 20} TND</span></li>
+              <li className="d-flex justify-content-between fw-bold text-dark">Total: <span>{totalPrice + 7} TND</span></li>
             </ul>
 
             <Button variant="dark" className="w-100 mb-2" onClick={handleCreateOrder} disabled={creatingOrder}>
