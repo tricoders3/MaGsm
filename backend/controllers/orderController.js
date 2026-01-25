@@ -6,7 +6,7 @@ import {
   updateOrderStatus, deleteOrderById, deleteAllOrders
 } from "../services/orderService.js"
 import { sendAdminOrderNotification , sendClientOrderConfirmation} from "../utils/sendEmail.js"
-import { calculateLoyaltyPoints } from "../utils/loyalty.js"
+import { calculateLoyaltyPoints,applyLoyaltyPoints } from "../utils/loyalty.js"
 import User from "../models/userModel.js"
 import { generateInvoicePDF } from "../utils/generateInvoice.js";
 
@@ -20,8 +20,11 @@ export const createOrderFromCart = async (req, res) => {
     }
 
     // 1️⃣ créer la commande
-    const order = await createOrder(req.user, cart);
-
+    const order = await createOrder(
+  req.user,
+  cart,
+  req.body.shippingAddress 
+);
     // 2️⃣ Calculer et ajouter les points fidélité
     const points = calculateLoyaltyPoints(order.total);
 

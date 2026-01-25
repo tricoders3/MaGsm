@@ -38,6 +38,7 @@ const orderSchema = new mongoose.Schema(
   },
 ],
     shippingAddress: { type: addressSchema },
+    
     total: { type: Number, required: true },
     pointsEarned: { type: Number, default: 0 }, // points gagnés sur cette commande
     status: {
