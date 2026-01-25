@@ -300,3 +300,59 @@ export const getBrands = async (req, res) => {
 
 
 
+/**
+ * @desc    Get most purchased products
+ * @route   GET /api/products/most-bought
+ * @access  Public
+ */
+export const getMostPurchasedProducts = async (req, res) => {
+  try {
+    const limit = 10;
+
+    // 1️⃣ Aggregate sold quantities
+    const sales = await Order.aggregate([
+      { $unwind: "$items" },
+      {
+        $group: {
+          _id: "$items.product",
+          totalSold: { $sum: "$items.quantity" },
+        },
+      },
+      { $sort: { totalSold: -1 } },
+      { $limit: limit },
+    ]);
+
+    // 2️⃣ Get full product details
+    const productIds = sales.map(s => s._id);
+
+    const products = await Product.find({ _id: { $in: productIds } })
+      .populate("category", "name subCategories")
+      .populate("promotion"); // إذا تحب تعرف البرومو
+
+    // 3️⃣ Merge with totalSold
+    const popularProducts = products.map(p => {
+      const sale = sales.find(s => s._id.toString() === p._id.toString());
+
+      // 4️⃣ جلب اسم subCategory من داخل category
+      let subCategoryName = null;
+      if (p.category && p.subCategory) {
+        const subCat = p.category.subCategories.find(
+          sc => sc._id.toString() === p.subCategory.toString()
+        );
+        subCategoryName = subCat ? subCat.name : null;
+      }
+
+      return {
+        ...p._doc,
+        totalSold: sale ? sale.totalSold : 0,
+        subCategoryName,
+        image: p.images?.[0]?.url || "",
+      };
+    });
+
+    res.json(popularProducts);
+  } catch (error) {
+    console.error("Error fetching most purchased products:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
