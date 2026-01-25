@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../constante";
-
+import { FiCheckCircle, FiPackage, FiArrowRight } from "react-icons/fi";
 export default function OrderConfirmation() {
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
@@ -46,45 +46,93 @@ export default function OrderConfirmation() {
 
   return (
     <div className="container mt-5 mb-5">
-      <div className="card border-0 shadow-sm rounded-4">
-        <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-          <h5 className="mb-0">Commande confirmée</h5>
-          <span className="count-pill">#{order._id?.slice(-6)}</span>
+    <div className="card border-0 shadow-lg rounded-5 overflow-hidden">
+      <div className="p-4 text-center">
+        <FiCheckCircle size={48} className="text-success mb-2" />
+        <h4 className="fw-bold text-dark mb-1">Commande confirmée</h4>
+        <p className="text-muted mb-0">
+          Merci pour votre achat. Votre commande a bien été enregistrée.
+        </p>
+        <span className="badge bg-dark-subtle text-dark mt-3 me-2">
+          Commande #{order._id?.slice(-6)}
+        </span>
+      </div>
+  
+      <div className="card-body p-4 p-md-5">
+  
+        {/* SUMMARY */}
+    
+        {/* PRODUCTS */}
+        <h6 className="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+          <FiPackage /> Produits commandés
+        </h6>
+  
+        <div className="product-list mb-4">
+          {(order.items || []).map((it, idx) => (
+            <div
+              key={idx}
+              className="d-flex justify-content-between align-items-center py-3 border-bottom"
+            >
+              <div>
+                <div className="fw-semibold">
+                  {it.product?.name || "Produit"}
+                </div>
+                <small className="text-muted">
+                  Quantité : {it.quantity}
+                </small>
+              </div>
+              <strong>
+                {(it.price || 0) * (it.quantity || 0)} TND
+              </strong>
+            </div>
+          ))}
         </div>
-        <div className="card-body">
-          <p className="mb-2 text-muted">Merci pour votre achat. Votre commande a été créée avec succès.</p>
-          <div className="mb-3">
-            <div className="d-flex justify-content-between"><span>Statut</span>
-                <span
-    className={`status-badge ${
-       order.status === "shipped"
-        ? "status-shipped"
-        : order.status === "delivered"
-        ? "status-delivered"
-        : order.status === "cancelled"
-        ? "status-cancelled"
-        : "status-pending"
-    }`}
-  >{order.status}</span></div>
-            <div className="d-flex justify-content-between"><span>Articles</span><strong>{order.items?.length || 0}</strong></div>
-            <div className="d-flex justify-content-between"><span>Total</span><strong>{order.total} TND</strong></div>
+        <div className="row g-4 mb-4">
+          <div className="col-md-4">
+            <div className="summary-box">
+              <span>Statut</span>
+              <strong
+                className={`status-badge ${
+                  order.status === "shipped"
+                    ? "status-shipped"
+                    : order.status === "delivered"
+                    ? "status-delivered"
+                    : order.status === "cancelled"
+                    ? "status-cancelled"
+                    : "status-pending"
+                }`}
+              >
+                {order.status}
+              </strong>
+            </div>
           </div>
-          <h6 className="mt-4">Produits</h6>
-          <ul className="list-unstyled">
-            {(order.items || []).map((it, idx) => (
-              <li key={idx} className="d-flex justify-content-between border-bottom py-2">
-                <span>{it.product?.name || "Produit"} × {it.quantity}</span>
-                <span>{(it.price || 0) * (it.quantity || 0)} TND</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-4 d-flex gap-2">
-            <Link to="/products" className="btn btn-outline-secondary">Continuer vos achats</Link>
-            <Link to="/orders" className="btn btn-primary-redesign">Voir mes commandes</Link>
+  
+          <div className="col-md-4">
+            <div className="summary-box">
+              <span>Articles</span>
+              <strong>{order.items?.length || 0}</strong>
+            </div>
           </div>
+  
+          <div className="col-md-4">
+            <div className="summary-box">
+              <span>Total</span>
+              <strong>{order.total} TND</strong>
+            </div>
+          </div>
+        </div>
+  
+        {/* ACTIONS */}
+        <div className="d-flex flex-column flex-sm-row gap-3 justify-content-end">
+          <Link to="/products" className="btn btn-outline-secondary px-4">
+            Continuer vos achats
+          </Link>
+          <Link to="/orders" className="btn btn-primary-redesign px-4">
+            Voir mes commandes
+          </Link>
         </div>
       </div>
     </div>
+  </div>
   );
 }
