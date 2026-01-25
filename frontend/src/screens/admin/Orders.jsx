@@ -194,7 +194,7 @@ const Orders = () => {
             {orders.length > ordersPerPage && (
               <div className="d-flex justify-content-center align-items-center gap-2 mt-4 mb-3 flex-wrap">
                 <button
-                  className={`btn btn-outline-secondary btn-sm ${currentPage === 1 ? "disabled" : ""}`}
+                  className={`pagination-btn ${currentPage === 1 ? "disabled" : ""}`}
                   onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                 >
                   Préc
@@ -203,7 +203,7 @@ const Orders = () => {
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                   <button
                     key={p}
-                    className={`btn btn-outline-primary btn-sm ${currentPage === p ? "active" : ""}`}
+                    className={`pagination-btn ${currentPage === p ? "active" : ""}`}
                     onClick={() => setCurrentPage(p)}
                   >
                     {p}
@@ -211,7 +211,7 @@ const Orders = () => {
                 ))}
 
                 <button
-                  className={`btn btn-outline-secondary btn-sm ${currentPage === totalPages ? "disabled" : ""}`}
+                  className={`pagination-btn ${currentPage === totalPages ? "disabled" : ""}`}
                   onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                 >
                   Suiv
