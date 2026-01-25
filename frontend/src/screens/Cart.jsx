@@ -21,7 +21,13 @@ function Cart() {
       try {
         const res = await axios.get(`${BASE_URL}/api/cart`, { withCredentials: true });
         setCart(res.data.cart.items || []);
-        setCartCount(res.data.cart.items.length); // update badge instantly
+        const count = res.data.cart.items.reduce(
+  (sum, item) => sum + item.quantity,
+  0
+);
+
+setCartCount(count);
+
         setLoading(false);
       } catch (error) {
         console.error("Erreur en récupérant le panier :", error);

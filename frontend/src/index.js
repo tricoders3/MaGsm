@@ -10,13 +10,15 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   
   <React.StrictMode>
     <BrowserRouter>
+    <CartProvider>
       <AuthProvider>
         <ContentProvider>
-          <CartProvider>
+          
           <App />
-          </CartProvider>
+         
         </ContentProvider>
       </AuthProvider>
+       </CartProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

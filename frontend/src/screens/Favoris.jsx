@@ -42,18 +42,23 @@ useEffect(() => {
   fetchFavorites();
 }, []);
 
+// Remove favorite
 const handleRemoveFavorite = async (productId) => {
   try {
     await axios.delete(`${BASE_URL}/api/favorites/${productId}`, { withCredentials: true });
     const updatedFavorites = favorites.filter((p) => p._id !== productId);
     setFavorites(updatedFavorites);
-    setFavoritesCount(updatedFavorites.length); // ✅ update badge instantly
+
+    // ✅ Update global badge
+    setFavoritesCount(updatedFavorites.length);
+
     setToast({ show: true, message: "Retiré des favoris", type: "favorite" });
     setTimeout(() => setToast({ ...toast, show: false }), 1500);
   } catch (error) {
     console.error("Erreur remove favorite:", error);
   }
 };
+
 
 
   const handleAddToCart = async (product) => {
