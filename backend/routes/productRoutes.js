@@ -20,13 +20,13 @@ router.get("/most-purchased", getMostPurchasedProducts);
 router
   .route("/")
   .get(getProducts)
-  .post(upload.single("image"), createProduct); // single image from device
+  .post(upload.array("images", 5), createProduct); // single image from device
 
 // ---------------- PRODUCT BY ID ----------------
 router
   .route("/:id")
   .get(getProductById)
-  .put(upload.single("image"), updateProduct) // single image update
+  .put(upload.array("images", 5), updateProduct) // single image update
   .delete(deleteProduct);
 
 // ---------------- OTHER FILTERS ----------------

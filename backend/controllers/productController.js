@@ -11,22 +11,26 @@ import cloudinary from "../config/cloudinary.js";
  */
 export const createProduct = async (req, res) => {
   try {
-    let imageUrl = "";
+    let images = [];
 
-    if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "products",
-      });
-      imageUrl = result.secure_url;
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: "products",
+        });
+        images.push({ url: result.secure_url });
+      }
     }
 
     const product = new Product({
       ...req.body,
-      images: imageUrl ? [{ url: imageUrl }] : [],
+      images, // array of uploaded images
     });
- let stockStatus = req.body.countInStock;
-    if (!["in", "out"].includes(stockStatus)) {
-      stockStatus = "in";}
+
+    if (!["in", "out"].includes(req.body.countInStock)) {
+      product.countInStock = "in";
+    }
+
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
   } catch (error) {
@@ -34,6 +38,7 @@ export const createProduct = async (req, res) => {
     res.status(500).json({ message: "Error creating product" });
   }
 };
+
 
 
 
@@ -114,7 +119,7 @@ export const updateProduct = async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: "Product not found" });
 
-    // update fields
+    // Update fields
     product.name = req.body.name || product.name;
     product.model = req.body.model || product.model;
     product.brand = req.body.brand || product.brand;
@@ -123,17 +128,21 @@ export const updateProduct = async (req, res) => {
     product.description = req.body.description || product.description;
     product.price = req.body.price ?? product.price;
 
-    // validate stock status
+    // Validate stock status
     if (req.body.countInStock && ["in", "out"].includes(req.body.countInStock)) {
       product.countInStock = req.body.countInStock;
     }
 
-    // handle image
-    if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "products",
-      });
-      product.images = [{ url: result.secure_url }];
+    // Handle multiple images
+    if (req.files && req.files.length > 0) {
+      const images = [];
+      for (const file of req.files) {
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: "products",
+        });
+        images.push({ url: result.secure_url });
+      }
+      product.images = images; // Replace with new images
     }
 
     const updatedProduct = await product.save();
@@ -143,6 +152,7 @@ export const updateProduct = async (req, res) => {
     res.status(500).json({ message: "Error updating product" });
   }
 };
+
 
 
 /**
@@ -307,19 +317,19 @@ export const getBrands = async (req, res) => {
  */
 export const getMostPurchasedProducts = async (req, res) => {
   try {
-    const limit = 10;
+    const limit = 10; // Always return top 10
 
-    // 1️⃣ Aggregate sold quantities
+    // 1️⃣ Aggregate sold quantities from orders
     const sales = await Order.aggregate([
-      { $unwind: "$items" },
+      { $unwind: "$items" }, // Flatten items array
       {
         $group: {
-          _id: "$items.product",
-          totalSold: { $sum: "$items.quantity" },
+          _id: "$items.product", // Group by product ID
+          totalSold: { $sum: "$items.quantity" }, // Sum quantities
         },
       },
-      { $sort: { totalSold: -1 } },
-      { $limit: limit },
+      { $sort: { totalSold: -1 } }, // Sort descending
+      { $limit: limit }, // Limit top 10
     ]);
 
     // 2️⃣ Get full product details
@@ -327,13 +337,12 @@ export const getMostPurchasedProducts = async (req, res) => {
 
     const products = await Product.find({ _id: { $in: productIds } })
       .populate("category", "name subCategories")
-      .populate("promotion"); // إذا تحب تعرف البرومو
+      .populate("promotion"); // Populate promotion if exists
 
-    // 3️⃣ Merge with totalSold
+    // 3️⃣ Merge totalSold and get subCategory name
     const popularProducts = products.map(p => {
       const sale = sales.find(s => s._id.toString() === p._id.toString());
 
-      // 4️⃣ جلب اسم subCategory من داخل category
       let subCategoryName = null;
       if (p.category && p.subCategory) {
         const subCat = p.category.subCategories.find(
@@ -346,7 +355,7 @@ export const getMostPurchasedProducts = async (req, res) => {
         ...p._doc,
         totalSold: sale ? sale.totalSold : 0,
         subCategoryName,
-        image: p.images?.[0]?.url || "",
+        images: p.images || [], // return all images
       };
     });
 
@@ -356,3 +365,4 @@ export const getMostPurchasedProducts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+

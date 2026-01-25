@@ -233,17 +233,17 @@ export const getProductsWithPromo = async (req, res) => {
     // Step 1: Find all products with a promotion assigned
     const products = await Product.find({ promotion: { $ne: null } })
       .populate("promotion") // populate promotion document
-      .populate("category", "name subCategories"); // get category and embedded subCategories
+      .populate("category", "name subCategories"); // populate category and subCategories
 
-    // Step 2: Filter only products whose promotion isActive === true
+    // Step 2: Filter only active promotions and map product data
     const activeProducts = products
-      .filter((p) => p.promotion && p.promotion.isActive)
-      .map((p) => {
-        // get subCategory name
+      .filter(p => p.promotion && p.promotion.isActive)
+      .map(p => {
+        // Get subCategory name
         let subCategoryName = null;
         if (p.category && p.subCategory) {
           const subCat = p.category.subCategories.find(
-            (sc) => sc._id.toString() === p.subCategory.toString()
+            sc => sc._id.toString() === p.subCategory.toString()
           );
           subCategoryName = subCat ? subCat.name : null;
         }
@@ -263,7 +263,7 @@ export const getProductsWithPromo = async (req, res) => {
         return {
           _id: p._id,
           name: p.name,
-          image: p.images?.[0]?.url || "",
+          images: p.images || [], // return all images
           originalPrice,
           discountedPrice,
           promotion: {
@@ -281,13 +281,13 @@ export const getProductsWithPromo = async (req, res) => {
         };
       });
 
-   
     res.json(activeProducts);
   } catch (error) {
     console.error("Error fetching products with promotion:", error);
     res.status(500).json({ message: error.message });
   }
 };
+
 
 /**
  * @desc    Get the promotion for a single product by productId
