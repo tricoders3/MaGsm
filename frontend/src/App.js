@@ -97,7 +97,8 @@ function App() {
   path="/products/subcategory/:subcategoryId"
   element={<ProductsByCategory />}
 />
-<Route path="/products/:productId" element={<ProductDetails />} />
+<Route path="/products/:productName" element={<ProductDetails />} />
+
 
   </Route>
 

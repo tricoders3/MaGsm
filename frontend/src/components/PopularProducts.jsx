@@ -24,10 +24,7 @@ const PopularProducts = () => {
           name: product.name,
           description: product.description,
           price: product.price,
-          image:
-            product.images?.length > 0
-              ? product.images[0].url
-              : "/assets/images/default.png",
+           images: product.images || [],
           countInStock: product.countInStock,
           category: product.category?.name || "Uncategorized",
         }));

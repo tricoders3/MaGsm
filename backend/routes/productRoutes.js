@@ -9,12 +9,14 @@ import {
   getProductsBySubCategory,
   getBestSellingProducts,
   getBrands,
-  getMostPurchasedProducts
+  getMostPurchasedProducts,getProductByName
 } from "../controllers/productController.js";
 
 import upload from "../middlewares/uploadMiddleware.js";
 
 const router = express.Router();
+router.get("/name/:name", getProductByName);
+
 router.get("/most-purchased", getMostPurchasedProducts);
 // ---------------- MAIN ROUTE ----------------
 router

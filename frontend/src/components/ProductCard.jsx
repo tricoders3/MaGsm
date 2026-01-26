@@ -117,8 +117,18 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
 </div>
 
       {/* Image */}
-      <div className="product-image mt-4" onClick={() => navigate(`/products/${product.id}`)}>
-        <img src={product.image} alt={product.name} style={{ cursor: "pointer" }} />
+      <div
+  className="product-image mt-4"
+  onClick={() =>
+    navigate(`/products/${encodeURIComponent(product.name)}`)
+  }
+>
+
+       <img
+  src={product.images?.[0]?.url || "/assets/images/default.png"}
+  alt={product.name}
+/>
+
       </div>
 
       {/* Content */}
@@ -157,7 +167,8 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
     {/* Details button */}
     <button
       className="btn-redesign btn-primary-redesign"
-      onClick={() => navigate(`/products/${product.id}`)}
+     onClick={() => navigate(`/products/${encodeURIComponent(product.name)}`)}
+
     >
       Découvrir les détails
     </button>

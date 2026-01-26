@@ -366,3 +366,18 @@ export const getMostPurchasedProducts = async (req, res) => {
   }
 };
 
+export const getProductByName = async (req, res) => {
+  try {
+    const name = req.params.name;
+    const product = await Product.findOne({ name })
+      .populate("category")
+      .populate("promotion");
+
+    if (!product) return res.status(404).json({ message: "Produit introuvable" });
+
+    res.json(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};

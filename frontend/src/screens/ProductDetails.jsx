@@ -12,40 +12,53 @@ function ProductDetails() {
   const navigate = useNavigate();
   const { productId } = useParams();
   const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart();
-
+const { productName } = useParams();
   const [product, setProduct] = useState(null);
   const [promotion, setPromotion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [similarProducts, setSimilarProducts] = useState([]);
-  const [toast, setToast] = useState({ show: false, message: "", type: "success" }); // <-- toast state
+  const [toast, setToast] = useState({ show: false, message: "", type: "success" });
+  
+  // NEW: selected image for thumbnails
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  // Fetch product & similar
+  // Reset selected image whenever product changes
   useEffect(() => {
-    const fetchProductAndSimilar = async () => {
-      try {
-        const resProduct = await axios.get(`${BASE_URL}/api/products/${productId}`);
-        const currentProduct = resProduct.data;
-        setProduct(currentProduct);
+    setSelectedImageIndex(0);
+  }, [product]);
 
-        const resPromo = await axios.get(`${BASE_URL}/api/promotions/product/${productId}`);
-        setPromotion(resPromo.data.promotion || null);
+  // Fetch product & similar products
+ useEffect(() => {
+  const fetchProductAndSimilar = async () => {
+    try {
+      // Fetch product by name
+      const resProduct = await axios.get(`${BASE_URL}/api/products/name/${encodeURIComponent(productName)}`);
+      const currentProduct = resProduct.data;
+      setProduct(currentProduct);
 
-        if (currentProduct.category?._id) {
-          const res = await axios.get(`${BASE_URL}/api/products/category/${currentProduct.category._id}`);
-          const similar = res.data
-            .filter(p => p._id !== currentProduct._id && p.subCategory === currentProduct.subCategory)
-            .slice(0, 4);
-          setSimilarProducts(similar);
-        }
-      } catch (err) {
-        console.error("Error loading product details", err);
-      } finally {
-        setLoading(false);
+      // Fetch promotion
+      const resPromo = await axios.get(`${BASE_URL}/api/promotions/product/${currentProduct._id}`);
+      setPromotion(resPromo.data.promotion || null);
+
+      // Fetch similar products
+      if (currentProduct.category?._id) {
+        const res = await axios.get(`${BASE_URL}/api/products/category/${currentProduct.category._id}`);
+        const similar = res.data
+          .filter(p => p._id !== currentProduct._id && p.subCategory === currentProduct.subCategory)
+          .slice(0, 4);
+        setSimilarProducts(similar);
       }
-    };
-    fetchProductAndSimilar();
-  }, [productId]);
+    } catch (err) {
+      console.error("Error loading product details", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchProductAndSimilar();
+}, [productName]); // ✅ use productName here
 
+
+  // Early returns
   if (loading) return <div className="text-center mt-5"><Spinner animation="border" variant="primary" /></div>;
   if (!product) return <div className="text-center mt-5"><h3>Produit introuvable</h3></div>;
 
@@ -103,16 +116,40 @@ function ProductDetails() {
     }
   };
 
+
   return (
     <div className="container my-5">
       <div className="row g-4">
         {/* Product Images */}
         <div className="col-md-6 text-center">
-          <div className="product-card h-100">
-            {product.images?.[0]?.url ? (
-              <img src={product.images[0].url} alt={product.name} className="img-fluid rounded-3" style={{ maxHeight: "400px", objectFit: "contain" }} />
-            ) : <div className="bg-light p-5 rounded-3">No image available</div>}
-          </div>
+         {product.images && product.images.length > 0 ? (
+  <div>
+    {/* Main Image */}
+    <img
+      src={product.images[selectedImageIndex]?.url}
+      alt={product.name}
+      className="img-fluid rounded-3 mb-3"
+      style={{ maxHeight: "400px", objectFit: "contain" }}
+    />
+
+    {/* Thumbnails */}
+    <div className="d-flex gap-2 justify-content-center flex-wrap">
+      {product.images.map((img, index) => (
+        <img
+          key={index}
+          src={img.url}
+          alt={`thumb-${index}`}
+          className={`rounded-2 border ${selectedImageIndex === index ? "border-primary" : "border-light"}`}
+          style={{ width: "60px", height: "60px", objectFit: "cover", cursor: "pointer" }}
+          onClick={() => setSelectedImageIndex(index)}
+        />
+      ))}
+    </div>
+  </div>
+) : (
+  <div className="bg-light p-5 rounded-3">No image available</div>
+)}
+
         </div>
 
         {/* Product Info */}
@@ -157,19 +194,20 @@ function ProductDetails() {
             {similarProducts.map((prod) => (
               <div key={prod._id} className="col-12 col-sm-6 col-md-3">
                 <ProductCard
-                  product={{
-                    id: prod._id,
-                    name: prod.name,
-                    price: prod.price,
-                    image: prod.images?.[0]?.url || "/assets/images/default.png",
-                    category: prod.subCategoryName || "N/A",
-                    countInStock: prod.countInStock,
-                    description: prod.description,
-                    promotion: prod.promotion || null,
-                  }}
-                  badgeType={prod.promotion ? "promo" : "stock"}
-                  stockCount={prod.countInStock}
-                />
+  product={{
+    id: prod._id,
+    name: prod.name,
+    price: prod.price,
+    images: prod.images?.length ? prod.images : [{ url: "/assets/images/default.png" }],
+    category: prod.subCategoryName || "N/A",
+    countInStock: prod.countInStock,
+    description: prod.description,
+    promotion: prod.promotion || null,
+  }}
+  badgeType={prod.promotion ? "promo" : "stock"}
+  stockCount={prod.countInStock}
+/>
+
               </div>
             ))}
           </div>

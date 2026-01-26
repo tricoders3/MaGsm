@@ -31,7 +31,7 @@ export default function OfferPage() {
           id: p._id,
           name: p.name,
           description: p.description,
-          image: p.image || "/assets/images/default.png",
+           images: p.images || [],
           category: p.category,
           subCategory: p.subCategory,
           originalPrice: p.originalPrice,

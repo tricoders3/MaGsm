@@ -14,12 +14,15 @@ const BestSeller = () => {
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/promotions/promos`);
+        const { data } = await axios.get(
+          `${BASE_URL}/api/promotions/promos`
+        );
 
-        const productsData = response.data.map((p) => ({
+        const formatted = data.map((p) => ({
           id: p._id,
           name: p.name,
-          image: p.image || "/assets/images/default.png",
+          images: p.images || [],
+
           category: p.category,
           subCategory: p.subCategory,
           originalPrice: p.originalPrice,
@@ -27,11 +30,11 @@ const BestSeller = () => {
           promotion: p.promotion,
         }));
 
-        setProducts(productsData);
-        setLoading(false);
+        setProducts(formatted);
       } catch (err) {
         console.error(err);
         setError("Failed to load promotions");
+      } finally {
         setLoading(false);
       }
     };
@@ -69,7 +72,6 @@ const BestSeller = () => {
           >
             Voir plus <FiArrowRight />
           </button>
-          
         </div>
       </div>
     </section>

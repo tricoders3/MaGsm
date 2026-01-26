@@ -24,7 +24,7 @@ const HeroSlider = () => {
           id: p._id,
           name: p.name,
           description: p.description,
-          image: p.image || "/assets/images/default.png",
+          image: p.images?.[0]?.url || "/assets/images/default.png",
           promotion: p.promotion, // promotion object is already included
         }));
         setProducts(productsData);
