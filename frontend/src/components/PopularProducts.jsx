@@ -85,7 +85,7 @@ const PopularProducts = () => {
         <div className="text-center mt-4">
           <button
             className="btn-plus flex items-center gap-2"
-            onClick={() => navigate("/products")}
+            onClick={() => navigate("/top-products")}
           >
             Voir plus <FiArrowRight />
           </button>

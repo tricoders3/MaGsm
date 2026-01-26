@@ -7,6 +7,7 @@ import Register from "./screens/register";
 import Dashboard from "./screens/Dashboard";
 import SearchPage from "./screens/SearchPage";
 import Checkout from "./screens/Checkout"
+import TopProduct from "./screens/TopProduct"
 import OrderConfirmation from "./screens/OrderConfirmation";
 import Layout from "./components/Layout";
 import About from "./screens/About";
@@ -35,7 +36,6 @@ import AdminBanner from "./screens/admin/AdminBanner";
 import AdminContact from "./screens/admin/AdminContact";
 import Profile from "./screens/Profile.jsx";
 import PendingUsers from "./screens/admin/PendingUsers.jsx";
-
 import ProductDetails from "./screens/ProductDetails.jsx";
 import './assets/css/style.css';
 import './assets/css/responsive.css';
@@ -89,6 +89,7 @@ function App() {
   <Route path="/category/:categoryId" element={<SubCategories />} />
   <Route path="/products/category" element={<ProductsCategory />} />
     <Route path="/products" element={<Products />} />
+    <Route path="/top-products" element={<TopProduct />} />
     <Route path="/recherche" element={<SearchPage />} />
     <Route path="/profile" element={<Profile />} />
 
