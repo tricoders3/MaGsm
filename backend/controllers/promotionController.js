@@ -263,7 +263,7 @@ export const getProductsWithPromo = async (req, res) => {
         return {
           id: p._id,
           name: p.name,
-          images: p.images || [], // return all images
+          images: p.images || [], 
           originalPrice,
           discountedPrice,
           promotion: {

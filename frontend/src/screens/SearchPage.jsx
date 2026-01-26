@@ -33,7 +33,7 @@ export default function Recherche() {
           category: product.category?.name || "N/A",
           categoryId: product.category?._id || product.category || "",
           subCategoryId: product.subCategory || product.subCategory?._id || "",
-          image: product.images?.[0]?.url || "/assets/images/default.png",
+          images: product.images?.length ? product.images : [{ url: "/assets/images/default.png" }],
           price: product.price,
           promotion: product.promotion,
           countInStock: product.countInStock || 1,
