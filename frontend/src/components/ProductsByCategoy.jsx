@@ -42,8 +42,7 @@ const SubcategoryProducts = () => {
                 product={{
                   id: p._id,
                   name: p.name,
-                  image: p.images?.[0]?.url || '/assets/images/default.png',
-                  price: p.price,
+                  images: p.images?.length ? p.images : [{ url: "/assets/images/default.png" }],
                   description: p.description,
                   promotion: p.promotion || null,
                 }}

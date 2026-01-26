@@ -10,7 +10,7 @@ const HistoriqueCommandes = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const { data } = await axios.get(`${BASE_URL}/api/user/orders`, {
+        const { data } = await axios.get(`${BASE_URL}/api/orders/my`, {
           withCredentials: true,
         });
         setOrders(data.orders || []);
