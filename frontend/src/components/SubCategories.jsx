@@ -99,7 +99,7 @@ const CategoryView = () => {
                   id: product._id,
                   name: product.name,
                   price: product.price,
-                  image: product.images?.[0]?.url || "/assets/images/default.png",
+                  images: product.images?.length ? product.images : [{ url: "/assets/images/default.png" }],
                   countInStock: product.countInStock,
                   description: product.description,
                   promotion: product.promotion || null,
