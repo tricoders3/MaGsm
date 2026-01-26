@@ -13,6 +13,7 @@ import { generateInvoicePDF } from "../utils/generateInvoice.js";
 // CREATE ORDER FROM CART
 export const createOrderFromCart = async (req, res) => {
   try {
+    
     const cart = await getUserCart(req.user.id);
 
     if (!cart || cart.items.length === 0) {
@@ -23,10 +24,13 @@ export const createOrderFromCart = async (req, res) => {
     if (!shippingAddress) {
       return res.status(400).json({ message: "Adresse de livraison requise" });
     }
+       const { billingDetails } = req.body; // 🔹 get billing details from frontend
+    if (!billingDetails) {
+      return res.status(400).json({ message: "Détails de facturation requis" });
+    }
 
     // 1️⃣ créer la commande avec shippingAddress
-    const order = await createOrder(req.user, cart, shippingAddress);
-
+    const order = await createOrder(req.user, cart, billingDetails, shippingAddress);
     // 2️⃣ Calculer et ajouter les points fidélité
     const points = calculateLoyaltyPoints(order.total);
 

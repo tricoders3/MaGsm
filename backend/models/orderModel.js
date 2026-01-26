@@ -1,13 +1,17 @@
 // models/Order.js
 import mongoose from "mongoose"
 const addressSchema = new mongoose.Schema({
-  fullAddress: { type: String, required: true },
   street: { type: String, required: true },
   postalCode: { type: String, required: true },
   city: { type: String, required: true },
-  region: { type: String },
   country: { type: String, default: "Tunisie" }
 });
+const billingDetailsSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  phone: String,
+});
+
 const orderSchema = new mongoose.Schema(
   {
     user: {
@@ -38,6 +42,7 @@ const orderSchema = new mongoose.Schema(
   },
 ],
     shippingAddress: { type: addressSchema },
+    billingDetails: billingDetailsSchema,
     
     total: { type: Number, required: true },
     pointsEarned: { type: Number, default: 0 }, // points gagnés sur cette commande

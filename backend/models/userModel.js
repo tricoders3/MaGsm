@@ -1,6 +1,11 @@
 // models/User.js
 import mongoose from "mongoose";
-
+const addressSchema = new mongoose.Schema({
+  street: { type: String, required: true },
+  postalCode: { type: String, required: true },
+  city: { type: String, required: true },
+  country: { type: String, default: "Tunisie" }
+});
 const userSchema = new mongoose.Schema(
   {
     name: String,
@@ -15,7 +20,7 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
     phone: { type: String },
-    address: { type: String },
+    address: { type: addressSchema },
     loyaltyPoints: { type: Number, default: 0 }, // <- points fidélité
     resetPasswordToken: String,
     resetPasswordExpire: Date,
