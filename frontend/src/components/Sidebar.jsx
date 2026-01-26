@@ -8,6 +8,7 @@ import logo from "../assets/images/logo.png";
 const Sidebar = ({ categories, loading }) => {
   const [openCategoryId, setOpenCategoryId] = useState(null);
   const [subcategories, setSubcategories] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   const hideOffcanvas = () => {
@@ -42,7 +43,35 @@ const Sidebar = ({ categories, loading }) => {
       console.error("Error fetching subcategories", err);
     }
   };
-
+  const handleSearch = async () => {
+    const trimmedQuery = searchQuery.trim().toLowerCase();
+    if (!trimmedQuery) return;
+    
+    
+    try {
+    const [productsRes, promosRes] = await Promise.all([
+    axios.get(`${BASE_URL}/api/products`, {
+    params: { search: trimmedQuery },
+    }),
+    axios.get(`${BASE_URL}/api/promotions/promos`, {
+    params: { search: trimmedQuery },
+    }),
+    ]);
+    
+    
+    navigate("/recherche", {
+    state: {
+    products: productsRes.data || [],
+    promotions: promosRes.data || [],
+    },
+    });
+    hideOffcanvas(); 
+    } catch (e) {
+    console.error("Erreur lors de la recherche mobile:", e);
+    navigate("/recherche", { state: { products: [], promotions: [] } });
+    hideOffcanvas();
+    }
+    };
   return (
     <div
       className="offcanvas offcanvas-start"
@@ -73,13 +102,20 @@ const Sidebar = ({ categories, loading }) => {
 
         {/* Search */}
         <div className="mobile-search-wrapper d-lg-none">
-          <input
+            <input
             type="text"
-            placeholder="Rechercher..."
+            placeholder="Rechercher un produit ou promotion..."
             className="mobile-search-input"
-          />
-          <FaSearch className="mobile-search-icon" />
-        </div>
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            />
+            <FaSearch
+            className="mobile-search-icon"
+            onClick={handleSearch}
+            style={{ cursor: "pointer" }}
+            />
+            </div>
 
         {/* Categories */}
         <div className="categories-section d-flex flex-column gap-1">
