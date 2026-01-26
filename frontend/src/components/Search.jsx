@@ -20,6 +20,7 @@ export default function GlobalSearch() {
 
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
 
 
   const HIDE_CATEGORY_FILTERS_ROUTES = [
@@ -36,6 +37,12 @@ export default function GlobalSearch() {
   );
 
   const isCategoryPage = location.pathname.startsWith("/category");
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768); 
+    handleResize(); 
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
   useEffect(() => {
     if (!location.pathname.startsWith("/recherche")) {
@@ -84,7 +91,7 @@ export default function GlobalSearch() {
     loadSubs();
   }, [categoryId, hideCategoryFilters]);
 
-
+  const hideFilters = hideCategoryFilters || isMobile;
 
   const handleSearch = async () => {
     const trimmedQuery = query.trim().toLowerCase();
@@ -126,40 +133,41 @@ export default function GlobalSearch() {
         <div className="global-search-box w-100 d-flex align-items-center">
 
           {/* CATEGORY */}
-          {!hideCategoryFilters && (
-            <select
-              className="form-select me-2"
-              style={{ maxWidth: 180, height: 40, borderRadius: 9999 }}
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              disabled={isCategoryPage}
-            >
-              <option value="">Toutes catégories</option>
-              {categories.map((c) => (
-                <option key={c._id} value={c._id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          )}
+      {/* CATEGORY */}
+{!hideFilters && (
+  <select
+    className="form-select me-2"
+    style={{ maxWidth: 180, height: 40, borderRadius: 9999 }}
+    value={categoryId}
+    onChange={(e) => setCategoryId(e.target.value)}
+    disabled={isCategoryPage}
+  >
+    <option value="">Toutes catégories</option>
+    {categories.map((c) => (
+      <option key={c._id} value={c._id}>
+        {c.name}
+      </option>
+    ))}
+  </select>
+)}
 
-          {!hideCategoryFilters && (
-            <select
-              className="form-select me-2"
-              style={{ maxWidth: 220, height: 40, borderRadius: 9999 }}
-              value={subCategoryId}
-              onChange={(e) => setSubCategoryId(e.target.value)}
-              disabled={isCategoryPage || !categoryId}
-            >
-              <option value="">Toutes sous-catégories</option>
-              {subCategories.map((sc) => (
-                <option key={sc._id} value={sc._id}>
-                  {sc.name}
-                </option>
-              ))}
-            </select>
-          )}
-
+{/* SUBCATEGORY */}
+{!hideFilters && (
+  <select
+    className="form-select me-2"
+    style={{ maxWidth: 220, height: 40, borderRadius: 9999 }}
+    value={subCategoryId}
+    onChange={(e) => setSubCategoryId(e.target.value)}
+    disabled={isCategoryPage || !categoryId}
+  >
+    <option value="">Toutes sous-catégories</option>
+    {subCategories.map((sc) => (
+      <option key={sc._id} value={sc._id}>
+        {sc.name}
+      </option>
+    ))}
+  </select>
+)}
   
           <div className="search-input-wrapper flex-grow-1">
             <input
