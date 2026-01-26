@@ -3,7 +3,7 @@ import axios from "axios";
 import BASE_URL from "../../constante"; 
 import { FiEdit2, FiTrash2, FiSearch } from "react-icons/fi";
 import ConfirmModal from "../../components/ConfirmModal";
-
+import { toast } from "react-toastify";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -51,7 +51,7 @@ const Users = () => {
       fetchUsers();
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de la suppression de l'utilisateur");
+      toast.error("Erreur lors de la suppression de l'utilisateur");
     }
   };
 
@@ -87,12 +87,12 @@ const Users = () => {
   const handleUpdateUser = async () => {
     try {
       await axios.put(`${BASE_URL}/api/user/${selectedUser._id}`, formData);
-      alert("Utilisateur mis à jour avec succès");
+      toast.success("Utilisateur mis à jour avec succès");
       closeModal();
       fetchUsers();
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de la mise à jour de l'utilisateur");
+      toast.error("Erreur lors de la mise à jour de l'utilisateur");
     }
   };
 
@@ -242,6 +242,77 @@ const Users = () => {
        )}
      </div>
    </div>
+   {showModal && (
+        <div className="modal d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Modifier l'utilisateur</h5>
+                <button type="button" className="btn-close" onClick={closeModal}></button>
+              </div>
+              <div className="modal-body">
+                <div className="mb-3">
+                  <label className="form-label">Nom</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Email</label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Rôle</label>
+                  <select
+                    className="form-select"
+                    name="role"
+                    value={formData.role}
+                    onChange={handleChange}
+                  >
+                    <option value="user">Utilisateur</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-outline-secondary" onClick={closeModal}>
+                  Annuler
+                </button>
+                <button className="btn btn-primary-redesign" onClick={handleUpdateUser}>
+                  Enregistrer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+   <ConfirmModal
+        open={confirmOpen}
+        loading={confirmLoading}
+        onConfirm={async () => {
+          setConfirmLoading(true);
+          await deleteUser(targetUserId);
+          setConfirmLoading(false);
+          setConfirmOpen(false);
+          setTargetUserId(null);
+        }}
+        onCancel={() => {
+          setConfirmOpen(false);
+          setTargetUserId(null);
+        }}
+      />
+
  </div>
 
   );

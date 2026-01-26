@@ -72,9 +72,11 @@ export default function OfferPage() {
     return filteredProducts.filter((p) => p.name.toLowerCase().includes(q));
   }, [filteredProducts, query]);
 
-  if (loading) return <p>Chargement...</p>;
-  if (error) return <p className="text-danger">{error}</p>;
 
+
+  if (loading) return null;
+  if (error) return null;
+  
   const heroPromotion = promotions[0];
 
   // Format remaining time

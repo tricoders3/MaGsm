@@ -59,7 +59,7 @@ function App() {
 
   return (
     <>
-     <OffersModal />
+     {!user?.isAdmin && <OffersModal />}
      <ToastContainer
         position="top-right"
         autoClose={2000}

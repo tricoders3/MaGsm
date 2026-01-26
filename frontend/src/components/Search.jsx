@@ -24,6 +24,7 @@ export default function GlobalSearch() {
 
   const HIDE_CATEGORY_FILTERS_ROUTES = [
     "/offers",
+    "/top-products",
     "/products",
     "/checkout",
     "/profile",
@@ -36,6 +37,13 @@ export default function GlobalSearch() {
 
   const isCategoryPage = location.pathname.startsWith("/category");
 
+  useEffect(() => {
+    if (!location.pathname.startsWith("/recherche")) {
+    setQuery("");
+    setCategoryId("");
+    setSubCategoryId("");
+    }
+    }, [location.pathname]);
 
   useEffect(() => {
     if (hideCategoryFilters) return;

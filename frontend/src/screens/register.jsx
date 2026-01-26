@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaGoogle, FaFacebookF } from "react-icons/fa";
+import { toast } from "react-toastify";
 import BASE_URL from "../constante";
 const Register = () => {
   const [name, setName] = useState("");
@@ -18,7 +18,7 @@ const Register = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Les mots de passe ne correspondent pas");
+      toast.error("Les mots de passe ne correspondent pas");
       return;
     }
 
@@ -29,11 +29,15 @@ const Register = () => {
         { withCredentials: true }
       );
 
-      alert(res.data.message);
-      navigate("/login");
+      toast.success(res.data.message || "Inscription réussie");
+      setTimeout(() => {
+        navigate("/login");
+        }, 1500);
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Erreur lors de l'inscription");
+      toast.error(
+        err.response?.data?.message || "Erreur lors de l'inscription"
+        );
     }
   };
 

@@ -3,7 +3,7 @@ import axios from "axios";
 import { FiEdit2, FiTrash2, FiSearch, FiDelete } from "react-icons/fi";
 import BASE_URL from "../../constante";
 import ConfirmModal from "../../components/ConfirmModal";
-
+import { toast } from "react-toastify";
 const statusOptions = ["pending", "delivered", "cancelled"];
 
 const Orders = () => {
@@ -51,7 +51,7 @@ const Orders = () => {
       );
       setOrders(prev => prev.map(o => (o._id === orderId ? { ...o, status: newStatus } : o)));
     } catch (err) {
-      alert("Impossible de mettre à jour le statut");
+      toast.error("Impossible de mettre à jour le statut");
     }
   };
 

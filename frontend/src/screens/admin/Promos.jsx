@@ -4,7 +4,7 @@ import Select from "react-select";
 import { FiEdit2, FiTrash2, FiSearch } from "react-icons/fi";
 import ConfirmModal from "../../components/ConfirmModal";
 import BASE_URL from "../../constante";
-
+import { toast } from "react-toastify";
 const Promotions = () => {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -99,7 +99,7 @@ const fetchProducts = async () => {
 
   const submitHandler = async () => {
     if (!form.name || !form.discountValue || !form.startDate || !form.endDate) {
-      alert("All required fields must be filled");
+      toast.error("All required fields must be filled");
       return;
     }
 
@@ -115,10 +115,10 @@ const fetchProducts = async () => {
     try {
       if (editingPromoId) {
         await axios.put(`${BASE_URL}/api/promotions/${editingPromoId}`, payload);
-        alert("Promotion updated");
+        toast.success("Promotion updated");
       } else {
         await axios.post(`${BASE_URL}/api/promotions/apply`, payload);
-        alert("Promotion created");
+        toast.success("Promotion created");
       }
 
       setEditingPromoId(null);
@@ -137,7 +137,7 @@ const fetchProducts = async () => {
       fetchProductsWithPromo();
     } catch (error) {
       console.error(error);
-      alert("Error saving promotion");
+      toast.error("Error saving promotion");
     }
   };
 
@@ -168,7 +168,7 @@ const fetchProducts = async () => {
       fetchProductsWithPromo();
     } catch (error) {
       console.error(error);
-      alert("Error deleting promotion");
+      toast.error("Error deleting promotion");
     }
   };
 

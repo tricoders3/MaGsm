@@ -2,12 +2,20 @@ import { useEffect, useMemo, useState } from "react";
 
 const OffersModal = () => {
   const [show, setShow] = useState(false);
+  const DAYS_BEFORE_RESHOW = 3; // nombre de jours avant de réafficher
 
   useEffect(() => {
-    // Always show modal on load (design phase)
-    setTimeout(() => setShow(true), 800);
+    const lastSeen = localStorage.getItem("offersModalLastSeen");
+    const now = new Date().getTime();
+
+    if (!lastSeen || now - Number(lastSeen) > DAYS_BEFORE_RESHOW * 24 * 60 * 60 * 1000) {
+      // Afficher le modal après 0.8s
+      setTimeout(() => setShow(true), 800);
+      localStorage.setItem("offersModalLastSeen", now.toString());
+    }
   }, []);
 
+  // Fermer modal avec Escape
   useEffect(() => {
     if (!show) return;
     const onKey = (e) => {
@@ -22,20 +30,26 @@ const OffersModal = () => {
     return Array.from({ length: 8 }).map((_, i) => ({
       id: i,
       value: picks[Math.floor(Math.random() * picks.length)],
-      left: Math.random() * 90 + 5, // 5% - 95%
-      delay: Math.random() * 3, // 0 - 3s (slower start)
-      duration: 6 + Math.random() * 4, // 6 - 10s (slower fall)
+      left: Math.random() * 90 + 5,
+      delay: Math.random() * 3,
+      duration: 6 + Math.random() * 4,
     }));
   }, []);
 
   if (!show) return null;
 
   return (
-    <div className="offers-overlay" role="dialog" aria-modal="true" aria-labelledby="offers-title" onClick={() => setShow(false)}>
-      <div className="offers-modal card border-0 shadow-lg animate-in" onClick={(e) => e.stopPropagation()}>
-        {/* Falling colorful percentage chips (scoped to modal bounds) */}
-    
-
+    <div
+      className="offers-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="offers-title"
+      onClick={() => setShow(false)}
+    >
+      <div
+        className="offers-modal card border-0 shadow-lg animate-in"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="row g-4 align-items-center justify-content-center">
           <div className="col-12 col-lg-10">
             <div className="offer-hero text-center">

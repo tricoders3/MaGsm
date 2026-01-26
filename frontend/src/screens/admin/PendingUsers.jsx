@@ -3,7 +3,7 @@ import axios from "axios";
 import BASE_URL from "../../constante";
 import { FiCheck, FiTrash2, FiSearch } from "react-icons/fi";
 import ConfirmModal from "../../components/ConfirmModal";
-
+import { toast } from "react-toastify";
 const PendingUsers = () => {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
@@ -33,7 +33,7 @@ const PendingUsers = () => {
       await axios.post(`${BASE_URL}/api/auth/approve-user/${id}`, {}, { withCredentials: true });
       fetchPendingUsers();
     } catch (error) {
-      alert("Erreur lors de l’approbation");
+      toast.error("Erreur lors de l’approbation");
     } finally {
       setActionLoading(null);
     }
@@ -45,7 +45,7 @@ const PendingUsers = () => {
       await axios.delete(`${BASE_URL}/api/user/${id}`, { withCredentials: true });
       fetchPendingUsers();
     } catch (error) {
-      alert("Erreur lors de la suppression");
+      toast.error("Erreur lors de la suppression");
     } finally {
       setActionLoading(null);
     }

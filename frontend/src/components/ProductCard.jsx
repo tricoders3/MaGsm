@@ -152,17 +152,15 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
   <>
     {/* Price */}
     <p className="product-price">
-      {product.price ? (
-        `${product.price} DT`
-      ) : (
-        <>
-          <span className="original-price">{product.originalPrice} DT</span>{" "}
-          <span className="discounted-price">
-            {product.discountedPrice} DT
-          </span>
-        </>
-      )}
-    </p>
+  {product.price ? (
+    `${product.price} DT`
+  ) : (
+    <>
+      <span className="original-price">{product.originalPrice} DT</span>{" "}
+      <span className="discounted-price">{product.discountedPrice} DT</span>
+    </>
+  )}
+</p>
 
     {/* Details button */}
     <button

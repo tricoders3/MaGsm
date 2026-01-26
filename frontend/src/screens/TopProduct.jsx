@@ -23,29 +23,30 @@ function Products() {
         const response = await axios.get(`${BASE_URL}/api/products/most-purchased`);
 
         const productsData = response.data.map((product) => {
-            const hasPromo = !!product.promotion;
+            let originalPrice = product.price;
+            let discountedPrice = null;
           
-            const promoPrice =
-              product.promoPrice ??
-              (hasPromo && product.promotion?.discountPercentage
-                ? product.price - (product.price * product.promotion.discountPercentage) / 100
-                : null);
+            if (product.promotion?.isActive) {
+              if (product.promotion.discountType === "percentage") {
+                discountedPrice = product.price - (product.price * product.promotion.discountValue) / 100;
+              } else if (product.promotion.discountType === "fixed") {
+                discountedPrice = product.price - product.promotion.discountValue;
+              }
+            }
           
             return {
               id: product._id,
               name: product.name,
               description: product.description,
-              price: product.price,
-              promoPrice,          // 👈 add this
-              hasPromo,            // 👈 add this
+              price: discountedPrice ? null : product.price, // keep null if promotion exists
+              originalPrice: discountedPrice ? originalPrice : null,
+              discountedPrice: discountedPrice ? discountedPrice : null,
               images: product.images || [],
               countInStock: product.countInStock,
               category: product.category?.name || "Uncategorized",
-              categoryId: product.category?._id,
-              subCategoryId: product.subCategory?._id,
+              promotion: product.promotion || null,
             };
           });
-          
         setProducts(productsData);
         setLoading(false);
       } catch (err) {
@@ -57,6 +58,7 @@ function Products() {
 
     fetchProducts();
   }, []);
+  
   // Filtering then pagination
   const filtered = useMemo(() => {
     const q = query.toLowerCase();
@@ -103,7 +105,8 @@ function Products() {
           <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-4">
             <ProductCard
               product={product}
-              badgeType={product.promotion ? "promo" : "stock"}
+              badgeType="stock"
+              promoPrice={product.promoPrice}
               stockCount={product.countInStock}
               isFavorite={favorites.includes(product.id)}
               onFavoriteSuccess={(id) =>

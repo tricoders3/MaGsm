@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import  BASE_URL from "../constante";
+import { useAuth } from "../context/AuthContext";
+
 
 
 
@@ -12,6 +14,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   // Connexion classique (email/password)
   const handleSubmit = async (e) => {
@@ -22,9 +25,9 @@ const Login = () => {
         { email, password },
         { withCredentials: true }
       );
+  
       if (res.data.user) {
-        // Stocke l'utilisateur dans le state 
-        localStorage.setItem("user", JSON.stringify(res.data.user));
+        login(res.data.user); 
         navigate("/");
       }
     } catch (err) {
@@ -32,7 +35,6 @@ const Login = () => {
       toast.error("Email ou mot de passe incorrect");
     }
   };
-
   // Connexion Google
 const loginWithGoogle = () => {
   toast.info("Redirection vers Google…");
@@ -41,7 +43,7 @@ const loginWithGoogle = () => {
   // Connexion Facebook
   const loginWithFacebook = () => {
     toast.info("Redirection vers Facebook…");
-    window.location.href = `https://b3088eac387f.ngrok-free.app/api/auth/facebook`;
+    window.location.href = `https://0dd4d5a2ec44.ngrok-free.app/api/auth/facebook`;
   };
 
 

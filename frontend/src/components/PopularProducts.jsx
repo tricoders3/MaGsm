@@ -19,16 +19,31 @@ const PopularProducts = () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/products/most-purchased`);
 
-        const productsData = response.data.map((product) => ({
-          id: product._id,
-          name: product.name,
-          description: product.description,
-          price: product.price,
-           images: product.images || [],
-          countInStock: product.countInStock,
-          category: product.category?.name || "Uncategorized",
-        }));
-
+        const productsData = response.data.map((product) => {
+            let originalPrice = product.price;
+            let discountedPrice = null;
+          
+            if (product.promotion?.isActive) {
+              if (product.promotion.discountType === "percentage") {
+                discountedPrice = product.price - (product.price * product.promotion.discountValue) / 100;
+              } else if (product.promotion.discountType === "fixed") {
+                discountedPrice = product.price - product.promotion.discountValue;
+              }
+            }
+          
+            return {
+              id: product._id,
+              name: product.name,
+              description: product.description,
+              price: discountedPrice ? null : product.price, // keep null if promotion exists
+              originalPrice: discountedPrice ? originalPrice : null,
+              discountedPrice: discountedPrice ? discountedPrice : null,
+              images: product.images || [],
+              countInStock: product.countInStock,
+              category: product.category?.name || "Uncategorized",
+              promotion: product.promotion || null,
+            };
+          });
         setProducts(productsData);
         setLoading(false);
       } catch (err) {
@@ -40,6 +55,7 @@ const PopularProducts = () => {
 
     fetchProducts();
   }, []);
+  
 
   const toggleFavorite = (productId) => {
     setFavorites((prev) =>

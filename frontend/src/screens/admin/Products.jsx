@@ -4,7 +4,7 @@ import BASE_URL from "../../constante";
 import ProductForm from "../../components/ProductForm";
 import { FiEdit2, FiTrash2, FiSearch, FiPlus } from "react-icons/fi";
 import ConfirmModal from "../../components/ConfirmModal";
-
+import { toast } from "react-toastify";
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
@@ -44,7 +44,7 @@ const Products = () => {
       fetchProducts();
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de la suppression du produit");
+      toast.error("Erreur lors de la suppression du produit");
     }
   };
 
