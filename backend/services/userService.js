@@ -5,13 +5,34 @@ export const updateUserByHimself = async (userId, data) => {
   const user = await User.findById(userId);
   if (!user) throw new Error("Utilisateur non trouvé");
 
-  const allowedFields = ["name", "email", "phone", "address"];
+  // Champs simples autorisés
+  const allowedFields = ["name", "email", "phone"];
 
   allowedFields.forEach((field) => {
     if (data[field] !== undefined) {
       user[field] = data[field];
     }
   });
+
+  // 🔹 Gestion de l'adresse (objet)
+  if (data.address) {
+    if (!user.address) {
+      user.address = {};
+    }
+
+    const addressFields = [
+      "street",
+      "postalCode",
+      "city",
+      "country",
+    ];
+
+    addressFields.forEach((field) => {
+      if (data.address[field] !== undefined) {
+        user.address[field] = data.address[field];
+      }
+    });
+  }
 
   await user.save();
 
@@ -26,6 +47,7 @@ export const updateUserByHimself = async (userId, data) => {
     passwordCreated: user.passwordCreated,
   };
 };
+
 
 
 

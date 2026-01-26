@@ -19,7 +19,7 @@ const router = express.Router()
  * @route   GET /api/users/me
 
  */
-router.get('/me',  getProfile)
+router.get('/me',protect, getProfile)
 router.put("/me", protect, updateMe);
 router.get("/",  getUsers);
 /**
