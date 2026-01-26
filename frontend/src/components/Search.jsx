@@ -14,16 +14,32 @@ export default function GlobalSearch() {
     subCategoryId,
     setSubCategoryId,
   } = useGlobalSearch();
-  
+
   const navigate = useNavigate();
   const location = useLocation();
+
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
 
+
+  const HIDE_CATEGORY_FILTERS_ROUTES = [
+    "/offers",
+    "/products",
+    "/checkout",
+    "/profile",
+    "/admin",
+  ];
+
+  const hideCategoryFilters = HIDE_CATEGORY_FILTERS_ROUTES.some((path) =>
+    location.pathname.startsWith(path)
+  );
+
   const isCategoryPage = location.pathname.startsWith("/category");
 
-  // 🔹 Load categories
+
   useEffect(() => {
+    if (hideCategoryFilters) return;
+
     const loadCategories = async () => {
       try {
         const { data } = await axios.get(`${BASE_URL}/api/categories`);
@@ -32,16 +48,20 @@ export default function GlobalSearch() {
         console.error(e);
       }
     };
-    loadCategories();
-  }, []);
 
-  // 🔹 Load subcategories when category changes
+    loadCategories();
+  }, [hideCategoryFilters]);
+
+
+
   useEffect(() => {
     setSubCategoryId("");
-    if (!categoryId) {
+
+    if (!categoryId || hideCategoryFilters) {
       setSubCategories([]);
       return;
     }
+
     const loadSubs = async () => {
       try {
         const { data } = await axios.get(
@@ -52,48 +72,38 @@ export default function GlobalSearch() {
         setSubCategories([]);
       }
     };
-    loadSubs();
-  }, [categoryId]);
 
-  // 🔹 Handle search
+    loadSubs();
+  }, [categoryId, hideCategoryFilters]);
+
+
+
   const handleSearch = async () => {
     const trimmedQuery = query.trim().toLowerCase();
 
-    const onListingPage =
-      location.pathname.startsWith("/products") ||
-      location.pathname.startsWith("/offers") ||
-      location.pathname.startsWith("/category");
-
-    if (onListingPage) {
-      // Stay on the page; filtering will happen in-page via context consumers
-      return;
-    }
-
     try {
-      // Fetch products + promotions filtered by category / subcategory / query
       const [productsRes, promosRes] = await Promise.all([
         axios.get(`${BASE_URL}/api/products`, {
           params: {
-            categoryId: categoryId || undefined,
-            subCategoryId: subCategoryId || undefined,
+            categoryId: hideCategoryFilters ? undefined : categoryId,
+            subCategoryId: hideCategoryFilters ? undefined : subCategoryId,
             search: trimmedQuery || undefined,
           },
         }),
         axios.get(`${BASE_URL}/api/promotions/promos`, {
           params: {
-            categoryId: categoryId || undefined,
-            subCategoryId: subCategoryId || undefined,
+            categoryId: hideCategoryFilters ? undefined : categoryId,
+            subCategoryId: hideCategoryFilters ? undefined : subCategoryId,
             search: trimmedQuery || undefined,
           },
         }),
       ]);
 
-      const productsData = productsRes.data || [];
-      const promosData = promosRes.data || [];
-
-      // Navigate to results page with state
       navigate("/recherche", {
-        state: { products: productsData, promotions: promosData },
+        state: {
+          products: productsRes.data || [],
+          promotions: promosRes.data || [],
+        },
       });
     } catch (e) {
       console.error("Erreur lors de la recherche globale:", e);
@@ -101,43 +111,52 @@ export default function GlobalSearch() {
     }
   };
 
+
   return (
     <div className="global-search-wrapper">
       <div className="container">
         <div className="global-search-box w-100 d-flex align-items-center">
-          {/* Category */}
-          <select
-            className="form-select me-2"
-            style={{ maxWidth: 180, height: 40, borderRadius: 9999 }}
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-            disabled={isCategoryPage}
-          >
-            <option value="">Toutes catégories</option>
-            {categories.map((c) => (
-              <option key={c._id} value={c._id}>{c.name}</option>
-            ))}
-          </select>
 
-          {/* Subcategory */}
-          <select
-            className="form-select me-2"
-            style={{ maxWidth: 220, height: 40, borderRadius: 9999 }}
-            value={subCategoryId}
-            onChange={(e) => setSubCategoryId(e.target.value)}
-            disabled={isCategoryPage || !categoryId}
-          >
-            <option value="">Toutes sous-catégories</option>
-            {subCategories.map((sc) => (
-              <option key={sc._id} value={sc._id}>{sc.name}</option>
-            ))}
-          </select>
+          {/* CATEGORY */}
+          {!hideCategoryFilters && (
+            <select
+              className="form-select me-2"
+              style={{ maxWidth: 180, height: 40, borderRadius: 9999 }}
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+              disabled={isCategoryPage}
+            >
+              <option value="">Toutes catégories</option>
+              {categories.map((c) => (
+                <option key={c._id} value={c._id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          )}
 
-          {/* Search input */}
+          {!hideCategoryFilters && (
+            <select
+              className="form-select me-2"
+              style={{ maxWidth: 220, height: 40, borderRadius: 9999 }}
+              value={subCategoryId}
+              onChange={(e) => setSubCategoryId(e.target.value)}
+              disabled={isCategoryPage || !categoryId}
+            >
+              <option value="">Toutes sous-catégories</option>
+              {subCategories.map((sc) => (
+                <option key={sc._id} value={sc._id}>
+                  {sc.name}
+                </option>
+              ))}
+            </select>
+          )}
+
+  
           <div className="search-input-wrapper flex-grow-1">
             <input
               type="search"
-              className="global-search-input flex-grow-1"
+              className="global-search-input"
               placeholder="Rechercher un produit ou promotion..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -145,16 +164,16 @@ export default function GlobalSearch() {
             />
           </div>
 
-          {/* Search button */}
+          {/* SEARCH BUTTON */}
           <button
             type="button"
             className="search-button ms-2"
             onClick={handleSearch}
             aria-label="Rechercher"
-            title="Rechercher"
           >
             <FiSearch size={20} />
           </button>
+
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import TopBar from "./TopBar";
 import Navbar from "./Navbar";      
 import Footer from "./Footer";
@@ -9,6 +9,7 @@ import { LoadingProvider } from "../context/LoadingContext";
 import LoadingBinder from "./LoadingBinder";
 
 export default function Layout() {
+
   const { user } = useAuth();
   return (
     <LoadingProvider>
