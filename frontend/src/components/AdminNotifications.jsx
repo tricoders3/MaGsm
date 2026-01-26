@@ -65,7 +65,7 @@ export default function AdminNotifications() {
           <div className="menu-header">Notifications</div>
           {pendingOrders > 0 && (
           <button className="menu-item" onClick={() => {
-            // Mark orders as read for persistence across reloads
+      
             localStorage.setItem("notif_seen_orders", String(rawOrdersRef.current || 0));
             setPendingOrders(0);
             setOpen(false);
@@ -77,7 +77,7 @@ export default function AdminNotifications() {
           )}
           {pendingUsers > 0 && (
           <button className="menu-item" onClick={() => {
-            // Mark pending users as read for persistence across reloads
+      
             localStorage.setItem("notif_seen_users", String(rawUsersRef.current || 0));
             setPendingUsers(0);
             setOpen(false);
@@ -90,7 +90,7 @@ export default function AdminNotifications() {
           {total === 0 && <div className="menu-empty">Aucune notification</div>}
         </div>
       )}
-    
+     
     </div>
   );
 }
