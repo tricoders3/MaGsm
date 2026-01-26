@@ -2,7 +2,12 @@ import Order from "../models/orderModel.js";
 import { calculateLoyaltyPoints } from "../utils/loyalty.js";
 
 // CREATE ORDER
-export const createOrder = async (user, cart, shippingAddress) => {
+export const createOrder = async (user, cart, billingDetails, shippingAddress) => {
+  if (!cart || !cart.items || cart.items.length === 0) {
+    throw new Error("Panier vide");
+  }
+
+  // 🔹 Construire les items de commande
   const items = cart.items.map(item => ({
     product: item.product._id,
     name: item.product.name,
@@ -10,18 +15,47 @@ export const createOrder = async (user, cart, shippingAddress) => {
     quantity: item.quantity,
   }));
 
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // 🔹 Calcul du sous-total
+  const subTotal = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
-  // 🔥 calcul des points gagnés ICI
-  const pointsEarned = calculateLoyaltyPoints(total);
+  // 🔹 Livraison
+  const DELIVERY_FEE = 7;
 
-  return await Order.create({
+  // 🔹 Total final
+  const total = subTotal + DELIVERY_FEE;
+
+  // 🔹 Points fidélité
+  const pointsEarned = calculateLoyaltyPoints(subTotal);
+
+  // ✅ Création de la commande (snapshot)
+  const order = await Order.create({
     user: user.id,
+
+    billingDetails: {
+      name: billingDetails.name,
+      email: billingDetails.email,
+      phone: billingDetails.phone,
+    },
+
+    shippingAddress: {
+      street: shippingAddress.street,
+      postalCode: shippingAddress.postalCode,
+      city: shippingAddress.city,
+      region: shippingAddress.region,
+      country: shippingAddress.country || "Tunisie",
+    },
+
     items,
-    shippingAddress, 
+    subTotal,
+    deliveryFee: DELIVERY_FEE,
     total,
-    pointsEarned, // ✅ sauvegardé directement
+    pointsEarned,
   });
+
+  return order;
 };
 // GET USER ORDERS
 export const getOrdersByUser = async (userId) => {
