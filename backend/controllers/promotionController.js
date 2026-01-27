@@ -261,7 +261,7 @@ export const getProductsWithPromo = async (req, res) => {
         discountedPrice = Math.max(discountedPrice, 0);
 
         return {
-          id: p._id,
+          _id: p._id,
           name: p.name,
           images: p.images || [], 
           originalPrice,
