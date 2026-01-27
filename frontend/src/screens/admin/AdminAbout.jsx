@@ -99,44 +99,8 @@ export default function AdminAbout() {
           />
         </div>
 
-        {/* Features / Cards */}
-        <div className="mb-3">
-          <label className="form-label">Features / Cards</label>
-          {features.map((f, i) => (
-            <div key={i} className="mb-2 p-3 border rounded">
-              <div className="mb-2">
-                <input
-                  type="text"
-                  className="form-control"
-                  value={f.title}
-                  onChange={(e) => handleFeatureChange(i, "title", e.target.value)}
-                  placeholder="Feature Title"
-                />
-              </div>
-              <div>
-                <textarea
-                  className="form-control"
-                  rows={2}
-                  value={f.description}
-                  onChange={(e) => handleFeatureChange(i, "description", e.target.value)}
-                  placeholder="Feature Description"
-                />
-              </div>
-            </div>
-          ))}
-        </div>
+    
 
-        {/* Map URL */}
-        <div className="mb-3">
-          <label className="form-label">Google Map Embed URL</label>
-          <input
-            type="text"
-            className="form-control"
-            value={mapUrl}
-            onChange={(e) => setMapUrl(e.target.value)}
-            placeholder="https://www.google.com/maps?q=..."
-          />
-        </div>
 
         <button type="submit" className="btn btn-primary">
           {loading ? "Saving..." : "Save Changes"}

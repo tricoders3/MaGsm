@@ -105,18 +105,18 @@ export default function OfferPage() {
             <div className="row align-items-center g-4">
               <div className="col-lg-8">
                 <h1 className="display-5 fw-bold hero-heading mb-3">{heroPromotion.name}</h1>
-                <p className="lead text-muted mb-2">
+                <p className="lead text-muted mb-4">
                   {heroPromotion.description || "Profitez de remises exclusives sur nos produits"}
                 </p>
                 <div className="d-flex gap-3">
                   <button
-                    className="btn-redesign btn-primary-redesign"
+                    className="btn btn-primary-redesign"
                     onClick={() => navigate("/products")}
                   >
                     Voir tout
                   </button>
                   <button
-                    className="btn-redesign btn-outline-secondary"
+                    className="btn btn-outline-secondary"
                     onClick={() => navigate("/")}
                   >
                     Retour à l'accueil

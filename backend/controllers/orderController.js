@@ -13,6 +13,7 @@ import { generateInvoicePDF } from "../utils/generateInvoice.js";
 // CREATE ORDER FROM CART
 export const createOrderFromCart = async (req, res) => {
   try {
+    
     const cart = await getUserCart(req.user.id);
 
     if (!cart || cart.items.length === 0) {

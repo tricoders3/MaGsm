@@ -376,7 +376,9 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   background: var(--gray-50);
   border-top: 1px solid var(--gray-100);
 }
-
+.lead {
+  font-size: 1.1rem;
+}
 /* Revolutionary Navigation */
 .navbar-redesign {
   position: static;
@@ -4827,7 +4829,6 @@ body.dark .status-approve-badge {
   align-items: center;
   font-weight: 500;
 }
-
 
 
 

@@ -183,7 +183,7 @@ const earnedPoints = Math.floor((subTotal / 100) * pointsPer100DT);
     {/* 🧾 DÉTAILS DE FACTURATION */}
     {/* ===================== */}
     <div className="col-lg-7">
-      <div className="card border-0 shadow-sm rounded-4 p-4">
+      <div className="card p-4 shadow-sm rounded-4">
         <h4 className="fw-bold mb-4 text-dark border-bottom pb-2">
           Détails de facturation
         </h4>
@@ -277,7 +277,7 @@ const earnedPoints = Math.floor((subTotal / 100) * pointsPer100DT);
     {/* 🛒 VOTRE COMMANDE */}
     {/* ===================== */}
     <div className="col-lg-5">
-      <div className="card border-0 shadow-sm rounded-4 p-4">
+      <div className="card p-4 shadow-sm rounded-4">
         <h4 className="fw-bold mb-4 text-dark border-bottom pb-2">
           Votre commande
         </h4>

@@ -90,8 +90,8 @@ export default function Contact() {
             </div>
             <div className="col-lg-5">
               <div className="d-flex flex-wrap gap-3 justify-content-lg-end">
-                <a className="btn btn-phone" href={`tel:${contactInfo.phone}`}>
-                  <FiPhone className="me-2" /> {contactInfo.phone}
+                <a className="btn btn-phone text-dark" href={`tel:${contactInfo.phone}`}>
+                  <FiPhone className="text-dark me-2" /> {contactInfo.phone}
                 </a>
                 <a className="btn btn-outline-promo" href={`mailto:${contactInfo.email}`}>
                   <FiMail className="me-2" /> {contactInfo.email}
@@ -236,10 +236,10 @@ export default function Contact() {
               </form>
             </div>
           </div>
-       
+
           <div className="col-lg-6">
             <div className="rounded-4 shadow-soft overflow-hidden  bg-white">
-              <div className="ratio ratio-4x3">
+              <div className="ratio ratio-16x9">
                 <iframe
                   title="Localisation"
                   src={contactInfo.mapEmbedUrl || "https://www.google.com/maps?q=35.67322432149297,10.098604243817753&output=embed"}

@@ -88,15 +88,16 @@ export default function OrderConfirmation() {
           ))}
         </div>
 <h6 className="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
- Détails de facturation
+  Détails de facturation
 </h6>
-<div className="billingDetailsmb-4 p-3 bg-light rounded">
+<div className="billingDetails mb-4 p-3 bg-light rounded">
   <div><strong>Nom :</strong> {order.billingDetails?.name}</div>
   <div><strong>Email :</strong> {order.billingDetails?.email}</div>
   <div><strong>Téléphone :</strong> {order.billingDetails?.phone}</div>
 </div>
-<h6 className="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
- Adresse de livraison
+
+<h6 className="fw-bold text-dark d-flex align-items-center gap-2 mb-3 mt-4">
+  Adresse de livraison
 </h6>
 <div className="shipping-address mb-4 p-3 bg-light rounded">
   <div><strong>Rue :</strong> {order.shippingAddress?.street}</div>
