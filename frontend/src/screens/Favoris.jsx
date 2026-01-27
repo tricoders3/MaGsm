@@ -6,9 +6,11 @@ import axios from "axios";
 import BASE_URL from "../constante";
 import AlertToast from "../components/AlertToast";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 
 const Favorites = () => {
   const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ show: false, message: "", type: "favorite" });
@@ -139,9 +141,11 @@ const handleRemoveFavorite = async (productId) => {
                   >
                     <FaHeartBroken />
                   </button>
+                  {isAuthenticated && (
                   <button className="cart-btn" onClick={() => handleAddToCart(product)}>
                     <FiShoppingCart size={18} />
                   </button>
+                  )}
                 </div>
               </div>
   
@@ -169,6 +173,7 @@ const handleRemoveFavorite = async (productId) => {
               <div className="product-content text-center">
                 <h6 className="product-title">{product.name}</h6>
                 <p className="product-category">{product.brand}</p>
+                {isAuthenticated && (    
                 <p className="product-price">
                   {product.promotion && (
                     <span className="original-price text-decoration-line-through me-2 text-muted">
@@ -179,6 +184,7 @@ const handleRemoveFavorite = async (productId) => {
                     {calculateDiscountedPrice(product)} DT
                   </span>
                 </p>
+                )}
               </div>
             </div>
           </div>

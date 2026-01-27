@@ -100,7 +100,7 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
       <div className="card-badges">
   {renderBadge()}
 
-  {isAuthenticated && (
+ 
     <div className="card-actions">
       <button
         className={`favorite-btn ${isFavorite ? "active" : ""}`}
@@ -108,12 +108,13 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
       >
         <FiHeart />
       </button>
-
+      {isAuthenticated && (
       <button className="cart-btn" onClick={handleAddToCart}>
         <FiShoppingCart size={18} />
       </button>
+       )}
     </div>
-  )}
+ 
 </div>
 
       {/* Image */}

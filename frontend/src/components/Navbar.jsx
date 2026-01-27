@@ -143,13 +143,14 @@ function NavBar() {
                 )}
               </div>
  {/* Cart */}
+ {isAuthenticated && (
       <div className="position-relative">
         <button className="nav-icon-redesign" onClick={() => navigate("/cart")}>
           <FaShoppingBag />
         </button>
         <Badge count={cartCount} />
       </div>
-
+ )}
       {/* Favorites */}
       <div className="position-relative">
         <button className="nav-icon-redesign" onClick={() => navigate("/favoris")}>
