@@ -1,42 +1,70 @@
 import { useEffect, useMemo, useState } from "react";
+import axios from "axios";
+import BASE_URL from "../constante";
 
 const OffersModal = () => {
   const [show, setShow] = useState(false);
-  const DAYS_BEFORE_RESHOW = 3; // nombre de jours avant de réafficher
+  const [promos, setPromos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const TODAY_KEY = "offers_modal_last_shown";
 
+  const getToday = () => {
+    return new Date().toISOString().split("T")[0]; 
+  };
+  // Show modal on load
   useEffect(() => {
-    const lastSeen = localStorage.getItem("offersModalLastSeen");
-    const now = new Date().getTime();
-
-    if (!lastSeen || now - Number(lastSeen) > DAYS_BEFORE_RESHOW * 24 * 60 * 60 * 1000) {
-      // Afficher le modal après 0.8s
-      setTimeout(() => setShow(true), 800);
-      localStorage.setItem("offersModalLastSeen", now.toString());
+    const lastShown = localStorage.getItem(TODAY_KEY);
+    const today = getToday();
+  
+    if (lastShown !== today) {
+      setTimeout(() => {
+        setShow(true);
+        localStorage.setItem(TODAY_KEY, today);
+      }, 800);
     }
   }, []);
-
-  // Fermer modal avec Escape
+  // Close on ESC
   useEffect(() => {
     if (!show) return;
-    const onKey = (e) => {
-      if (e.key === "Escape") setShow(false);
-    };
+    const onKey = (e) => e.key === "Escape" && setShow(false);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [show]);
 
-  const chips = useMemo(() => {
-    const picks = [10, 20, 30, 40, 50, 60, 70];
-    return Array.from({ length: 8 }).map((_, i) => ({
-      id: i,
-      value: picks[Math.floor(Math.random() * picks.length)],
-      left: Math.random() * 90 + 5,
-      delay: Math.random() * 3,
-      duration: 6 + Math.random() * 4,
-    }));
+  // Fetch promotions
+  useEffect(() => {
+    const fetchPromos = async () => {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/api/promotions/promos`
+        );
+        setPromos(res.data || []);
+      } catch (err) {
+        console.error("Failed to load promotions", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPromos();
   }, []);
 
-  if (!show) return null;
+  // Get highest discount percentage
+  const maxDiscount = useMemo(() => {
+    if (!promos.length) return null;
+    return Math.max(
+      ...promos
+        .filter(p => p.promotion?.discountType === "percentage")
+        .map(p => p.promotion.discountValue)
+    );
+  }, [promos]);
+
+  // Get first active promotion 
+  const activePromo = useMemo(() => {
+    return promos.find(p => p.promotion?.isActive)?.promotion;
+  }, [promos]);
+
+  if (!show || loading || !maxDiscount) return null;
 
   return (
     <div
@@ -53,12 +81,20 @@ const OffersModal = () => {
         <div className="row g-4 align-items-center justify-content-center">
           <div className="col-12 col-lg-10">
             <div className="offer-hero text-center">
-              <div className="offer-kicker">Offres Spéciales</div>
+              <div className="offer-kicker">
+                {activePromo?.name || "Offres Spéciales"}
+              </div>
+
               <h1 id="offers-title" className="offer-headline">
-                Jusqu’à <span className="gradient-text">-70%</span>
+                Jusqu’à{" "}
+                <span className="gradient-text">
+                  -{maxDiscount}%
+                </span>
               </h1>
+
               <p className="offer-subtext mt-3">
-                Des remises limitées sur les meilleurs accessoires et gadgets.
+                {activePromo?.description ||
+                  "Des remises limitées sur les meilleurs accessoires et gadgets."}
               </p>
 
               <div className="d-flex flex-wrap gap-2 mt-4 justify-content-center">
@@ -68,6 +104,7 @@ const OffersModal = () => {
                 >
                   Voir les offres
                 </button>
+
                 <button
                   className="offer-btn offer-btn-secondary"
                   onClick={() => setShow(false)}
