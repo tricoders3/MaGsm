@@ -77,21 +77,21 @@ const { productName } = useParams();
   }
 
   // Add to favorites
-  const handleAddToFavorites = async () => {
-    try {
-      await axios.post(`${BASE_URL}/api/favorites/${productId}`, {}, { withCredentials: true });
-      setFavoritesCount(favoritesCount + 1);
-
-      setToast({ show: true, message: "Produit ajouté aux favoris", type: "favorite" });
+const handleAddToFavorites = async () => {
+  try {
+    await axios.post(`${BASE_URL}/api/favorites/${product._id}`, {}, { withCredentials: true });
+    setFavoritesCount(favoritesCount + 1);
+    setToast({ show: true, message: "Produit ajouté aux favoris", type: "favorite" });
+    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 1500);
+  } catch (error) {
+    if (error.response?.status === 401) navigate("/login");
+    else {
+      setToast({ show: true, message: "Impossible d'ajouter aux favoris", type: "favorite" });
       setTimeout(() => setToast(prev => ({ ...prev, show: false })), 1500);
-    } catch (error) {
-      if (error.response?.status === 401) navigate("/login");
-      else {
-        setToast({ show: true, message: "Impossible d'ajouter aux favoris", type: "favorite" });
-        setTimeout(() => setToast(prev => ({ ...prev, show: false })), 1500);
-      }
     }
-  };
+  }
+};
+
 
   // Add to cart
   const handleAddToCart = async () => {
