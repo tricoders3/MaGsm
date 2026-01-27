@@ -10,138 +10,136 @@ import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 
 const HeroSlider = () => {
-  const [products, setProducts] = useState([]);
   const [slides, setSlides] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [hasPromotion, setHasPromotion] = useState(false); // ✅ track if promos exist
 
   useEffect(() => {
-    const fetchPromotions = async () => {
+    const fetchSlides = async () => {
       try {
-        // 1️⃣ Get products with promotions
-        const response = await axios.get(`${BASE_URL}/api/promotions/promos`);
-        const productsData = response.data.map((p) => ({
-          id: p._id,
-          name: p.name,
-          description: p.description,
-          image: p.images?.[0]?.url || "/assets/images/default.png",
-          promotion: p.promotion, // promotion object is already included
-        }));
-        setProducts(productsData);
+        const promoRes = await axios.get(`${BASE_URL}/api/promotions/promos`);
 
-        // 2️⃣ Optional: get all active promotions if needed elsewhere
-        const promoResp = await axios.get(`${BASE_URL}/api/promotions`);
-        const activePromotions = promoResp.data.filter((p) => p.isActive);
+        if (promoRes.data && promoRes.data.length > 0) {
+          setHasPromotion(true); // ✅ promotions exist
 
-        // 3️⃣ Build slides
-        const slidesData = productsData.map((p) => {
-          const promo = p.promotion; // use promotion directly
-          let discountText = "-";
-          if (promo) {
-            discountText =
-              promo.discountType === "percentage"
+          const promoSlides = promoRes.data.map((p) => {
+            const promo = p.promotion;
+            const discount =
+              promo?.discountType === "percentage"
                 ? `-${promo.discountValue}%`
-                : `-${promo.discountValue} DT`;
-          }
+                : `-${promo?.discountValue} DT`;
 
-        
+            return {
+              title: p.name,
+              subtitle:
+                promo?.description || "Offre spéciale à durée limitée",
+              image: p.images?.[0]?.url || "/assets/images/default.png",
+              badge: discount,
+            };
+          });
 
-          return {
+          setSlides(shuffle(promoSlides).slice(0, 3));
+        } else {
+          setHasPromotion(false); // ❌ no promotions
+
+          const productRes = await axios.get(`${BASE_URL}/api/products`);
+
+          const productSlides = productRes.data.map((p) => ({
             title: p.name,
-            subtitle: p.description || "Offre spéciale !",
-            image: p.image,
-            discount: discountText,
-          };
-        });
+            subtitle: p.description || "Découvrez ce produit",
+            image: p.images?.[0]?.url || "/assets/images/default.png",
+            badge: null,
+          }));
 
-        // Take first 3 randomly
-        const shuffled = slidesData.sort(() => 0.5 - Math.random());
-        setSlides(shuffled.slice(0, 3));
-
-        setLoading(false);
+          setSlides(shuffle(productSlides).slice(0, 3));
+        }
       } catch (err) {
-        console.error("Failed to load promotions:", err);
-        setError("Impossible de charger les promotions");
+        console.error("Hero slider error:", err);
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchPromotions();
+    fetchSlides();
   }, []);
 
-  if (loading) return null;
-  if (error) return null;
+  if (loading || !slides.length) return null;
 
   return (
     <section className="hero-section overflow-hidden">
-    <div className="container">
-  
-      <Swiper
-        modules={[Autoplay, Pagination, EffectFade]}
-        autoplay={{ delay: 7000, disableOnInteraction: false }}
-        pagination={{ clickable: true }}
-        effect="fade"
-        loop
-        className="hero-swiper"
-      >
-        {slides.map((slide, index) => (
-          <SwiperSlide key={index}>
-            <div className="row align-items-center min-vh-50">
-  
-              {/* LEFT – INTRO */}
-              <div className="col-lg-6">
-                <div className="hero-intro">
-                  <span className="hero-tag">Offre Limitée</span>
-  
-                  <h1 className="hero-heading">
-                    Découvrez nos <br /> meilleures promotions
-                  </h1>
-  
-                  <p className="hero-description">
-                    Des offres sélectionnées pour vous
-                  </p>
-  
-                  <Link
-                    to="/products"
-                    className="btn-redesign btn-primary-redesign btn-lg-redesign"
-                  >
-                    En savoir plus
-                  </Link>
+      <div className="container">
+        <Swiper
+          modules={[Autoplay, Pagination, EffectFade]}
+          autoplay={{ delay: 7000, disableOnInteraction: false }}
+          pagination={{ clickable: true }}
+          effect="fade"
+          loop
+          className="hero-swiper"
+        >
+          {slides.map((slide, index) => (
+            <SwiperSlide key={index}>
+              <div className="row align-items-center min-vh-50">
+
+                {/* LEFT - STATIC LAYOUT, TEXT CHANGES DYNAMICALLY */}
+                <div className="col-lg-6">
+                  <div className="hero-intro">
+
+                    <span className="hero-tag">
+                      {hasPromotion ? "Offre Limitée" : "Nouveauté"}
+                    </span>
+
+                    <h1 className="hero-heading">
+                      {hasPromotion
+                        ? <>Découvrez nos <br /> meilleures offres</>
+                        : <>Découvrez nos <br /> meilleurs produits</>}
+                    </h1>
+
+                    <p className="hero-description">
+                      {hasPromotion
+                        ? "Des offres sélectionnées pour vous"
+                        : "Des produits soigneusement sélectionnés pour vous"}
+                    </p>
+
+                    <Link
+                      to="/products"
+                      className="btn-redesign btn-primary-redesign btn-lg-redesign"
+                    >
+                      En savoir plus
+                    </Link>
+
+                  </div>
                 </div>
-              </div>
-  
-              {/* RIGHT – PRODUCT */}
-              <div className="col-lg-6">
-              <div className="hero-product">
-  <div className="hero-product-wrapper">
-    <div className="badge-container">
-      <span className="promo-badge">{slide.discount}</span>
-      <img
-        src={slide.image}
-        alt={slide.title}
-        className="hero-product-image"
-      />
-    </div>
-  </div>
-  <h2 className="hero-title mt-4">{slide.title}</h2>
-  <p className="hero-subtitle mb-5">{slide.subtitle}</p>
-</div>
+
+                {/* RIGHT - Dynamic content */}
+                <div className="col-lg-6">
+                  <div className="hero-product">
+                    <div className="hero-product-wrapper">
+                      <div className="badge-container">
+                        {slide.badge && (
+                          <span className="promo-badge">{slide.badge}</span>
+                        )}
+                        <img
+                          src={slide.image}
+                          alt={slide.title}
+                          className="hero-product-image"
+                        />
+                      </div>
+                    </div>
+
+                    <h2 className="hero-title mt-4">{slide.title}</h2>
+                  </div>
+                </div>
 
               </div>
-  
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-  
-    </div>
-  </section>
-  
-  
-  
-  
-  
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+    </section>
   );
 };
+
+// Shuffle helper
+const shuffle = (array) => [...array].sort(() => 0.5 - Math.random());
 
 export default HeroSlider;
