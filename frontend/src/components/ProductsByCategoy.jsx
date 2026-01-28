@@ -27,14 +27,29 @@ const SubcategoryProducts = () => {
     fetchProducts();
   }, [subcategoryId]);
 
-  if (loading) return <p>Loading products...</p>;
-  if (error) return <p>{error}</p>;
-  if (!products.length) return <p>No products found in this subcategory.</p>;
+  if (loading) return null;
+  if (error) return null;
+
+  if (!products.length) 
+    return (
+      <div className="container py-5">
+        <div className="row justify-content-center">
+          <div className="col-md-8">
+            <div className="card shadow-lg rounded-4 border-0 p-4">
+              <h5 className="card-title mb-2">Aucun produit trouvé</h5>
+              <p className="text-muted">
+                Aucun produit n’est disponible dans cette sous-catégorie pour le moment.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
 
   return (
     <section className="products-section py-5">
       <div className="container">
-        <h2 className="section-title mb-5">Products</h2>
+        <h2 className="section-title mb-5">Produits</h2>
         <div className="row g-4">
           {products.map((p) => (
             <div key={p._id} className="col-xl-3 col-lg-4 col-md-6">

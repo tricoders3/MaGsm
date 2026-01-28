@@ -74,7 +74,7 @@ const CategoryView = () => {
   }, [subCategoryId, query]);
 
   
-  if (loading) return <p className="text-center py-5">Loading...</p>;
+  if (loading) return null;
   if (!category) return <p className="text-center py-5">No category found</p>;
 
   return (
