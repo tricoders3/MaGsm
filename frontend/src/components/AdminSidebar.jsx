@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import {
     FiHome,
@@ -7,57 +7,16 @@ import {
     FiBox,
     FiLayers,
     FiTag,
-    FiImage,
     FiInfo,
     FiPhone,
     FiShoppingCart,
     FiUserPlus
   } from "react-icons/fi";
-  import axios from "axios";
-  import BASE_URL from "../constante";
+
 
   
 const AdminSidebar = ({ onToggleSidebar }) => {
-const [pendingUsersCount, setPendingUsersCount] = useState(0);
-const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
 
-
-  // Récupérer le nombre de demandes en attente
-  useEffect(() => {
-    const fetchPending = async () => {
-      try {
-        const res = await axios.get(
-          `${BASE_URL}/api/auth/pending-requests`,
-          { withCredentials: true }
-        );
-        setPendingUsersCount(res.data.length);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des demandes en attente");
-      }
-    };
-
-    fetchPending();
-
-    // Optionnel : refresh toutes les 30 secondes
-    const interval = setInterval(fetchPending, 30000);
-    return () => clearInterval(interval);
-  }, []);
-    useEffect(() => {
-    const fetchPendingOrders = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/api/orders`, { withCredentials: true });
-        // Count only pending orders
-        const pending = res.data.filter(order => order.status === "pending").length;
-        setPendingOrdersCount(pending);
-      } catch (err) {
-        console.error("Erreur lors du chargement des commandes");
-      }
-    };
-
-    fetchPendingOrders();
-    const interval = setInterval(fetchPendingOrders, 30000);
-    return () => clearInterval(interval);
-  }, []);
   return (
     <aside className="admin-sidebar">
       <div className="sidebar-header d-flex align-items-center justify-content-between px-3 py-3">
@@ -114,11 +73,6 @@ const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
         <NavLink to="/admin/about" className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>
           <FiInfo size={18} />
           <span>About Us</span>
-        </NavLink>
-
-        <NavLink to="/admin/banner" className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>
-          <FiImage size={18} />
-          <span>Banner</span>
         </NavLink>
 
         <NavLink to="/admin/contact" className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>

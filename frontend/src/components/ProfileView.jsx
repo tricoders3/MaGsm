@@ -123,6 +123,7 @@ const Profile = () => {
                         name="name"
                         value={profil.name}
                         onChange={handleProfilChange}
+                        placeholder="Votre nom"
                       />
                     </div>
 
@@ -133,6 +134,7 @@ const Profile = () => {
                         name="email"
                         value={profil.email}
                         onChange={handleProfilChange}
+                        placeholder="email@example.com"
                       />
                     </div>
 
@@ -143,6 +145,7 @@ const Profile = () => {
                         name="phone"
                         value={profil.phone}
                         onChange={handleProfilChange}
+                        placeholder="+216 XX XXX XXX"
                       />
                     </div>
 
@@ -153,6 +156,7 @@ const Profile = () => {
                         name="address"
                         value={profil.address}
                         onChange={handleProfilChange}
+                        placeholder="Votre adresse"
                       />
                     </div>
 
@@ -167,7 +171,7 @@ const Profile = () => {
             {/* PASSWORD */}
  {/* PASSWORD */}
 <div className="col-md-6">
-  <div className="card border-0 shadow-sm h-100">
+  <div className="card border-0 shadow-sm">
     <div className="card-body">
       <form onSubmit={updatePassword}>
 

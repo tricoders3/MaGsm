@@ -140,7 +140,7 @@ export default function OrderConfirmation() {
           <Link to="/products" className="btn btn-outline-secondary px-4">
             Continuer vos achats
           </Link>
-          <Link to="/orders" className="btn btn-primary-redesign px-4">
+          <Link to="/" className="btn btn-primary-redesign px-4">
             Voir mes commandes
           </Link>
         </div>

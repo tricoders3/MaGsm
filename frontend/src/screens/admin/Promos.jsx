@@ -393,11 +393,11 @@ const fetchProducts = async () => {
       <table className="table table-hover table-sm align-middle mb-0">
         <thead className="table-light">
           <tr>
-            <th className="ps-4">Name</th>
-            <th>Description</th>
-            <th>Discount</th>
-            <th>Period</th>
-            <th className="text-end pe-4">Actions</th>
+          <th className="ps-4">Nom</th>
+          <th>Description</th>
+          <th>Remise</th>
+          <th>Période</th>
+          <th className="text-end pe-4">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -408,11 +408,11 @@ const fetchProducts = async () => {
                 {p.description || "-"}
               </td>
 
-              <td className="text-muted">
+              <td className="text-muted text-center">
                 {p.discountValue}
                 {p.discountType === "percentage" ? "%" : " TND"}
               </td>
-              <td className="text-muted">
+              <td className="text-muted text-center">
                 {new Date(p.startDate).toLocaleDateString()} →{" "}
                 {new Date(p.endDate).toLocaleDateString()}
               </td>
@@ -438,7 +438,7 @@ const fetchProducts = async () => {
           {!promotions.length && (
             <tr>
               <td colSpan={5} className="py-4 text-center text-muted">
-                No promotions.
+              Aucune promotion.
               </td>
             </tr>
           )}
@@ -495,17 +495,17 @@ const fetchProducts = async () => {
       {/* Products with Promotion */}
       <div className="card border-0 shadow-sm rounded-4 mt-4">
   <div className="card-header bg-white border-0">
-    <h6 className="mb-0 fw-semibold">Products with Promotion</h6>
+    <h6 className="mb-0 fw-semibold">Produits en promotion</h6>
   </div>
   <div className="card-body p-0">
     <div className="table-responsive">
       <table className="table table-hover table-sm align-middle mb-0">
         <thead className="table-light">
           <tr>
-            <th className="ps-4">Product</th>
-            <th>Original</th>
-            <th>Promo Price</th>
-            <th>Promotion</th>
+            <th className="ps-4">Produit</th>
+            <th>Prix initial</th>
+            <th>Prix promo</th>
+            <th>Offre</th>
           </tr>
         </thead>
         <tbody>
@@ -528,16 +528,16 @@ const fetchProducts = async () => {
                   <div className="fw-semibold">{p.name}</div>
                 </div>
               </td>
-              <td className="text-muted">{p.originalPrice.toFixed(2)} TND</td>
-              <td className="text-success">{p.discountedPrice.toFixed(2)} TND</td>
-              <td className="text-muted">{p.promotion?.name || "-"}</td>
+              <td className="text-muted text-center">{p.originalPrice.toFixed(2)} TND</td>
+              <td className="text-success text-center">{p.discountedPrice.toFixed(2)} TND</td>
+              <td className="text-muted text-center">{p.promotion?.name || "-"}</td>
             </tr>
           ))}
           {!productsWithPromo.length && (
             <tr>
-              <td colSpan={4} className="py-4 text-center text-muted">
-                No products with promotion.
-              </td>
+             <td colSpan={4} className="py-4 text-center text-muted">
+              Aucun produit en promotion.
+            </td>
             </tr>
           )}
         </tbody>

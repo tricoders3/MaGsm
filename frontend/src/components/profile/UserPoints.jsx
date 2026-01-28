@@ -34,18 +34,23 @@ const UserPoints = () => {
   }, [user]);
 
   return (
-    <div className="card border-0 shadow-sm h-100">
-      <div className="card-body text-center">
-        <h5 className="card-title">Mes Points</h5>
-        {loading ? (
-          <p>Chargement...</p>
+<div className="container py-5">
+  <div className="row justify-content-center">
+      <div className="card shadow-lg rounded-4 border-0  p-4" style={{ backgroundColor: "#f8f9fa" }}>
+      <h4 className="card-title mb-4">Mes Points</h4>
+
+        {points > 0 ? (
+          <>
+            <p className="display-3 fw-bold text-primary mb-2">{points}</p>
+            <p className="text-muted">Vous avez accumulé ces points grâce à vos achats.</p>
+          </>
         ) : (
-          <p className="display-4 fw-bold text-primary">
-            {points}
-          </p>
+          <p className="text-muted">Vous n’avez aucun point pour le moment.</p>
         )}
       </div>
     </div>
+  </div>
+
   );
 };
 

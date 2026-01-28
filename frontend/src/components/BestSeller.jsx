@@ -19,10 +19,9 @@ const BestSeller = () => {
         );
 
         const formatted = data.map((p) => ({
-          id: p._id,
+          id: p.id,
           name: p.name,
           images: p.images || [],
-
           category: p.category,
           subCategory: p.subCategory,
           originalPrice: p.originalPrice,

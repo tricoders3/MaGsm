@@ -210,7 +210,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 
 .btn-primary-redesign:hover, .btn-price:hover {
-  background: linear-gradient(135deg, #111111 0%, #1a1919 70%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #262626 70%);
   color: var(--white);
 }
 .btn-primary-details {

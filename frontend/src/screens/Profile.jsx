@@ -16,65 +16,43 @@ const UserProfile = () => {
 
   return (
     <div className="container-fluid py-4">
-      <div className="row">
-
-        {/* Sidebar */}
-        <div className="col-md-3 col-lg-2">
-          <div className="card shadow-sm">
-            <div className="card-body p-2">
-
-              <button
-                className={`list-group-item list-group-item-action d-flex align-items-center gap-2 ${
-                  selected === "profile" ? "active" : ""
-                }`}
-                onClick={() => setSelected("profile")}
-              >
-                <FiUser /> Profil
-              </button>
-
-              <button
-                className={`list-group-item list-group-item-action d-flex align-items-center gap-2 ${
-                  selected === "password" ? "active" : ""
-                }`}
-                onClick={() => setSelected("password")}
-              >
-                <FiLock /> Mot de passe
-              </button>
-
-              <button
-                className={`list-group-item list-group-item-action d-flex align-items-center gap-2 ${
-                  selected === "orders" ? "active" : ""
-                }`}
-                onClick={() => setSelected("orders")}
-              >
-                <FiShoppingBag /> Commandes
-              </button>
-
-              <button
-                className={`list-group-item list-group-item-action d-flex align-items-center gap-2 ${
-                  selected === "points" ? "active" : ""
-                }`}
-                onClick={() => setSelected("points")}
-              >
-                <FiStar /> Points
-              </button>
-
-            </div>
-          </div>
+    <div className="row">
+  
+      {/* Sidebar */}
+      <div className="col-md-3 col-lg-2">
+        <div className="d-flex flex-column shadow-lg rounded-4 shadow-sm p-2">
+          {[
+            { key: "profile", icon: <FiUser />, label: "Profil" },
+            { key: "password", icon: <FiLock />, label: "Mot de passe" },
+            { key: "orders", icon: <FiShoppingBag />, label: "Commandes" },
+            { key: "points", icon: <FiStar />, label: "Points" },
+          ].map((item) => (
+            <button
+              key={item.key}
+              className={`btn btn-light text-start d-flex align-items-center gap-2 mb-2 ${
+                selected === item.key ? "active-sidebar" : "hover-sidebar"
+              }`}
+              onClick={() => setSelected(item.key)}
+              style={{ borderRadius: "12px" }}
+            >
+              {item.icon} <span>{item.label}</span>
+            </button>
+          ))}
         </div>
-
-        {/* Content */}
-        <div className="col-md-9 col-lg-10">
-          <div className="card shadow-sm p-4">
-            {selected === "profile" && <ProfileDataForm />}
-            {selected === "password" && <PasswordForm />}
-            {selected === "orders" && <HistoriqueCommandes />}
-            {selected === "points" && <UserPoints />}
-          </div>
-        </div>
-
       </div>
+  
+      {/* Content */}
+      <div className="col-md-9 col-lg-10">
+        <div>
+          {selected === "profile" && <ProfileDataForm />}
+          {selected === "password" && <PasswordForm />}
+          {selected === "orders" && <HistoriqueCommandes />}
+          {selected === "points" && <UserPoints />}
+        </div>
+      </div>
+  
     </div>
+  </div>
   );
 };
 

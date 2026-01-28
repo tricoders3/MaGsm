@@ -85,10 +85,6 @@ const isValid =
   }, []);
 
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
  const handleConfirm = async () => {
   if (!isValid || !cart || cart.length === 0) return;
   setSubmitting(true);
@@ -111,25 +107,24 @@ const isValid =
 };
 
 
-    console.log("Payload envoyé au backend:", payload); // 🔹 debug
-
     const { data } = await axios.post(`${BASE_URL}/api/orders`, payload, {
       withCredentials: true,
     });
 
     const newOrderId = data?.order?._id;
-
-    // Vider le panier
-    setCart([]);
-    setCartCount(0);
-
-    // Afficher toast succès
     setShowToast(true);
 
     setTimeout(() => {
-      setShowToast(false);
-      if (newOrderId) navigate(`/order-confirmation/${newOrderId}`);
-      else navigate("/orders");
+    setShowToast(false);
+    
+    
+
+    setCart([]);
+    setCartCount(0);
+    
+    
+    if (newOrderId) navigate(`/order-confirmation/${newOrderId}`);
+    else navigate("/orders");
     }, 1500);
   } catch (error) {
     console.error("Erreur lors de la création de la commande :", error);
@@ -179,9 +174,7 @@ const earnedPoints = Math.floor((subTotal / 100) * pointsPer100DT);
 <div className="container mt-5 mb-5">
   <div className="row g-4">
 
-    {/* ===================== */}
-    {/* 🧾 DÉTAILS DE FACTURATION */}
-    {/* ===================== */}
+
     <div className="col-lg-7">
       <div className="card p-4 shadow-sm rounded-4">
         <h4 className="fw-bold mb-4 text-dark border-bottom pb-2">
@@ -326,15 +319,24 @@ const earnedPoints = Math.floor((subTotal / 100) * pointsPer100DT);
           </div>
         )}
 
-        <button
-          className="btn btn-dark w-100 mt-4"
-          disabled={submitting || !isValid }
-          onClick={handleConfirm}
-        >
-          {submitting
-            ? "Création de la commande..."
-            : "Confirmer la commande"}
-        </button>
+<button
+  className="btn btn-dark w-100 mt-4 d-flex justify-content-center align-items-center"
+  disabled={submitting || !isValid}
+  onClick={handleConfirm}
+>
+  {submitting ? (
+    <>
+      <span
+        className="spinner-border spinner-border-sm me-2"
+        role="status"
+        aria-hidden="true"
+      ></span>
+      Création de la commande
+    </>
+  ) : (
+    "Confirmer la commande"
+  )}
+</button>
         {!isValid && (
   <small className="text-danger d-block mt-2">
     Veuillez remplir tous les champs requis pour continuer.

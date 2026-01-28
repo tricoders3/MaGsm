@@ -32,7 +32,6 @@ import Users from "./screens/admin/Users";
 import WaitingApproval from "./screens/waiting-approval.jsx";
 
 import AdminAbout from "./screens/admin/AdminAbout";
-import AdminBanner from "./screens/admin/AdminBanner";
 import AdminContact from "./screens/admin/AdminContact";
 import Profile from "./screens/Profile.jsx";
 import PendingUsers from "./screens/admin/PendingUsers.jsx";
@@ -113,7 +112,6 @@ function App() {
       <Route path="orders" element={<Orders />} />
       <Route path="users" element={<Users />} />
   <Route path="about" element={<AdminAbout />} />
-  <Route path="banner" element={<AdminBanner />} />
   <Route path="contact" element={<AdminContact />} />
   <Route path="pending-users" element={<PendingUsers />} />
     </Route>

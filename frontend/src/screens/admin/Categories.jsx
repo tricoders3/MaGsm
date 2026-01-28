@@ -9,11 +9,15 @@ const Categories = () => {
   const [imageFile, setImageFile] = useState(null);
   const [categories, setCategories] = useState([]);
   const [editId, setEditId] = useState(null);
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [categorySaving, setCategorySaving] = useState(false);
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [subCategories, setSubCategories] = useState([]);
   const [subName, setSubName] = useState("");
   const [subEditId, setSubEditId] = useState(null);
+  const [showSubCategoryForm, setShowSubCategoryForm] = useState(false);
+  const [subCategorySaving, setSubCategorySaving] = useState(false);
 
   // Confirm modal state
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -34,6 +38,7 @@ const Categories = () => {
   const addCategory = async () => {
     if (!name || !imageFile) return;
     try {
+      setCategorySaving(true);
       const formData = new FormData();
       formData.append("name", name);
       formData.append("image", imageFile);
@@ -44,9 +49,13 @@ const Categories = () => {
 
       setName("");
       setImageFile(null);
+      setEditId(null);
+      setShowCategoryForm(false);
       fetchCategories();
     } catch (error) {
       console.error(error);
+    } finally {
+      setCategorySaving(false);
     }
   };
 
@@ -54,6 +63,7 @@ const Categories = () => {
   const updateCategory = async (id) => {
     if (!name) return;
     try {
+      setCategorySaving(true);
       const formData = new FormData();
       formData.append("name", name);
       if (imageFile) formData.append("image", imageFile);
@@ -65,9 +75,12 @@ const Categories = () => {
       setName("");
       setImageFile(null);
       setEditId(null);
+      setShowCategoryForm(false);
       fetchCategories();
     } catch (error) {
       console.error(error);
+    } finally {
+      setCategorySaving(false);
     }
   };
 
@@ -93,25 +106,33 @@ const Categories = () => {
   const addSubCategory = async () => {
     if (!subName || !selectedCategory) return;
     try {
+      setSubCategorySaving(true);
       await axios.post(`${BASE_URL}/api/categories/${selectedCategory}/subcategory`, { name: subName });
       setSubName("");
       setSubEditId(null);
+      setShowSubCategoryForm(false);
       fetchSubCategories(selectedCategory);
     } catch (error) {
       console.error(error);
+    } finally {
+      setSubCategorySaving(false);
     }
   };
 
   const updateSubCategory = async () => {
     if (!subName || !selectedCategory || !subEditId) return;
     try {
+      setSubCategorySaving(true);
       await axios.delete(`${BASE_URL}/api/categories/${selectedCategory}/subcategories/${subEditId}`);
       await axios.post(`${BASE_URL}/api/categories/${selectedCategory}/subcategory`, { name: subName });
       setSubName("");
       setSubEditId(null);
+      setShowSubCategoryForm(false);
       fetchSubCategories(selectedCategory);
     } catch (error) {
       console.error(error);
+    } finally {
+      setSubCategorySaving(false);
     }
   };
 
@@ -157,11 +178,13 @@ const Categories = () => {
   const handleEditCategory = (cat) => {
     setEditId(cat._id);
     setName(cat.name);
+    setShowCategoryForm(true);
   };
 
   const handleEditSub = (sc) => {
     setSubEditId(sc._id);
     setSubName(sc.name);
+    setShowSubCategoryForm(true);
   };
 
   const handleSub = (catId) => {
@@ -176,12 +199,18 @@ const Categories = () => {
   return (
     <div className="container mt-4">
       <div className="card border-0 shadow-sm rounded-4 mb-4">
-        <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center flex-wrap">
-          <h4 className="mb-0">Categories</h4>
-          <span className="count-pill">
-          {categories.length} {categories.length === 1 ? "catégorie" : "catégories"}
-        </span>
-
+        <div className="card-header bg-white border-0">
+          <div className="d-flex justify-content-between align-items-center flex-wrap">
+            <h4 className="mb-0">Categories</h4>
+            
+            <span className="count-pill">
+              {categories.length} {categories.length === 1 ? "catégorie" : "catégories"}
+            </span>
+          </div>
+          <small className="text-muted d-block mb-2">Gérez les catégories principales de la boutique</small>
+          <button className="btn btn-add-primary d-inline-flex align-items-center gap-2 mt-2" onClick={() => { setShowCategoryForm(true); setEditId(null); setName(""); setImageFile(null); }}>
+            <i className="fas fa-plus"></i> Ajouter
+          </button>
         </div>
     <ConfirmModal
       open={confirmOpen}
@@ -201,33 +230,38 @@ const Categories = () => {
     />
 
         <div className="card-body">
-          {/* Input Category */}
-          <div className="d-flex mb-3 gap-2 align-items-center">
-            <input
-              className="form-control rounded-pill ps-3"
-              placeholder="Category name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              style={{ height: "40px" }}
-            />
-            <input
-              type="file"
-              onChange={(e) => setImageFile(e.target.files[0])}
-              className="form-control form-control-sm"
-            />
+          {/* Input Category Form */}
+          {showCategoryForm && (
+            <div className="d-flex mb-3 gap-2 align-items-center">
+              <input
+                className="form-control rounded-pill ps-3"
+                placeholder="Category name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                style={{ height: "40px" }}
+              />
+              <input
+                type="file"
+                onChange={(e) => setImageFile(e.target.files[0])}
+                className="form-control form-control-sm"
+              />
 
-            {editId ? (
-              <button className="btn btn-add-primary d-inline-flex align-items-center gap-2"
-                      onClick={() => updateCategory(editId)}>
-                <i className="fas fa-pen"></i> Update
+              {editId ? (
+                <button className="btn btn-primary-redesign btn-sm d-inline-flex align-items-center gap-2" disabled={categorySaving} onClick={() => updateCategory(editId)}>
+                  {categorySaving ? <span className="spinner-border spinner-border-sm me-1" /> : null}
+                  Enregistrer
+                </button>
+              ) : (
+                <button className="btn btn-primary-redesign btn-sm d-inline-flex align-items-center gap-2" disabled={categorySaving} onClick={addCategory}>
+                  {categorySaving ? <span className="spinner-border spinner-border-sm me-1" /> : null}
+                  Enregistrer
+                </button>
+              )}
+              <button className="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2" onClick={() => { setShowCategoryForm(false); setEditId(null); setName(""); setImageFile(null); }}>
+                Annuler
               </button>
-            ) : (
-              <button className="btn btn-add-primary d-inline-flex align-items-center gap-2"
-                      onClick={addCategory}>
-                <i className="fas fa-plus"></i> Add
-              </button>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Categories List */}
           <ul className="list-group list-group-flush">
@@ -259,33 +293,46 @@ const Categories = () => {
 
       {/* SubCategories */}
       {selectedCategory && (
-        <div className="card border-0 shadow-sm rounded-4">
-          <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-            <h5 className="mb-0">Subcategories</h5>
-            <span className="count-pill">{subCategories.length} subcategories</span>
+        <div className="card border-0 shadow-sm rounded-4 mb-4">
+          <div className="card-header bg-white border-0">
+            <div className="d-flex justify-content-between align-items-center">
+              <h5 className="mb-0">Subcategories</h5>
+              
+              <span className="count-pill">{subCategories.length} subcategories</span>
+            </div>
+            <small className="text-muted d-block mb-2">Ajoutez ou modifiez les sous-catégories pour cette catégorie</small>
+            <button className="btn btn-add-primary d-inline-flex align-items-center gap-2 mt-2" onClick={() => { setShowSubCategoryForm(true); setSubEditId(null); setSubName(""); }}>
+              <i className="fas fa-plus"></i> Ajouter
+            </button>
           </div>
 
           <div className="card-body">
-            <div className="d-flex mb-3 gap-2">
-              <input
-                className="form-control rounded-pill ps-3"
-                placeholder="Subcategory name"
-                value={subName}
-                onChange={(e) => setSubName(e.target.value)}
-                style={{ height: "40px" }}
-              />
-              {subEditId ? (
-                <button className="btn btn-add-primary d-inline-flex align-items-center gap-2"
-                        onClick={updateSubCategory}>
-                  <i className="fas fa-pen"></i> Update
+            {/* SubCategory Form */}
+            {showSubCategoryForm && (
+              <div className="d-flex mb-3 gap-2">
+                <input
+                  className="form-control rounded-pill ps-3"
+                  placeholder="Subcategory name"
+                  value={subName}
+                  onChange={(e) => setSubName(e.target.value)}
+                  style={{ height: "40px" }}
+                />
+                {subEditId ? (
+                  <button className="btn btn-primary-redesign btn-sm d-inline-flex align-items-center gap-2" disabled={subCategorySaving} onClick={updateSubCategory}>
+                    {subCategorySaving ? <span className="spinner-border spinner-border-sm me-1" /> : null}
+                    Enregistrer
+                  </button>
+                ) : (
+                  <button className="btn btn-primary-redesign btn-sm d-inline-flex align-items-center gap-2" disabled={subCategorySaving} onClick={addSubCategory}>
+                    {subCategorySaving ? <span className="spinner-border spinner-border-sm me-1" /> : null}
+                    Enregistrer
+                  </button>
+                )}
+                <button className="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2" onClick={() => { setShowSubCategoryForm(false); setSubEditId(null); setSubName(""); }}>
+                  Annuler
                 </button>
-              ) : (
-                <button className="btn btn-add-primary d-inline-flex align-items-center gap-2"
-                        onClick={addSubCategory}>
-                  <i className="fas fa-plus"></i> Add
-                </button>
-              )}
-            </div>
+              </div>
+            )}
 
             <ul className="list-group list-group-flush">
               {subCategories.map((sc) => (

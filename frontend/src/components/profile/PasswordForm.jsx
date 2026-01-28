@@ -35,8 +35,12 @@ const PasswordForm = () => {
   };
 
   return (
-    <div className="card border-0 shadow-sm h-100">
-      <div className="card-body">
+    <div className="container py-5">
+    <div className="row justify-content-center">
+    <div className="col-12 col-sm-10 col-md-8 col-lg-6">
+    <div className="card shadow-lg rounded-4 border-0">
+    <div className="card-body p-4">
+    <h4 className="card-title text-center mb-4">Modifier le mot de passe</h4>
         <form onSubmit={handleSubmit}>
           {user?.provider === "local" && (
             <input type="password" className="form-control mb-3" name="currentPassword" value={password.currentPassword} onChange={handleChange} placeholder="Mot de passe actuel" />
@@ -47,8 +51,12 @@ const PasswordForm = () => {
             {loading ? "Chargement..." : "Mettre à jour le mot de passe"}
           </button>
         </form>
-      </div>
-    </div>
+        </div>
+</div>
+</div>
+</div>
+</div>
+  
   );
 };
 

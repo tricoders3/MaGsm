@@ -25,29 +25,38 @@ const HistoriqueCommandes = () => {
   }, []);
 
   return (
-    <div className="card border-0 shadow-sm h-100">
-      <div className="card-body">
-        <h5 className="card-title mb-3">Historique des commandes</h5>
-        {loading ? (
-          <p>Chargement...</p>
-        ) : orders.length === 0 ? (
-          <p>Aucune commande trouvée.</p>
-        ) : (
-          <ul className="list-group list-group-flush">
-            {orders.map((order) => (
-              <li key={order._id} className="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <strong>Commande #{order._id.slice(-6)}</strong>
-                  <br />
-                  <small>{new Date(order.createdAt).toLocaleDateString()}</small>
-                </div>
-                <span>{order.total} €</span>
-              </li>
-            ))}
-          </ul>
-        )}
+<div className="container py-5">
+  <div className="row justify-content-center">
+      <div className="card shadow-lg rounded-4 border-0">
+        <div className="card-body p-4">
+        <h4 className="card-title mb-4">Historique des commandes</h4>
+
+          {orders.length === 0 ? (
+            <p className="text-muted">Vous n’avez passé aucune commande pour le moment.</p>
+          ) : (
+            <ul className="list-unstyled">
+              {orders.map((order) => (
+                <li
+                  key={order._id}
+                  className="d-flex justify-content-between align-items-center mb-3 p-3 rounded-3"
+                  style={{ backgroundColor: "#f8f9fa" }}
+                >
+                  <div>
+                    <strong>Commande #{order._id.slice(-6)}</strong>
+                    <br />
+                    <small className="text-muted">{new Date(order.createdAt).toLocaleDateString()}</small>
+                  </div>
+                  <span className="fw-semibold text-primary">{order.total} TND</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
+  </div>
+
+    
   );
 };
 

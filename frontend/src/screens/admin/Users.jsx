@@ -178,11 +178,11 @@ const Users = () => {
                   </div>
                 </td>
 
-                <td data-label="Rôle" className="text-muted">
+                <td data-label="Rôle" className="text-muted text-center">
                   <span className="status-pill">{u.role}</span>
                 </td>
 
-                <td data-label="Email" className="d-none d-md-table-cell text-muted text-truncate" style={{ maxWidth: "180px" }}>
+                <td data-label="Email" className="d-none d-md-table-cell text-muted text-truncate text-center" style={{ maxWidth: "180px" }}>
                   {u.email}
                 </td>
 

@@ -8,7 +8,8 @@ const PendingUsers = () => {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(null);
+  const [loadingApprove, setLoadingApprove] = useState(null);
+  const [loadingDelete, setLoadingDelete] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [targetUserId, setTargetUserId] = useState(null);
 
@@ -28,26 +29,26 @@ const PendingUsers = () => {
   };
 
   const approveUser = async (id) => {
-    setActionLoading(id);
+    setLoadingApprove(id);
     try {
       await axios.post(`${BASE_URL}/api/auth/approve-user/${id}`, {}, { withCredentials: true });
       fetchPendingUsers();
     } catch (error) {
       toast.error("Erreur lors de l’approbation");
     } finally {
-      setActionLoading(null);
+      setLoadingApprove(null);
     }
   };
 
   const deleteUser = async (id) => {
-    setActionLoading(id);
+    setLoadingDelete(id)
     try {
       await axios.delete(`${BASE_URL}/api/user/${id}`, { withCredentials: true });
       fetchPendingUsers();
     } catch (error) {
       toast.error("Erreur lors de la suppression");
     } finally {
-      setActionLoading(null);
+      setLoadingDelete(null);
     }
   };
 
@@ -137,10 +138,10 @@ const PendingUsers = () => {
                           <div className="d-flex gap-2 justify-content-end">
                             <button
                               className="btn btn-light btn-sm border text-success d-flex align-items-center gap-1 px-3"
-                              disabled={actionLoading === u._id}
+                              disabled={loadingApprove === u._id}
                               onClick={() => approveUser(u._id)}
                             >
-                              {actionLoading === u._id ? (
+                              {loadingApprove === u._id ? (
                                 <span className="spinner-border spinner-border-sm text-light" />
                               ) : (
                                 <>
@@ -152,10 +153,10 @@ const PendingUsers = () => {
 
                             <button
                               className="btn btn-light btn-sm border text-danger d-flex align-items-center gap-1 px-3"
-                              disabled={actionLoading === u._id}
+                              disabled={loadingDelete === u._id}
                               onClick={() => handleDeleteUser(u._id)}
                             >
-                              {actionLoading === u._id ? (
+                              {loadingDelete === u._id ? (
                                 <span className="spinner-border spinner-border-sm text-danger" />
                               ) : (
                                 <>
@@ -206,11 +207,11 @@ const PendingUsers = () => {
       {/* Confirm delete modal */}
       <ConfirmModal
         open={confirmOpen}
-        loading={actionLoading === targetUserId}
+        loading={loadingDelete === targetUserId}
         onConfirm={async () => {
-          setActionLoading(targetUserId);
+          setLoadingDelete(targetUserId);
           await deleteUser(targetUserId);
-          setActionLoading(null);
+          setLoadingDelete(null);
           setConfirmOpen(false);
           setTargetUserId(null);
         }}

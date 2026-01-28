@@ -41,8 +41,12 @@ const ProfileDataForm = () => {
   };
 
   return (
-    <div className="card border-0 shadow-sm h-100">
-      <div className="card-body">
+<div className="container py-5">
+<div className="row justify-content-center">
+<div className="col-12 col-sm-10 col-md-8 col-lg-6">
+<div className="card shadow-lg rounded-4 border-0">
+<div className="card-body p-4">
+<h4 className="card-title text-center mb-4">Modifier le profil</h4>
         <form onSubmit={handleSubmit}>
           <input className="form-control mb-3" name="name" value={profil.name} onChange={handleChange} placeholder="Nom" />
           <input className="form-control mb-3" name="email" value={profil.email} onChange={handleChange} placeholder="Email" />
@@ -52,8 +56,12 @@ const ProfileDataForm = () => {
             {loading ? "Chargement..." : "Enregistrer les modifications"}
           </button>
         </form>
-      </div>
-    </div>
+        </div>
+</div>
+</div>
+</div>
+</div>
+  
   );
 };
 

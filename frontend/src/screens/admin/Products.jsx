@@ -84,7 +84,7 @@ const Products = () => {
             onClose={() => setShowForm(false)}
             onSaved={fetchProducts}
           />
-      <div className="card border-0 shadow-sm rounded-4">
+      <div className="card border-0 shadow-sm rounded-4 mb-4">
         {/* Header */}
         <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
           <div>
@@ -149,7 +149,7 @@ const Products = () => {
                     {paginatedProducts.map((p) => (
                       <tr key={p._id}>
                         <td>{p.name}</td>
-                        <td>
+                        <td className="text-center">
                           {p.images?.[0]?.url && (
                             <img
                               src={p.images[0].url}
@@ -163,13 +163,13 @@ const Products = () => {
                             />
                           )}
                         </td>
-                        <td>{p.price.toFixed(2)} TND</td>
-                        <td>
+                        <td className="text-center">{p.price.toFixed(2)} TND</td>
+                        <td className="text-center">
                           {p.promotion?.isActive
                             ? getDiscountedPrice(p).toFixed(2) + " TND"
                             : "-"}
                         </td>
-                        <td>{p.promotion?.isActive ? p.promotion.name : "Non"}</td>
+                        <td className="text-center">{p.promotion?.isActive ? p.promotion.name : "Non"}</td>
                         <td className="text-end pe-4">
                           <button
                             className="btn btn-sm btn-light border me-2 action-btn"
