@@ -45,7 +45,7 @@ const BestSeller = () => {
   if (error) return null;
 
   const previewProducts = products.slice(0, 4);
-
+  if (previewProducts.length === 0) return null;
   return (
     <section className="features-section py-5">
       <div className="container">

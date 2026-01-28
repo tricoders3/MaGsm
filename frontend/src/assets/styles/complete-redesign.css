@@ -2222,10 +2222,11 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   line-height: 1.5;
   margin-bottom: 1rem;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 2;    
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;    
+  word-wrap: break-word;     
 }
 
 .product-price {
