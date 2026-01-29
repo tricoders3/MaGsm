@@ -94,11 +94,11 @@ const loginWithGoogle = () => {
                   <button className="btn btn-primary w-100 mb-3">Se connecter</button>
                 </form>
 
-                <div className="text-center mb-3 text-muted">OU</div>
+                <div className="text-center mb-2 text-muted">OU</div>
 
                 {/* Google */}
                 <button
-                  className="btn btn-google w-100 mb-4 d-flex align-items-center justify-content-center gap-2"
+                  className="btn btn-google w-100 mb-2 d-flex align-items-center justify-content-center gap-2"
                   onClick={loginWithGoogle}
                 >
                   {/* SVG Google */}
@@ -113,7 +113,7 @@ const loginWithGoogle = () => {
 
                 {/* Facebook */}
                 <button
-  className="btn btn-google w-100 mb-4 d-flex align-items-center justify-content-center gap-2"
+  className="btn btn-google w-100 mb-2 d-flex align-items-center justify-content-center gap-2"
   onClick={loginWithFacebook}
 >
   {/* SVG Facebook icon in blue */}

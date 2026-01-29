@@ -125,14 +125,14 @@ const Register = () => {
                   />
                 </div>
   
-                <button className="btn btn-primary w-100 mb-4">
+                <button className="btn btn-primary w-100 mb-3">
                   S’inscrire
                 </button>
               </form>
-  
+              <div className="text-center mb-2 text-muted">OU</div>
                   {/* Google */}
                   <button
-                  className="btn btn-google w-100 mb-4 d-flex align-items-center justify-content-center gap-2"
+                  className="btn btn-google w-100 mb-2 d-flex align-items-center justify-content-center gap-2"
                   onClick={registerWithGoogle}
                 >
                   <svg width="18" height="18" viewBox="0 0 48 48">
@@ -146,7 +146,7 @@ const Register = () => {
 
                 {/* Facebook */}
                 <button
-                  className="btn btn-google w-100 mb-4 d-flex align-items-center justify-content-center gap-2"
+                  className="btn btn-google w-100 mb-2 d-flex align-items-center justify-content-center gap-2"
                   onClick={registerWithFacebook}
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2">
