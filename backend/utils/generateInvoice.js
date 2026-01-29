@@ -128,27 +128,43 @@ export const generateInvoicePDF = async (order, user) => {
         );
       });
       // 📦 Livraison
-const deliveryY =
-  tableTop + 30 + order.items.length * 25 + 10;
+// 📦 Livraison
+let currentY = tableTop + 30 + order.items.length * 25 + 10;
 
 generateTableRow(
   doc,
-  deliveryY,
+  currentY,
   "Frais de livraison",
   "",
   "",
-  `7DT`
+  `${order.deliveryFee || 7} DT`
 );
+currentY += 20;
 
-      /* ===== TOTAL ===== */
-      const totalY = tableTop + 30 + order.items.length * 25 + 30;
+// 🔹 Remise fidélité si applicable
+if (order.discount && order.discount > 0) {
+  generateTableRow(
+    doc,
+    currentY,
+    `Remise fidélité (${order.pointsUsed} pts)`,
+    "",
+    "",
+    `-${order.discount} DT`
+  );
+  currentY += 20;
+}
 
-      doc
-        .font("Helvetica-Bold")
-        .fontSize(14)
-        .text(`Total à payer : ${order.total.toFixed(2)} DT`, 400, totalY, {
-          align: "right",
-        });
+
+      // ===== TOTAL =====
+const totalY = currentY + 10;
+
+doc
+  .font("Helvetica-Bold")
+  .fontSize(14)
+  .text(`Total à payer : ${order.total.toFixed(2)} DT`, 400, totalY, {
+    align: "right",
+  });
+
 
       /* ===== FOOTER ===== */
       generateFooter(doc);

@@ -13,34 +13,33 @@ import { generateInvoicePDF } from "../utils/generateInvoice.js";
 // CREATE ORDER FROM CART
 export const createOrderFromCart = async (req, res) => {
   try {
-    
     const cart = await getUserCart(req.user.id);
 
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({ message: "Panier vide" });
     }
 
-    const { shippingAddress } = req.body; // 🔹 get shipping address from frontend
+    // ✅ EXTRACTION CORRECTE
+    const { shippingAddress, billingDetails, useLoyaltyPoints } = req.body;
+
     if (!shippingAddress) {
       return res.status(400).json({ message: "Adresse de livraison requise" });
     }
-       const { billingDetails } = req.body; // 🔹 get billing details from frontend
+
     if (!billingDetails) {
       return res.status(400).json({ message: "Détails de facturation requis" });
     }
 
-    // 1️⃣ créer la commande avec shippingAddress
-    const order = await createOrder(req.user, cart, billingDetails, shippingAddress);
-    // 2️⃣ Calculer et ajouter les points fidélité
-    const points = calculateLoyaltyPoints(order.total);
+    // ✅ APPEL CORRECT
+    const order = await createOrder(
+      req.user,
+      cart,
+      billingDetails,
+      shippingAddress,
+      useLoyaltyPoints
+    );
 
     const user = await User.findById(req.user.id);
-    if (user) {
-      user.loyaltyPoints += points;
-      await user.save();
-    }
-
-    order.pointsEarned = points;
 
     // 3️⃣ Générer la facture PDF
     let invoicePath = null;
@@ -50,7 +49,7 @@ export const createOrderFromCart = async (req, res) => {
       console.error("Erreur génération facture:", pdfError.message);
     }
 
-    // 4️⃣ envoyer mail admin et client (non bloquant)
+    // 4️⃣ Emails (non bloquant)
     try {
       await sendAdminOrderNotification({ user, order });
       await sendClientOrderConfirmation({ user, order, invoicePath });
@@ -58,19 +57,20 @@ export const createOrderFromCart = async (req, res) => {
       console.error("Erreur email:", mailError.message);
     }
 
-    // 5️⃣ vider le panier
+    // 5️⃣ Vider le panier
     await clearCart(req.user.id);
 
     res.status(201).json({
       message: "Commande créée avec succès",
       order,
-      loyaltyPoints: user.loyaltyPoints,
+      loyaltyPoints: user.loyaltyPoints, // déjà mis à jour dans createOrder
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
+
 // USER – GET HIS ORDERS
 export const getOrdersForUser = async (req, res) => {
   try {

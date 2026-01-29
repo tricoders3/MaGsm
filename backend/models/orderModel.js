@@ -43,7 +43,10 @@ const orderSchema = new mongoose.Schema(
 ],
     shippingAddress: { type: addressSchema },
     billingDetails: billingDetailsSchema,
-    
+    discount: { type: Number, default: 0 },      // remise appliquée (DT)
+    pointsUsed: { type: Number, default: 0 },    // points consommés
+    deliveryFee: { type: Number, default: 7 },
+    subTotal: { type: Number, required: true },
     total: { type: Number, required: true },
     pointsEarned: { type: Number, default: 0 }, // points gagnés sur cette commande
     status: {

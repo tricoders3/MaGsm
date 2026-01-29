@@ -30,6 +30,14 @@ export default function OrderConfirmation() {
     };
     fetchOrders();
   }, [orderId]);
+  // ===== Calculs frais et remise =====
+const deliveryFee = order?.deliveryFee || 7; // frais de livraison par défaut
+const discount = order?.discount || 0;       // remise appliquée
+const subTotal = (order?.items || []).reduce(
+  (sum, item) => sum + (item.price || 0) * (item.quantity || 0),
+  0
+);
+const totalAfterDiscount = subTotal + deliveryFee - discount;
 
   if (loading) return null;
 
@@ -42,6 +50,11 @@ export default function OrderConfirmation() {
         </div>
       </div>
     );
+ 
+
+
+
+
   }
 
   return (
@@ -107,7 +120,7 @@ export default function OrderConfirmation() {
   <div><strong>Pays :</strong> {order.shippingAddress?.country || "Tunisie"}</div>
 </div>
         <div className="row g-4 mb-4">
-          <div className="col-md-4">
+          <div className="col-md-5">
             <div className="summary-box">
               <span>Statut</span>
               <strong
@@ -127,12 +140,20 @@ export default function OrderConfirmation() {
           </div>
 
   
-          <div className="col-md-4">
-            <div className="summary-box">
-              <span>Total</span>
-              <strong>{order.total} TND</strong>
-            </div>
-          </div>
+          <div className="col-md-6">
+  <div className="summary-box">
+    <span>Total de la commande</span>
+    <div className="d-flex flex-column">
+      <small>Sous-total : {subTotal} TND</small>
+      <small>Livraison : {deliveryFee} TND</small>
+      {discount > 0 && (
+        <small className="text-success">Remise fidélité : -{discount} TND</small>
+      )}
+      <strong>Total à payer : {totalAfterDiscount} TND</strong>
+    </div>
+  </div>
+</div>
+
         </div>
   
         {/* ACTIONS */}

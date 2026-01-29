@@ -9,7 +9,9 @@ export default function Checkout() {
   const navigate = useNavigate();
   const { cart, setCart, setCartCount } = useCart();
 
-  const SHIPPING_FEE = 20;
+  const [usePoints, setUsePoints] = useState(false);
+  const [userLoyaltyPoints, setUserLoyaltyPoints] = useState(0);
+  const canUsePoints = userLoyaltyPoints >= 1000;
 
  const [billing, setBilling] = useState({
   name: "",
@@ -64,6 +66,7 @@ const isValid =
             country: user.address.country || "Tunisie",
           });
         }
+        setUserLoyaltyPoints(user.loyaltyPoints || 0);
 
         // ✅ CART
         if (!cart || cart.length === 0) {
@@ -104,6 +107,7 @@ const isValid =
     email: billing.email,
     phone: billing.phone,
   },
+  useLoyaltyPoints: usePoints, // 🔹 nouveau
 };
 
 
@@ -147,6 +151,14 @@ const totalWithDelivery = subTotal + DELIVERY_FEE;
 // Points fidélité
 const pointsPer100DT = 10;
 const earnedPoints = Math.floor((subTotal / 100) * pointsPer100DT);
+// 🔹 Remise si utilisation des points fidélité
+const discount = usePoints && userLoyaltyPoints >= 1000
+  ? Math.floor(userLoyaltyPoints / 1000) * 10
+  : 0;
+
+// 🔹 Total final après remise
+const totalAfterDiscount = totalWithDelivery - discount;
+
   if (loading) {
     return (
       <div className="text-center mt-5">
@@ -174,7 +186,20 @@ const earnedPoints = Math.floor((subTotal / 100) * pointsPer100DT);
 <div className="container mt-5 mb-5">
   <div className="row g-4">
 
-
+<div className="mt-3 form-check">
+  <input
+    type="checkbox"
+    className="form-check-input"
+    id="useLoyaltyPoints"
+    checked={usePoints}
+    onChange={() => setUsePoints(!usePoints)}
+    disabled={!canUsePoints} // désactivé si < 1000 points
+  />
+  <label className="form-check-label" htmlFor="useLoyaltyPoints">
+    Utiliser vos points fidélité pour une remise
+    {canUsePoints ? ` (${userLoyaltyPoints} pts disponibles)` : " (minimum 1000 pts requis)"}
+  </label>
+</div>
     <div className="col-lg-7">
       <div className="card p-4 shadow-sm rounded-4">
         <h4 className="fw-bold mb-4 text-dark border-bottom pb-2">
@@ -292,32 +317,31 @@ const earnedPoints = Math.floor((subTotal / 100) * pointsPer100DT);
         <hr />
 
         <div className="d-flex justify-content-between">
-          <span>Sous-total</span>
-          <span>{subTotal} DT</span>
-        </div>
+  <span>Sous-total</span>
+  <span>{subTotal} DT</span>
+</div>
 
-        <div className="d-flex justify-content-between">
-          <span>Livraison à domicile</span>
-          <span>{DELIVERY_FEE} DT</span>
-        </div>
+<div className="d-flex justify-content-between">
+  <span>Livraison à domicile</span>
+  <span>{DELIVERY_FEE} DT</span>
+</div>
 
-        <hr />
+{/* 🎁 Remise fidélité */}
+{usePoints && discount > 0 && (
+  <div className="d-flex justify-content-between text-success fw-bold">
+    <span>Remise fidélité</span>
+    <span>-{discount} DT</span>
+  </div>
+)}
 
-        <div className="d-flex justify-content-between fw-bold fs-5">
-          <span>Total</span>
-          <span>{totalWithDelivery} DT</span>
-        </div>
+<hr />
 
-        {/* 🎁 POINTS FIDÉLITÉ */}
-        {earnedPoints > 0 && (
-          <div className="mt-3 p-3 bg-light border rounded-3 text-center">
-            <small>
-              🎁 Terminez votre commande et gagnez{" "}
-              <strong>{earnedPoints} points</strong> pour une remise
-              sur un prochain achat
-            </small>
-          </div>
-        )}
+<div className="d-flex justify-content-between fw-bold fs-5 mt-2">
+  <span>Total à payer</span>
+  <span>{totalAfterDiscount} DT</span>
+</div>
+
+       
 
 <button
   className="btn btn-dark w-100 mt-4 d-flex justify-content-center align-items-center"
