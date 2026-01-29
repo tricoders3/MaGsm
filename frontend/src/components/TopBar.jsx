@@ -1,5 +1,5 @@
 import React from "react";
-import { FaPhoneAlt, FaFacebookF, FaInstagram } from "react-icons/fa";
+import { FaPhoneAlt, FaFacebookF, FaInstagram, FaWhatsapp} from "react-icons/fa";
 
 const TopBar = () => {
   return (
@@ -27,10 +27,18 @@ const TopBar = () => {
     href="https://www.instagram.com/yourpage"
     target="_blank"
     rel="noopener noreferrer"
-    className="text-light"
+    className="text-light me-2"
   >
     <FaInstagram size={18}/>
   </a>
+  <a
+            href="https://wa.me/21620771717" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-light"
+          >
+            <FaWhatsapp size={18}/>
+          </a>
      </div>
       </div>
     </div>

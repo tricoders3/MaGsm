@@ -1,12 +1,12 @@
 
 import React from "react";
-import { FaFacebookF, FaTwitter, FaInstagram, FaPinterestP} from "react-icons/fa";
+import { FaFacebookF,  FaInstagram, FaWhatsapp } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import logo from "../assets/images/logo.png"; 
 import { useAuth } from "../context/AuthContext";
 
 function Footer(props) {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { isAuthenticated } = useAuth();
   return (
 <footer className="footer-redesign">
   <div className="container">
@@ -64,6 +64,14 @@ function Footer(props) {
             className="social-link text-light"
             ><FaFacebookF /></a>
             <a href="#" className="social-link"><FaInstagram /></a>
+            <a
+                  href="https://wa.me/21620771717"  
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-link text-light"
+                >
+                  <FaWhatsapp />
+                </a>
           </div>
         </div>
 

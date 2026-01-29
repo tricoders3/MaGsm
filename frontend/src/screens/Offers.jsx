@@ -109,14 +109,9 @@ export default function OfferPage() {
                   {heroPromotion.description || "Profitez de remises exclusives sur nos produits"}
                 </p>
                 <div className="d-flex gap-3">
+                
                   <button
-                    className="btn-redesign btn-primary-redesign"
-                    onClick={() => navigate("/products")}
-                  >
-                    Voir tout
-                  </button>
-                  <button
-                    className="btn-redesign btn-outline-secondary"
+                    className="btn btn-outline-promo"
                     onClick={() => navigate("/")}
                   >
                     Retour à l'accueil

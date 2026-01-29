@@ -41,10 +41,10 @@ const ProfileDataForm = () => {
   };
 
   return (
-<div className="container py-5">
+<div className="container">
 <div className="row justify-content-center">
 <div className="col-12 col-sm-10 col-md-8 col-lg-6">
-<div className="card shadow-lg rounded-4 border-0">
+<div className="card shadow-sm rounded-4 border-0">
 <div className="card-body p-4">
 <h4 className="card-title text-center mb-4">Modifier le profil</h4>
         <form onSubmit={handleSubmit}>

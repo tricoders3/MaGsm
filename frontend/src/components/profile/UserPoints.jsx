@@ -32,9 +32,9 @@ const UserPoints = () => {
 
 
   return (
-    <div className="container py-5">
+    <div className="container">
       <div className="row justify-content-center">
-        <div className="card shadow-lg rounded-4 border-0">
+        <div className="card shadow-sm rounded-4 border-0">
           <div className="card-body p-4">
         
         {/* Header */}

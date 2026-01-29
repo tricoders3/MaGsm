@@ -29,9 +29,9 @@ const HistoriqueCommandes = () => {
   }, []);
 
   return (
-    <div className="container py-5">
+    <div className="container">
       <div className="row justify-content-center">
-        <div className="card shadow-lg rounded-4 border-0">
+        <div className="card shadow-sm rounded-4 border-0">
           <div className="card-body p-4">
           <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between mb-4 gap-2">
   <h4 className="card-title mb-0">
