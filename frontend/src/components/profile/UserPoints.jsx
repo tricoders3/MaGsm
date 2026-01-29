@@ -32,22 +32,40 @@ const UserPoints = () => {
 
 
   return (
-<div className="container py-5">
-  <div className="row justify-content-center">
-      <div className="card shadow-lg rounded-4 border-0  p-4" style={{ backgroundColor: "#f8f9fa" }}>
-      <h4 className="card-title mb-4">Mes Points</h4>
+    <div className="container py-5">
+      <div className="row justify-content-center">
+        <div className="card shadow-lg rounded-4 border-0">
+          <div className="card-body p-4">
+        
+        {/* Header */}
+        <div className="d-flex justify-content-between align-items-center mb-3">
+        <h4 className="card-title mb-0">Mes Points</h4>
+          <span className="badge-points">
+            Points fidélité
+          </span>
+        </div>
 
         {points > 0 ? (
           <>
-            <p className="display-3 fw-bold text-primary mb-2">{points}</p>
-            <p className="text-muted">Vous avez accumulé ces points grâce à vos achats.</p>
+            <div className="mb-2 points-label">
+            <p className="text-muted mb-2">
+              Vous avez accumulé ces points grâce à vos achats.
+            </p>
+              {points}
+              <span> pts</span>
+            </div>
+         
           </>
         ) : (
-          <p className="text-muted">Vous n’avez aucun point pour le moment.</p>
+          <p className="text-muted mb-0">
+            Vous n’avez aucun point pour le moment.
+          </p>
         )}
       </div>
     </div>
   </div>
+  </div>
+
 
   );
 };

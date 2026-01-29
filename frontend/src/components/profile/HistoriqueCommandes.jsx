@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import BASE_URL from "../../constante";
 import { toast } from "react-toastify";
+import { FiBox, FiMapPin, FiFileText, FiChevronDown } from "react-icons/fi";
 
 const HistoriqueCommandes = () => {
   const [orders, setOrders] = useState([]);
@@ -32,7 +33,16 @@ const HistoriqueCommandes = () => {
       <div className="row justify-content-center">
         <div className="card shadow-lg rounded-4 border-0">
           <div className="card-body p-4">
-            <h4 className="card-title mb-4">Historique des commandes</h4>
+          <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between mb-4 gap-2">
+  <h4 className="card-title mb-0">
+    Historique des commandes
+  </h4>
+
+  <span className="count-pill">
+    {orders.length} {orders.length === 1 ? "commande" : "commandes"}
+  </span>
+</div>
+
 
             {orders.length === 0 ? (
               <p className="text-muted">Aucune commande trouvée.</p>
@@ -54,58 +64,88 @@ const HistoriqueCommandes = () => {
                       </div>
 
        <div className="text-end d-flex align-items-center justify-content-end gap-3">
-  <div className="fw-bold text-primary">
-    {order.total} TND
-  </div>
+        <button
+        className="btn btn-sm border-0 d-flex align-items-center justify-content-center"
+        onClick={() =>
+          setSelectedOrder(
+            selectedOrder?._id === order._id ? null : order
+          )
+        }
+        aria-label="Afficher détails"
+      >
+        <FiChevronDown
+          size={20}
+          style={{
+            transition: "transform 0.25s ease",
+            transform:
+              selectedOrder?._id === order._id
+                ? "rotate(180deg)"
+                : "rotate(0deg)",
+          }}
+        />
+      </button>
 
-  <button
-    className="btn btn-sm btn-outline-primary"
-    onClick={() =>
-      setSelectedOrder(
-        selectedOrder?._id === order._id ? null : order
-      )
-    }
-  >
-    {selectedOrder?._id === order._id
-      ? "Masquer"
-      : "Voir détails"}
-  </button>
 </div>
 </div>
 
-                    {/* 🔽 Détails */}
+                    {/* Détails */}
                     {selectedOrder?._id === order._id && (
-                      <div className="mt-4 border-top pt-3">
-                        <h6 style={{ color: "#070707" }}>📦 Produits</h6>
-                        {order.items.map((item) => (
-                          <div key={item._id} className="mb-2">
-                            <strong>{item.name}</strong>
-                            <br />
-                            Quantité : {item.quantity} <br />
-                            Prix : {item.price} TND
-                          </div>
-                        ))}
+                    <div className="mt-4 border-top pt-3">
+                      
+                      <h6 className="text-dark d-flex align-items-center gap-2">
+                        <FiBox size={16} />
+                        Produits
+                      </h6>
 
-                        <hr />
+                      {order.items.map((item) => (
+                        <div key={item._id} className="mb-2">
+                          <strong>{item.name}</strong>
+                          <br />
+                          Quantité : {item.quantity} <br />
+                          Prix : {item.price} TND
+                        </div>
+                      ))}
 
-                        <h6 style={{ color: "#070707" }}>📍 Adresse de livraison</h6>
-                        <p className="mb-1">
-                          {order.shippingAddress.street},{" "}
-                          {order.shippingAddress.city}
-                        </p>
-                        <p className="mb-1">
-                          {order.shippingAddress.postalCode},{" "}
-                          {order.shippingAddress.country}
-                        </p>
+                      <hr />
 
-                        <hr />
+                      <h6  className="text-dark d-flex align-items-center gap-2">
+                        <FiMapPin size={16} />
+                        Adresse de livraison
+                      </h6>
 
-                        <h6   style={{ color: "#070707" }}>🧾 Informations</h6>
-                        <p>Statut : <strong>{order.status}</strong></p>
-                        <p>Total : <strong>{order.total} TND</strong></p>
-                        <p>Points gagnés : <strong>{order.pointsEarned}</strong></p>
-                      </div>
-                    )}
+                      <p className="text-dark mb-1">
+                        {order.shippingAddress.street},{" "}
+                        {order.shippingAddress.city}
+                      </p>
+                      <p className="text-dark mb-1">
+                        {order.shippingAddress.postalCode},{" "}
+                        {order.shippingAddress.country}
+                      </p>
+
+                      <hr />
+
+                      <h6  className="text-dark d-flex align-items-center gap-2">
+                        <FiFileText size={16} />
+                        Informations
+                      </h6>
+                      <p className="text-dark">Statut :  <strong
+                className={`status-badge ${
+                  order.status === "shipped"
+                    ? "status-shipped"
+                    : order.status === "delivered"
+                    ? "status-delivered"
+                    : order.status === "cancelled"
+                    ? "status-cancelled"
+                    : "status-pending"
+                }`}
+              >
+                {order.status}
+              </strong></p>
+                      <p className="text-dark">Total : <strong>{order.total} TND</strong></p>
+                      <p className="text-dark">Points gagnés : <strong>{order.pointsEarned} Points</strong></p>
+
+                    </div>
+                  )}
                   </li>
                 ))}
               </ul>

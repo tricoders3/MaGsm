@@ -4831,5 +4831,51 @@ body.dark .status-approve-badge {
   font-weight: 500;
 }
 
+.points-card {
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.points-value {
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  line-height: 1;
+}
+
+.points-label {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-left: 6px;
+  color: var(--secondary-color);
+  opacity: 0.7;
+}
+
+
+
+
+.badge-points {
+  display: inline-flex;
+  background: #cff4fc; 
+  color: #17a2b8; 
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  font-size: 13px;
+  border-radius: 8px;
+  font-weight: 500;
+  min-width: 70px;
+  justify-content: center;
+}
+
+/* Decorative glow */
+.points-glow {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  pointer-events: none;
+}
 
 
