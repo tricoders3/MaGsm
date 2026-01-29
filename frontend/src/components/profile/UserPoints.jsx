@@ -6,32 +6,30 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
 const UserPoints = () => {
-  const { user } = useAuth(); // ✅ get user from context
+  const { user } = useAuth(); 
   const [points, setPoints] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!user?.id) return;
+ useEffect(() => {
+  const fetchPoints = async () => {
+    try {
+      const { data } = await axios.get(
+        `${BASE_URL}/api/user/me`,
+        { withCredentials: true }
+      );
 
-    const fetchPoints = async () => {
-      try {
-        const { data } = await axios.get(
-          `${BASE_URL}/api/user/me`,
-          { withCredentials: true }
-        );
+      setPoints(data.loyaltyPoints || 0);
 
-        setPoints(data.user?.loyaltyPoints || 0);
-      } catch (err) {
-        toast.error(
-          err.response?.data?.message || "Erreur lors du chargement des points"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+    } catch (err) {
+      toast.error("Erreur lors du chargement des points");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchPoints();
-  }, [user]);
+  fetchPoints();
+}, []);
+
 
   return (
 <div className="container py-5">

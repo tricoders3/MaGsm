@@ -12,7 +12,7 @@ const OAuthSuccess = () => {
     if (executedRef.current) return; // skip second mount
     executedRef.current = true;
 
-    console.log("OAuthSuccess mounted");
+  //  console.log("OAuthSuccess mounted");
 
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
@@ -22,7 +22,7 @@ const OAuthSuccess = () => {
       try {
         const base64Payload = token.split(".")[1];
         const payload = JSON.parse(atob(base64Payload));
-        console.log("Decoded payload:", payload);
+       console.log("Decoded payload:", payload);
 
         login({
           id: payload.id,
