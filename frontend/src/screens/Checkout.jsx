@@ -147,10 +147,9 @@ const subTotal = cart?.reduce(
 
 const totalWithDelivery = subTotal + DELIVERY_FEE;
 
-
 // Points fidélité
 const pointsPer100DT = 10;
-const earnedPoints = Math.floor((subTotal / 100) * pointsPer100DT);
+const earnedPoints = Math.floor((totalWithDelivery / 100) * pointsPer100DT);
 // 🔹 Remise si utilisation des points fidélité
 const discount = usePoints && userLoyaltyPoints >= 1000
   ? Math.floor(userLoyaltyPoints / 1000) * 10
@@ -158,6 +157,7 @@ const discount = usePoints && userLoyaltyPoints >= 1000
 
 // 🔹 Total final après remise
 const totalAfterDiscount = totalWithDelivery - discount;
+
 
   if (loading) {
     return (
@@ -186,20 +186,7 @@ const totalAfterDiscount = totalWithDelivery - discount;
 <div className="container mt-5 mb-5">
   <div className="row g-4">
 
-<div className="mt-3 form-check">
-  <input
-    type="checkbox"
-    className="form-check-input"
-    id="useLoyaltyPoints"
-    checked={usePoints}
-    onChange={() => setUsePoints(!usePoints)}
-    disabled={!canUsePoints} // désactivé si < 1000 points
-  />
-  <label className="form-check-label" htmlFor="useLoyaltyPoints">
-    Utiliser vos points fidélité pour une remise
-    {canUsePoints ? ` (${userLoyaltyPoints} pts disponibles)` : " (minimum 1000 pts requis)"}
-  </label>
-</div>
+
     <div className="col-lg-7">
       <div className="card p-4 shadow-sm rounded-4">
         <h4 className="fw-bold mb-4 text-dark border-bottom pb-2">
@@ -340,8 +327,25 @@ const totalAfterDiscount = totalWithDelivery - discount;
   <span>Total à payer</span>
   <span>{totalAfterDiscount} DT</span>
 </div>
-
+{/* 🎁 POINTS FIDÉLITÉ */} {earnedPoints > 0 && ( <div className="mt-3 p-3 bg-light border rounded-3 text-center"> <small> 🎁 Terminez votre commande et gagnez{" "} <strong>{earnedPoints} points</strong> pour une remise sur un prochain achat </small> </div> )}
        
+{canUsePoints && (
+  <div className="mt-3 form-check">
+    <input
+      type="checkbox"
+      className="form-check-input"
+      id="useLoyaltyPoints"
+      checked={usePoints}
+      onChange={() => setUsePoints(!usePoints)}
+    />
+
+    <label className="form-check-label" htmlFor="useLoyaltyPoints">
+      Utiliser vos points fidélité pour une remise
+      {` (${userLoyaltyPoints} pts disponibles)`}
+    </label>
+  </div>
+)}
+
 
 <button
   className="btn btn-dark w-100 mt-4 d-flex justify-content-center align-items-center"

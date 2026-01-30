@@ -9,10 +9,10 @@ const brandSchema = new mongoose.Schema(
       trim: true,
     },
 
-    slug: {
+   slug: {
       type: String,
       unique: true,
-      lowercase: true,
+      index: true,
     },
 
     logo: {
@@ -31,15 +31,5 @@ const brandSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Générer slug automatiquement
-brandSchema.pre("save", function (next) {
-  if (!this.slug && this.name) {
-    this.slug = this.name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)+/g, "");
-  }
-  next();
-});
 
 export default mongoose.model("Brand", brandSchema);
