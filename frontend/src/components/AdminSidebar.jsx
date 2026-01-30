@@ -10,7 +10,7 @@ import {
     FiInfo,
     FiPhone,
     FiShoppingCart,
-    FiUserPlus
+    FiUserPlus,FiStar
   } from "react-icons/fi";
 
 
@@ -52,6 +52,10 @@ const AdminSidebar = ({ onToggleSidebar }) => {
         <NavLink to="/admin/products" className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>
           <FiBox size={18} />
           <span>Products</span>
+        </NavLink>
+        <NavLink to="/admin/brands" className={({isActive}) => `nav-link${isActive ? ' active' : ''}`}>
+          <FiStar size={18} />
+          <span>Marques</span>
         </NavLink>
          <NavLink to="/admin/orders" className={({isActive}) => `nav-link position-relative${isActive ? ' active' : ''}`}>
           <FiShoppingCart size={18} />
