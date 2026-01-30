@@ -27,28 +27,35 @@ const HistoriqueCommandes = () => {
 
     fetchOrders();
   }, []);
+  
+  const displayedOrders = orders.slice(0, 6);
+  const displayedCount = displayedOrders.length;
+
+
+  if (loading) return null;
 
   return (
     <div className="container">
       <div className="row justify-content-center">
         <div className="card shadow-sm rounded-4 border-0">
-          <div className="card-body p-4">
+          <div className="card-body px-5 p-4">
           <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between mb-4 gap-2">
   <h4 className="card-title mb-0">
     Historique des commandes
   </h4>
 
-  <span className="count-pill">
-    {orders.length} {orders.length === 1 ? "commande" : "commandes"}
-  </span>
-</div>
+                <span className="count-pill">
+                {displayedCount}{" "}
+                {displayedCount === 1 ? "commande" : "commandes"}
+              </span>
+              </div>
 
 
-            {orders.length === 0 ? (
+            {displayedCount === 0 ? (
               <p className="text-muted">Aucune commande trouvée.</p>
             ) : (
               <ul className="list-unstyled">
-                {orders.map((order) => (
+                {displayedOrders.map((order) => (
                   <li
                     key={order._id}
                     className="mb-3 p-3 rounded-3"
