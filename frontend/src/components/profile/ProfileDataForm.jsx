@@ -62,112 +62,98 @@ const ProfileDataForm = () => {
         { withCredentials: true }
       );
       updateUser(data.user);
-      toast.success("Profil mis à jour avec succès ✅");
+      toast.success("Profil mis à jour avec succès");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Erreur lors de la mise à jour");
+ 
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="container mt-4">
-      <form onSubmit={handleSubmit}>
-        <div className="row g-4">
+    <div className="container">
+    <div className="row justify-content-center">
+    <div className="col-12 col-sm-10 col-md-8 col-lg-6">
+  <form onSubmit={handleSubmit}>
+  <div className="card shadow-sm rounded-4 border-0">
+  <div className="card-body px-5 p-4">
 
-          {/* ================= INFOS PERSONNELLES ================= */}
-          <div className="col-12 col-md-6">
-            <div className="card h-100 shadow-sm rounded-4 border-0">
-              <div className="card-body p-4">
-                <h5 className="mb-4 text-dark">Informations personnelles</h5>
+        {/* PERSONAL INFO */}
+        <h4 className="card-title text-center mb-4">Informations personnelles</h4>
+   
 
-                <input
-                  className="form-control mb-3"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder="Nom"
-                />
+        <div className="mb-4">
+          <input
+            className="form-control mb-3"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            placeholder="Nom"
+          />
 
-                <input
-                  className="form-control mb-3"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="Email"
-                />
+          <input
+            className="form-control mb-3"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            placeholder="Email"
+          />
 
-                <input
-                  className="form-control"
-                  name="phone"
-                  value={form.phone}
-                  onChange={handleChange}
-                  placeholder="Téléphone"
-                />
-              </div>
-            </div>
-          </div>
+          <input
+            className="form-control"
+            name="phone"
+            value={form.phone}
+            onChange={handleChange}
+            placeholder="Téléphone"
+          />
+        </div>
+        <div className="mb-4">
+          <input
+            className="form-control mb-3"
+            name="street"
+            value={form.address.street}
+            onChange={handleAddressChange}
+            placeholder="Rue"
+          />
 
-          {/* ================= ADRESSE ================= */}
-          <div className="col-12 col-md-6 ">
-            <div className="card h-100 shadow-sm rounded-4 border-0">
-              <div className="card-body p-4">
-                <h5 className="mb-4 text-dark">Adresse</h5>
+          <input
+            className="form-control mb-3"
+            name="city"
+            value={form.address.city}
+            onChange={handleAddressChange}
+            placeholder="Ville"
+          />
 
-                <input
-                  className="form-control mb-3"
-                  name="street"
-                  value={form.address.street}
-                  onChange={handleAddressChange}
-                  placeholder="Rue"
-                />
+          <input
+            className="form-control mb-3"
+            name="postalCode"
+            value={form.address.postalCode}
+            onChange={handleAddressChange}
+            placeholder="Code postal"
+          />
 
-                <div className="row">
-                  <div className="col-6">
-                    <input
-                      className="form-control mb-3"
-                      name="postalCode"
-                      value={form.address.postalCode}
-                      onChange={handleAddressChange}
-                      placeholder="Code postal"
-                    />
-                  </div>
-
-                  <div className="col-6">
-                    <input
-                      className="form-control mb-3"
-                      name="city"
-                      value={form.address.city}
-                      onChange={handleAddressChange}
-                      placeholder="Ville"
-                    />
-                  </div>
-                </div>
-
-                <input
-                  className="form-control"
-                  name="country"
-                  value={form.address.country}
-                  onChange={handleAddressChange}
-                  placeholder="Pays"
-                />
-              </div>
-            </div>
-          </div>
-
+          <input
+            className="form-control"
+            name="country"
+            value={form.address.country}
+            onChange={handleAddressChange}
+            placeholder="Pays"
+          />
         </div>
 
-        {/* ================= ACTION ================= */}
-        <div className="mt-4 text-center">
-          <button
-            className="btn btn-primary px-5 rounded-pill"
-            disabled={loading}
-          >
-            {loading ? "Enregistrement..." : "Enregistrer"}
+        {/* ACTION */}
+        <div className="d-flex justify-content-end">
+          <button className="btn btn-primary-redesign w-100"  disabled={loading}>
+            {loading ? "Enregistrement..." : "Enregistrer les modifications"}
           </button>
         </div>
-      </form>
+
+      </div>
     </div>
+  </form>
+</div>
+</div>
+</div>
   );
 };
 
