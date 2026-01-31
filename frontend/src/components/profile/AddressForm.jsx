@@ -9,26 +9,38 @@ const ProfileDataForm = () => {
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
+    address: {
+      street: "",
+      postalCode: "",
+      city: "",
+      country: "Tunisie",
+    },
   });
 
   useEffect(() => {
     if (user) {
       setForm({
-        name: user.name || "",
-        email: user.email || "",
-        phone: user.phone || "",
+        address: {
+          street: user.address?.street || "",
+          postalCode: user.address?.postalCode || "",
+          city: user.address?.city || "",
+          country: user.address?.country || "Tunisie",
+        },
       });
     }
   }, [user]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-  };
 
+  const handleAddressChange = (e) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      address: {
+        ...form.address,
+        [name]: value,
+      },
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,7 +52,7 @@ const ProfileDataForm = () => {
         { withCredentials: true }
       );
       updateUser(data.user);
-      toast.success("Profil mis à jour avec succès");
+      toast.success("Adresse mis à jour avec succès");
     } catch (err) {
  
     } finally {
@@ -57,35 +69,42 @@ const ProfileDataForm = () => {
   <div className="card-body px-5 p-4">
 
         {/* PERSONAL INFO */}
-        <h4 className="card-title text-center mb-4">Informations personnelles</h4>
+        <h4 className="card-title text-center mb-4">Adresse</h4>
    
-
         <div className="mb-4">
           <input
             className="form-control mb-3"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            placeholder="Nom"
+            name="street"
+            value={form.address.street}
+            onChange={handleAddressChange}
+            placeholder="Rue"
           />
 
           <input
             className="form-control mb-3"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder="Email"
+            name="city"
+            value={form.address.city}
+            onChange={handleAddressChange}
+            placeholder="Ville"
+          />
+
+          <input
+            className="form-control mb-3"
+            name="postalCode"
+            value={form.address.postalCode}
+            onChange={handleAddressChange}
+            placeholder="Code postal"
           />
 
           <input
             className="form-control"
-            name="phone"
-            value={form.phone}
-            onChange={handleChange}
-            placeholder="Téléphone"
+            name="country"
+            value={form.address.country}
+            onChange={handleAddressChange}
+            placeholder="Pays"
           />
         </div>
-    
+
         {/* ACTION */}
         <div className="d-flex justify-content-end">
           <button className="btn btn-primary-redesign w-100"  disabled={loading}>

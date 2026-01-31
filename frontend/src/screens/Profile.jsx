@@ -3,13 +3,16 @@ import {
   FiUser,
   FiLock,
   FiShoppingBag,
-  FiStar
+  FiStar, 
+  FiMapPin
+  
 } from "react-icons/fi";
 import { useLocation } from "react-router-dom";
 import PasswordForm from "../components/profile/PasswordForm";
 import ProfileDataForm from "../components/profile/ProfileDataForm";
 import HistoriqueCommandes from "../components/profile/HistoriqueCommandes";
 import UserPoints from "../components/profile/UserPoints";
+import AddressForm from "../components/profile/AddressForm";
 
 const UserProfile = () => {
   const location = useLocation();
@@ -33,6 +36,7 @@ const UserProfile = () => {
                 {[
                   { key: "profile", icon: <FiUser />, label: "Profil" },
                   { key: "password", icon: <FiLock />, label: "Mot de passe" },
+                  { key: "address", icon: <FiMapPin />, label: "Adresse" },
                   { key: "orders", icon: <FiShoppingBag />, label: "Commandes" },
                   { key: "points", icon: <FiStar />, label: "Points" },
                 ].map((item) => (
@@ -55,6 +59,7 @@ const UserProfile = () => {
               <div>
                 {selected === "profile" && <ProfileDataForm />}
                 {selected === "password" && <PasswordForm />}
+                {selected === "address" && <AddressForm />}
                 {selected === "orders" && <HistoriqueCommandes />}
                 {selected === "points" && <UserPoints />}
               </div>
