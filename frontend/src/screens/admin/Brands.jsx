@@ -1,37 +1,43 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import BASE_URL from "../../constante";
-import BrandForm from "../../components/BrandForm";
-import { FiEdit2, FiTrash2, FiSearch, FiPlus } from "react-icons/fi";
-import ConfirmModal from "../../components/ConfirmModal";
 import { toast } from "react-toastify";
+import { FiEdit2, FiTrash2, FiPlus } from "react-icons/fi";
+import ConfirmModal from "../../components/ConfirmModal";
 
-const Brands = () => {
+const BrandPage = () => {
   const [brands, setBrands] = useState([]);
+  const [filteredBrands, setFilteredBrands] = useState([]);
+  const [paginatedBrands, setPaginatedBrands] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const [showForm, setShowForm] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState(null);
+
+  const [name, setName] = useState("");
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [submitLoading, setSubmitLoading] = useState(false);
+
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [targetBrandId, setTargetBrandId] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-
+  // Fetch brands
   const fetchBrands = async () => {
     try {
-      setLoading(true);
-      setError(null);
-      const { data } = await axios.get(`${BASE_URL}/api/brands`);
+      const { data } = await axios.get(`${BASE_URL}/api/brands`, {
+        withCredentials: true,
+      });
       setBrands(data);
+      setFilteredBrands(data);
+      setTotalPages(Math.ceil(data.length / 10));
+      setPaginatedBrands(data.slice(0, 10));
     } catch (err) {
-      console.error(err);
-      setError("Erreur lors de la récupération des marques.");
-    } finally {
-      setLoading(false);
+      toast.error("Erreur lors du chargement des marques");
     }
   };
 
@@ -39,45 +45,117 @@ const Brands = () => {
     fetchBrands();
   }, []);
 
-  const deleteBrand = async (id) => {
-    try {
-      await axios.delete(`${BASE_URL}/api/brands/${id}`);
-      fetchBrands();
-      toast.success("Marque supprimée avec succès ✅");
-    } catch (err) {
-      console.error(err);
-      toast.error("Erreur lors de la suppression de la marque");
+  // Filter & paginate
+  useEffect(() => {
+    const filtered = brands.filter((b) =>
+      b.name.toLowerCase().includes(search.toLowerCase())
+    );
+    setFilteredBrands(filtered);
+    setTotalPages(Math.ceil(filtered.length / 10));
+    setPaginatedBrands(filtered.slice((currentPage - 1) * 10, currentPage * 10));
+  }, [search, brands, currentPage]);
+
+  // Open form for edit
+  useEffect(() => {
+    if (selectedBrand) {
+      setName(selectedBrand.name || "");
+      setLogoPreview(selectedBrand.logo || null);
+      setLogoFile(null);
+    } else {
+      setName("");
+      setLogoPreview(null);
+      setLogoFile(null);
+    }
+  }, [selectedBrand]);
+
+  // File change
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setLogoFile(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => setLogoPreview(e.target.result);
+      reader.readAsDataURL(file);
+    } else {
+      setLogoPreview(selectedBrand?.logo || null);
     }
   };
 
-  const handleDeleteBrand = (id) => {
-    setTargetBrandId(id);
-    setConfirmOpen(true);
+  // Add brand
+  const handleAddBrand = async () => {
+    if (!name.trim()) return toast.error("Le nom est obligatoire");
+
+    const formData = new FormData();
+    formData.append("name", name);
+    if (logoFile) formData.append("logo", logoFile); 
+
+    try {
+      setSubmitLoading(true);
+      await axios.post(`${BASE_URL}/api/brands`, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success("Marque ajoutée");
+      fetchBrands();
+      handleCloseForm();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Erreur lors de l'enregistrement");
+    } finally {
+      setSubmitLoading(false);
+    }
   };
 
-  const filteredBrands = brands.filter((b) =>
-    b.name.toLowerCase().includes(search.toLowerCase())
-  );
+  // Update brand
+  const handleUpdateBrand = async () => {
+    if (!name.trim()) return toast.error("Le nom est obligatoire");
 
-  // Pagination calculations
-  const totalPages = Math.ceil(filteredBrands.length / itemsPerPage);
-  const paginatedBrands = filteredBrands.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+    const formData = new FormData();
+    formData.append("name", name);
+    if (logoFile) formData.append("logo", logoFile); // must match backend
 
-  if (loading) return null;
-  if (error) return null;
+    try {
+      setSubmitLoading(true);
+      await axios.put(`${BASE_URL}/api/brands/${selectedBrand._id}`, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success("Marque mise à jour");
+      fetchBrands();
+      handleCloseForm();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Erreur lors de l'enregistrement");
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  // Close form
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setSelectedBrand(null);
+    setName("");
+    setLogoFile(null);
+    setLogoPreview(null);
+  };
+
+  // Delete brand
+  const handleDeleteBrand = (id) => {
+    setConfirmOpen(true);
+    setTargetBrandId(id);
+  };
+
+  const deleteBrand = async (id) => {
+    try {
+      await axios.delete(`${BASE_URL}/api/brands/${id}`, { withCredentials: true });
+      toast.success("Marque supprimée ✅");
+      fetchBrands();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Erreur lors de la suppression");
+    }
+  };
 
   return (
     <div className="container mt-4">
-      <BrandForm
-        show={showForm}
-        brand={selectedBrand}
-        onClose={() => setShowForm(false)}
-        onSaved={fetchBrands}
-      />
-
       <div className="card border-0 shadow-sm rounded-4 mb-4">
         {/* Header */}
         <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
@@ -89,142 +167,114 @@ const Brands = () => {
               </span>
             </h5>
             <small className="text-muted d-none d-md-block">
-              Gérez vos marques et leurs images.
+              Gérez vos marques et leurs logos.
             </small>
           </div>
 
-          <div className="d-flex gap-2 align-items-center mb-3">
-            <div className="position-relative w-100 d-none d-md-block">
-              <FiSearch className="search-icon" />
-              <input
-                className="form-control rounded-pill ps-5"
-                placeholder="Recherche par nom…"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setCurrentPage(1);
-                }}
-                style={{ height: "42px" }}
-              />
-            </div>
-
-            <button
-              className="btn btn-add-primary d-flex align-items-center justify-content-center gap-1"
-              onClick={() => {
-                setSelectedBrand(null);
-                setShowForm(true);
-              }}
-              style={{ height: "42px" }}
-            >
-              <FiPlus /> Ajouter
-            </button>
-          </div>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              setSelectedBrand(null);
+              setShowForm(true);
+            }}
+          >
+            Ajouter une marque
+          </button>
         </div>
 
         {/* Body */}
         <div className="card-body mb-2">
-          <div className="table-responsive">
-            <table className="table table-hover table-sm align-middle mb-0">
-              <thead className="table-light">
-                <tr>
-                  <th>Marque</th>
-                  <th>Logo</th>
-                  <th className="text-end pe-4">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedBrands.map((b) => (
-                  <tr key={b._id}>
-                    <td>{b.name}</td>
-                    <td className="text-center">
-                      {b.image?.url && (
-                        <img
-                          src={b.image.url}
-                          alt={b.name}
-                          style={{
-                            width: "50px",
-                            height: "50px",
-                            objectFit: "cover",
-                            borderRadius: "0.25rem",
-                          }}
-                        />
-                      )}
-                    </td>
-                    <td className="text-end pe-4">
-                      <button
-                        className="btn btn-sm btn-light border me-2 action-btn"
-                        title="Modifier"
-                        onClick={() => {
-                          setSelectedBrand(b);
-                          setShowForm(true);
-                        }}
-                      >
-                        <FiEdit2 size={16} />
-                        <span className="visually-hidden">Modifier</span>
-                      </button>
-                      <button
-                        className="btn btn-sm btn-light border text-danger action-btn"
-                        title="Supprimer"
-                        onClick={() => handleDeleteBrand(b._id)}
-                      >
-                        <FiTrash2 size={16} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+          {/* Inline Brand Form */}
+          {showForm && (
+  <div className="mb-3">
+    {/* Inputs */}
+    <div className="d-flex gap-2 align-items-center mb-2">
+      <input
+        className="form-control ps-3"
+        placeholder="Nom de la marque"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
 
-                {filteredBrands.length === 0 && !loading && (
-                  <tr>
-                    <td colSpan="3" className="py-4">
-                      <div className="text-center">
-                        <p className="text-muted mb-3">Aucune marque trouvée.</p>
-                        <button
-                          className="btn btn-primary"
-                          onClick={() => {
-                            setSelectedBrand(null);
-                            setShowForm(true);
-                          }}
-                        >
-                          Ajouter une marque
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+      <input
+        type="file"
+        onChange={handleFileChange}
+        className="form-control form-control-sm"
+        style={{ maxWidth: "400px" }}
+      />
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="d-flex justify-content-center align-items-center gap-2 mt-3 mb-2">
-              <button
-                className="pagination-btn"
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((prev) => prev - 1)}
+      {logoPreview && (
+        <img
+          src={logoPreview}
+          alt="preview"
+          style={{ width: 50, height: 50, objectFit: "cover", borderRadius: 6 }}
+        />
+      )}
+    </div>
+
+    {/* Buttons under the inputs, aligned right */}
+    <div className="d-flex gap-2 justify-content-end">
+    <button
+  className="btn btn-primary-redesign btn-sm"
+  disabled={submitLoading}
+  onClick={selectedBrand ? handleUpdateBrand : handleAddBrand}
+>
+  {submitLoading && (
+    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+  )}
+  {submitLoading ? "Enregistrement" : "Enregistrer"}
+</button>
+
+
+      <button className="btn btn-outline-secondary btn-sm" onClick={handleCloseForm}>
+        Annuler
+      </button>
+    </div>
+  </div>
+)}
+
+
+          {/* Brand list */}
+          <ul className="list-group list-group-flush">
+            {paginatedBrands.map((b) => (
+              <li
+                key={b._id}
+                className="list-group-item d-flex justify-content-between align-items-center shadow-sm rounded-3 mb-2"
               >
-                Préc
-              </button>
-              {[...Array(totalPages)].map((_, idx) => (
-                <button
-                  key={idx}
-                  className={`pagination-btn ${
-                    currentPage === idx + 1 ? "btn-primary" : "btn-outline-primary"
-                  }`}
-                  onClick={() => setCurrentPage(idx + 1)}
-                >
-                  {idx + 1}
-                </button>
-              ))}
-              <button
-                className="pagination-btn"
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((prev) => prev + 1)}
-              >
-                Suiv
-              </button>
-            </div>
-          )}
+                <div className="d-flex align-items-center gap-2">
+                  {b.logo && (
+                    <img
+                      src={b.logo}
+                      alt={b.name}
+                      style={{ width: 50, height: 50, borderRadius: 6, objectFit: "cover" }}
+                    />
+                  )}
+                  <span className="fw-medium">{b.name}</span>
+                </div>
+
+                <div className="d-flex gap-2">
+                  <button
+                    className="btn btn-sm btn-light border action-btn"
+                    title="Modifier"
+                    onClick={() => {
+                      setSelectedBrand(b);
+                      setShowForm(true);
+                    }}
+                  >
+                    <FiEdit2 size={16} />
+                  </button>
+
+                  <button
+                    className="btn btn-sm btn-light border text-danger action-btn"
+                    title="Supprimer"
+                    onClick={() => handleDeleteBrand(b._id)}
+                  >
+                    <FiTrash2 size={16} />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
@@ -247,4 +297,4 @@ const Brands = () => {
   );
 };
 
-export default Brands;
+export default BrandPage;

@@ -232,13 +232,13 @@ const Categories = () => {
         <div className="card-body">
           {/* Input Category Form */}
           {showCategoryForm && (
-            <div className="d-flex mb-3 gap-2 align-items-center">
+             <div className="d-flex gap-2 align-items-center mb-2">
               <input
-                className="form-control rounded-pill ps-3"
+                className="form-control  ps-3"
                 placeholder="Category name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                style={{ height: "40px" }}
+            
               />
               <input
                 type="file"
@@ -247,17 +247,17 @@ const Categories = () => {
               />
 
               {editId ? (
-                <button className="btn btn-primary-redesign btn-sm d-inline-flex align-items-center gap-2" disabled={categorySaving} onClick={() => updateCategory(editId)}>
+                <button className="btn btn-primary-redesign btn-sm" disabled={categorySaving} onClick={() => updateCategory(editId)}>
                   {categorySaving ? <span className="spinner-border spinner-border-sm me-1" /> : null}
                   Enregistrer
                 </button>
               ) : (
-                <button className="btn btn-primary-redesign btn-sm d-inline-flex align-items-center gap-2" disabled={categorySaving} onClick={addCategory}>
+                <button className="btn btn-primary-redesign btn-sm" disabled={categorySaving} onClick={addCategory}>
                   {categorySaving ? <span className="spinner-border spinner-border-sm me-1" /> : null}
                   Enregistrer
                 </button>
               )}
-              <button className="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2" onClick={() => { setShowCategoryForm(false); setEditId(null); setName(""); setImageFile(null); }}>
+              <button className="btn btn-outline-secondary btn-sm" onClick={() => { setShowCategoryForm(false); setEditId(null); setName(""); setImageFile(null); }}>
                 Annuler
               </button>
             </div>
@@ -311,11 +311,11 @@ const Categories = () => {
             {showSubCategoryForm && (
               <div className="d-flex mb-3 gap-2">
                 <input
-                  className="form-control rounded-pill ps-3"
+                  className="form-control ps-3"
                   placeholder="Subcategory name"
                   value={subName}
                   onChange={(e) => setSubName(e.target.value)}
-                  style={{ height: "40px" }}
+               
                 />
                 {subEditId ? (
                   <button className="btn btn-primary-redesign btn-sm d-inline-flex align-items-center gap-2" disabled={subCategorySaving} onClick={updateSubCategory}>

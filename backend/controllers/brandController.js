@@ -1,5 +1,5 @@
 import Brand from "../models/BrandModel.js";
-
+import slugify from "slugify";
 
 export const createBrand = async (req, res) => {
   try {
@@ -14,11 +14,14 @@ export const createBrand = async (req, res) => {
       return res.status(400).json({ message: "Marque déjà existante" });
     }
 
+    const slug = slugify(name, { lower: true, strict: true });
+
     const brand = await Brand.create({
       name,
       description,
       isActive,
-      logo: req.file?.path || null, // 🔥 URL Cloudinary
+      logo: req.file?.path || null,
+      slug,
     });
 
     res.status(201).json(brand);
@@ -26,7 +29,6 @@ export const createBrand = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 
 /* ================= READ ALL ================= */
