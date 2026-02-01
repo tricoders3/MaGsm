@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
 import OAuthSuccess from "./components/OAuthSuccess";
 import Home from "./screens/Home";
@@ -12,6 +12,7 @@ import OrderConfirmation from "./screens/OrderConfirmation";
 import Layout from "./components/Layout";
 import About from "./screens/About";
 import Contact from "./screens/Contact";
+import NotFound from "./screens/NotFound";
 import SubCategories from "./components/SubCategories";
 import ProductsCategory from "./components/ProductsCategory";
 import ProductsByCategory from "./components/ProductsByCategoy";
@@ -99,7 +100,8 @@ function App() {
   element={<ProductsByCategory />}
 />
 <Route path="/products/:productName" element={<ProductDetails />} />
-
+<Route path="/not-found" element={<NotFound />} />
+<Route path="*" element={<Navigate to="/not-found" />} />
 
   </Route>
 

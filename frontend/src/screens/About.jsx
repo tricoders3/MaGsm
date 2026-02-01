@@ -25,9 +25,7 @@ export default function About() {
     fetchAbout();
   }, []);
 
-  const features = about?.features || [];
-  const icons = [FiBox, FiUsers, FiZap];
-  const ICONS = { FiBox, FiUsers, FiZap };
+
 
   if (loading) return null;
   if (error) return null;
@@ -45,14 +43,14 @@ export default function About() {
     display: 'block', 
     objectFit: 'cover', 
     objectPosition: '50% 75%',   
-    maxHeight: 480, 
+    maxHeight: 380, 
     width: '100%' 
   }} 
 />
 
         </div>
       </section>
-      <section className="py-4 mt-5">
+      <section className="py-4 mt-2">
         <div className="container">
       
           {!loading && !error && (

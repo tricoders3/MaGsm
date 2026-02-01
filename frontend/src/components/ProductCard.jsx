@@ -6,12 +6,13 @@ import axios from "axios";
 import BASE_URL from "../constante";
 import AlertToast from "./AlertToast";
 import { useCart } from "../context/CartContext";
-
+import PriceModal from "./PriceModal";
 
 const ProductCard = ({ product, badgeType, stockCount, isFavorite, onFavoriteSuccess }) => {
 const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart();
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
+  const [showPriceModal, setShowPriceModal] = useState(false);
 
   const [toast, setToast] = useState({
     show: false,
@@ -95,6 +96,7 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
   };
   
   return (
+    <>
     <div className="product-card h-100">
       {/* Badges & Actions */}
       <div className="card-badges">
@@ -143,12 +145,13 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
     <p className="product-price">
       <button
         className="btn btn-price"
-        onClick={() => navigate("/register")}
+        onClick={() => setShowPriceModal(true)}
       >
         Voir prix
       </button>
     </p>
   </>
+    
 ) : (
   <>
     {/* Price */}
@@ -178,7 +181,14 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
 
       {/* Modern AlertToast */}
       <AlertToast show={toast.show} onClose={() => setToast({ ...toast, show: false })} type={toast.type} message={toast.message} />
+      
     </div>
+    <PriceModal
+        show={showPriceModal}
+        onClose={() => setShowPriceModal(false)}
+        productName={product.name}
+      />
+    </>
   );
 };
 

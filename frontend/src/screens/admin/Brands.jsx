@@ -1,11 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import BASE_URL from "../../constante";
 import { toast } from "react-toastify";
 import { FiEdit2, FiTrash2, FiPlus } from "react-icons/fi";
 import ConfirmModal from "../../components/ConfirmModal";
 
+const ITEMS_PER_PAGE = 10;
+
 const BrandPage = () => {
+  const fileInputRef = useRef(null);
   const [brands, setBrands] = useState([]);
   const [filteredBrands, setFilteredBrands] = useState([]);
   const [paginatedBrands, setPaginatedBrands] = useState([]);
@@ -34,13 +37,12 @@ const BrandPage = () => {
       });
       setBrands(data);
       setFilteredBrands(data);
-      setTotalPages(Math.ceil(data.length / 10));
-      setPaginatedBrands(data.slice(0, 10));
-    } catch (err) {
+      setTotalPages(Math.ceil(data.length / ITEMS_PER_PAGE));
+      setPaginatedBrands(data.slice(0, ITEMS_PER_PAGE));
+    } catch {
       toast.error("Erreur lors du chargement des marques");
     }
   };
-
   useEffect(() => {
     fetchBrands();
   }, []);
@@ -50,9 +52,15 @@ const BrandPage = () => {
     const filtered = brands.filter((b) =>
       b.name.toLowerCase().includes(search.toLowerCase())
     );
+
     setFilteredBrands(filtered);
-    setTotalPages(Math.ceil(filtered.length / 10));
-    setPaginatedBrands(filtered.slice((currentPage - 1) * 10, currentPage * 10));
+    setTotalPages(Math.ceil(filtered.length / ITEMS_PER_PAGE));
+    setPaginatedBrands(
+      filtered.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+      )
+    );
   }, [search, brands, currentPage]);
 
   // Open form for edit
@@ -61,17 +69,13 @@ const BrandPage = () => {
       setName(selectedBrand.name || "");
       setLogoPreview(selectedBrand.logo || null);
       setLogoFile(null);
-    } else {
-      setName("");
-      setLogoPreview(null);
-      setLogoFile(null);
     }
   }, [selectedBrand]);
-
   // File change
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setLogoFile(file);
+    setLogoFile(file || null);
+
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => setLogoPreview(e.target.result);
@@ -80,14 +84,24 @@ const BrandPage = () => {
       setLogoPreview(selectedBrand?.logo || null);
     }
   };
+  const resetForm = () => {
+    setShowForm(false);
+    setSelectedBrand(null);
+    setName("");
+    setLogoFile(null);
+    setLogoPreview(null);
 
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
   // Add brand
   const handleAddBrand = async () => {
     if (!name.trim()) return toast.error("Le nom est obligatoire");
 
     const formData = new FormData();
     formData.append("name", name);
-    if (logoFile) formData.append("logo", logoFile); 
+    if (logoFile) formData.append("logo", logoFile);
 
     try {
       setSubmitLoading(true);
@@ -97,7 +111,7 @@ const BrandPage = () => {
       });
       toast.success("Marque ajoutée");
       fetchBrands();
-      handleCloseForm();
+      resetForm();
     } catch (err) {
       toast.error(err.response?.data?.message || "Erreur lors de l'enregistrement");
     } finally {
@@ -111,24 +125,27 @@ const BrandPage = () => {
 
     const formData = new FormData();
     formData.append("name", name);
-    if (logoFile) formData.append("logo", logoFile); // must match backend
+    if (logoFile) formData.append("logo", logoFile);
 
     try {
       setSubmitLoading(true);
-      await axios.put(`${BASE_URL}/api/brands/${selectedBrand._id}`, formData, {
-        withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await axios.put(
+        `${BASE_URL}/api/brands/${selectedBrand._id}`,
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
       toast.success("Marque mise à jour");
       fetchBrands();
-      handleCloseForm();
+      resetForm();
     } catch (err) {
       toast.error(err.response?.data?.message || "Erreur lors de l'enregistrement");
     } finally {
       setSubmitLoading(false);
     }
   };
-
   // Close form
   const handleCloseForm = () => {
     setShowForm(false);

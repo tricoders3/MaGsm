@@ -102,9 +102,7 @@ export default function ProductFilters() {
                     {sc.name}
                   </button>
                 ))}
-              {categoryId && subLoading && (
-                <span className="pf-hint">Chargement…</span>
-              )}
+            
               {categoryId && !subLoading && subCategories.length === 0 && (
                 <span className="pf-hint">Aucune sous-catégorie</span>
               )}

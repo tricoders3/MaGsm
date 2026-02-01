@@ -159,16 +159,8 @@ const discount = usePoints && userLoyaltyPoints >= 1000
 const totalAfterDiscount = totalWithDelivery - discount;
 
 
-  if (loading) {
-    return (
-      <div className="text-center mt-5">
-        <div className="spinner-border text-dark" role="status">
-          <span className="visually-hidden">Chargement...</span>
-        </div>
-        <p className="mt-3">Chargement du panier...</p>
-      </div>
-    );
-  }
+ 
+if (loading) return null;
 
   if (!cart || cart.length === 0) {
     return (

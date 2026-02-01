@@ -6,10 +6,10 @@ import { toast } from "react-toastify";
 const OAuthSuccess = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const executedRef = useRef(false); // ✅ track if effect has already run
+  const executedRef = useRef(false); //  track if effect has already run
 
   useEffect(() => {
-    if (executedRef.current) return; // skip second mount
+    if (executedRef.current) return; 
     executedRef.current = true;
 
   //  console.log("OAuthSuccess mounted");

@@ -24,7 +24,7 @@ export default function LoadingOverlay() {
           borderTopColor: '#0d6efd',
           animation: 'spin 1s linear infinite'
         }} />
-        <div style={{ color: '#0d6efd', fontWeight: 600 }}>Chargement…</div>
+    
       </div>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>

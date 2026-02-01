@@ -129,7 +129,7 @@ const PendingUsers = () => {
                       <tr key={u._id}>
                         <td className="ps-4">
                           <div className="d-flex align-items-center gap-3">
-                            <div className="avatar-circle">{u.name.charAt(0)}</div>
+                            <div className="avatar-circle text-center">{u.name.charAt(0)}</div>
                             <div className="fw-semibold">{u.name}</div>
                           </div>
                         </td>

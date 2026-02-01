@@ -66,6 +66,9 @@ export default function ProductPromoFilters({ onFilter }) {
     onFilter(filteredProducts);
   }, [filteredProducts, onFilter]);
 
+  if (loading) return null;
+
+
   return (
     <div className="pf-wrap">
       <div className="pf-bar">
@@ -118,7 +121,7 @@ export default function ProductPromoFilters({ onFilter }) {
                   {sub}
                 </button>
               ))}
-              {categoryId && subLoading && <span className="pf-hint">Chargement…</span>}
+
               {categoryId && !subLoading && subCategories.length === 0 && (
                 <span className="pf-hint">Aucune sous-catégorie</span>
               )}
@@ -128,11 +131,7 @@ export default function ProductPromoFilters({ onFilter }) {
         </div>
       </div>
 
-      {/* Optional: Loading */}
-      {loading && <p className="text-center mt-3">Chargement des promotions...</p>}
-      {!loading && filteredProducts.length === 0 && (
-        <p className="text-center mt-3">Aucune promotion correspondante.</p>
-      )}
+ 
     </div>
   );
 }

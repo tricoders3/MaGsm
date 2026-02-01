@@ -16,13 +16,8 @@ const Dashboard = ({ user: propUser }) => {
     }
   }, [user, navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("accessToken");
-    window.open("http://localhost:8080/api/auth/logout", "_self");
-  };
 
-  if (!user) return <div>Chargement...</div>;
+
 
   return (
     <div className="container mt-5 text-center">

@@ -71,6 +71,8 @@ export default function AdminContact() {
 
     fetchSettings();
   }, []);
+  
+  if (loading) return null;
 
   return (
     <div className="container mt-4">
@@ -81,7 +83,6 @@ export default function AdminContact() {
 
       <div className="card border-0 shadow-sm">
         <div className="card-body">
-          {loading && <div>Chargement…</div>}
           {error && <div className="text-danger mb-2">{error}</div>}
 
           <form onSubmit={handleSubmit} className="row g-3">

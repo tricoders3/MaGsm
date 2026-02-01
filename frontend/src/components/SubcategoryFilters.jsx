@@ -27,6 +27,8 @@ export default function SubcategoryFilters({ categoryId: forcedCategoryId }) {
     loadSubs();
   }, [categoryId]);
 
+if (loading) return null; 
+
   return (
     <div className="pf-wrap">
       <div className="pf-bar">
@@ -52,9 +54,7 @@ export default function SubcategoryFilters({ categoryId: forcedCategoryId }) {
                     {sc.name}
                   </button>
                 ))}
-              {categoryId && loading && (
-                <span className="pf-hint">Chargement…</span>
-              )}
+        
               {categoryId && !loading && subCategories.length === 0 && (
                 <span className="pf-hint">Aucune sous-catégorie</span>
               )}

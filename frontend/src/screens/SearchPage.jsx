@@ -74,8 +74,8 @@ export default function Recherche() {
 
 
 
-  if (loading) return <div className="container py-5">Chargement…</div>;
-  if (error) return <div className="container py-5 text-danger">{error}</div>;
+  if (loading) return null;
+  if (error) return null;
 
   return (
     <div className="container my-5 recherche-page">

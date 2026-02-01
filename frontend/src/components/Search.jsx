@@ -21,6 +21,8 @@ export default function GlobalSearch() {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
+  
+ 
 
 
   const HIDE_CATEGORY_FILTERS_ROUTES = [
@@ -35,6 +37,7 @@ export default function GlobalSearch() {
   const hideCategoryFilters = HIDE_CATEGORY_FILTERS_ROUTES.some((path) =>
     location.pathname.startsWith(path)
   );
+  const isNotFoundPage = location.pathname === "/not-found";
 
   const isCategoryPage = location.pathname.startsWith("/category");
   useEffect(() => {
@@ -91,7 +94,7 @@ export default function GlobalSearch() {
     loadSubs();
   }, [categoryId, hideCategoryFilters]);
 
-  const hideFilters = hideCategoryFilters || isMobile;
+const hideFilters = hideCategoryFilters || isMobile || isNotFoundPage;
 
   const handleSearch = async () => {
     const trimmedQuery = query.trim().toLowerCase();
@@ -126,7 +129,8 @@ export default function GlobalSearch() {
     }
   };
 
-
+  if (isNotFoundPage) return null;
+  
   return (
     <div className="global-search-wrapper">
       <div className="container">

@@ -23,6 +23,8 @@
   --text-secondary: #475569;
   --text-muted: #64748b;
   --text-light: #94a3b8;
+
+
   
   /* Background Colors */
   --white: #ffffff;
@@ -103,7 +105,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
-
+.text-accent{ color: var(--accent-color) !important; }
 /* Enhanced Typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-primary);
