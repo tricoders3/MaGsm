@@ -6,6 +6,7 @@ import BASE_URL from "../constante";
 import ProductCard from "../components/ProductCard";
 import { useGlobalSearch } from "../context/SearchContext";
 
+
 const PopularProducts = () => {
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState([]);
@@ -57,13 +58,7 @@ const PopularProducts = () => {
   }, []);
   
 
-  const toggleFavorite = (productId) => {
-    setFavorites((prev) =>
-      prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
-        : [...prev, productId]
-    );
-  };
+
 
   if (loading) return null;
   if (error) return null;

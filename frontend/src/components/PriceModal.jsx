@@ -53,7 +53,7 @@ const PriceModal = ({ show, onClose, productName }) => {
               onClick={openWhatsapp}
             >
               <FaWhatsapp />
-              WhatsApp
+              Contacter MA GSM sur WhatsApp
             </button>
           </div>
         </div>

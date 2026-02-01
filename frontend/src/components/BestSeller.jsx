@@ -5,6 +5,7 @@ import axios from "axios";
 import BASE_URL from "../constante";
 import ProductCard from "../components/ProductCard";
 
+
 const BestSeller = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,6 +41,7 @@ const BestSeller = () => {
 
     fetchPromotions();
   }, []);
+
 
   if (loading) return null;
   if (error) return null;

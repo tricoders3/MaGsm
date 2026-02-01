@@ -7,6 +7,8 @@ export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState({ type: '', message: '' });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const statusRef = useRef(null);
   const [contactInfo, setContactInfo] = useState({
     title: '',
@@ -44,7 +46,9 @@ export default function Contact() {
           mapEmbedUrl: c.mapEmbedUrl || ''
         });
       } catch (err) {
-        console.error('Failed to load contact info', err);
+        setError(true);
+        } finally {
+        setLoading(false);
       }
     };
     fetchSettings();
@@ -77,7 +81,7 @@ export default function Contact() {
       setSubmitting(false);
     }
   };
-
+  if (loading || error || !contactInfo) return null;
   return (
     <section className="contact-page">
       <div className="container py-5 py-lg-6">

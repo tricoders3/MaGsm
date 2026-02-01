@@ -4,6 +4,7 @@ import axios from 'axios';
 import BASE_URL from "../constante";
 import ProductCard from "./ProductCard";
 
+
 const SubcategoryProducts = () => {
   const { subcategoryId } = useParams(); // updated param
   const [products, setProducts] = useState([]);
@@ -27,7 +28,7 @@ const SubcategoryProducts = () => {
     fetchProducts();
   }, [subcategoryId]);
 
-  if (loading) return null;
+
   if (error) return null;
 
   if (!products.length) 

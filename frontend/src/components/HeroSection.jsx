@@ -5,6 +5,7 @@ import { Autoplay, Pagination, EffectFade } from "swiper/modules";
 import axios from "axios";
 import BASE_URL from "../constante";
 
+
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
@@ -13,6 +14,8 @@ const HeroSlider = () => {
   const [slides, setSlides] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasPromotion, setHasPromotion] = useState(false); // ✅ track if promos exist
+
+;
 
   useEffect(() => {
     const fetchSlides = async () => {
@@ -62,6 +65,8 @@ const HeroSlider = () => {
 
     fetchSlides();
   }, []);
+  
+ 
 
   if (loading || !slides.length) return null;
 

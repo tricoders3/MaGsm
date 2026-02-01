@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import BASE_URL from "../constante";
 
+
 const Brands = () => {
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,15 +22,7 @@ const Brands = () => {
     fetchBrands();
   }, []);
 
-  if (loading) {
-    return (
-      <section className="brands-section py-5">
-        <div className="container text-center">
-          <p className="text-muted">Chargement des marques...</p>
-        </div>
-      </section>
-    );
-  }
+
 
   if (!brands.length) {
     return null;

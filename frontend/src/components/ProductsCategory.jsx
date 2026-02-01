@@ -5,13 +5,28 @@ import BASE_URL from "../constante";
 
 const ProductsCategory = () => {
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/api/categories`)
-      .then((res) => setCategories(res.data))
-      .catch((err) => console.error(err));
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/api/categories`);
+        setCategories(res.data || []);
+      } catch (err) {
+        console.error(err);
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
   }, []);
+
+  // Return nothing while loading or if error occurred
+  if (loading || error ) return null;
 
   return (
     <section className="category-editorial py-5">

@@ -9,20 +9,38 @@ const OffersModal = () => {
   const TODAY_KEY = "offers_modal_last_shown";
 
   const getToday = () => {
-    return new Date().toISOString().split("T")[0]; 
+    return new Date().toISOString().split("T")[0];
   };
-  // Show modal on load
+
+  // Cookie helpers (no localStorage)
+  const getCookie = (name) => {
+    const parts = document.cookie.split("; ");
+    for (const part of parts) {
+      if (part.startsWith(name + "=")) {
+        return decodeURIComponent(part.split("=")[1]);
+      }
+    }
+    return null;
+  };
+  const setCookie = (name, value, days) => {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+  };
+
   useEffect(() => {
-    const lastShown = localStorage.getItem(TODAY_KEY);
     const today = getToday();
-  
+    const lastShown = getCookie(TODAY_KEY);
+
     if (lastShown !== today) {
-      setTimeout(() => {
+      const t = setTimeout(() => {
         setShow(true);
-        localStorage.setItem(TODAY_KEY, today);
+
+        setCookie(TODAY_KEY, today, 7);
       }, 800);
+      return () => clearTimeout(t);
     }
   }, []);
+
   // Close on ESC
   useEffect(() => {
     if (!show) return;
@@ -35,9 +53,7 @@ const OffersModal = () => {
   useEffect(() => {
     const fetchPromos = async () => {
       try {
-        const res = await axios.get(
-          `${BASE_URL}/api/promotions/promos`
-        );
+        const res = await axios.get(`${BASE_URL}/api/promotions/promos`);
         setPromos(res.data || []);
       } catch (err) {
         console.error("Failed to load promotions", err);
@@ -54,14 +70,14 @@ const OffersModal = () => {
     if (!promos.length) return null;
     return Math.max(
       ...promos
-        .filter(p => p.promotion?.discountType === "percentage")
-        .map(p => p.promotion.discountValue)
+        .filter((p) => p.promotion?.discountType === "percentage")
+        .map((p) => p.promotion.discountValue)
     );
   }, [promos]);
 
-  // Get first active promotion 
+  // Get first active promotion
   const activePromo = useMemo(() => {
-    return promos.find(p => p.promotion?.isActive)?.promotion;
+    return promos.find((p) => p.promotion?.isActive)?.promotion;
   }, [promos]);
 
   if (!show || loading || !maxDiscount) return null;

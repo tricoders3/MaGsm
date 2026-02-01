@@ -16,15 +16,13 @@ export default function About() {
         const { data } = await axios.get(`${BASE_URL}/api/site-settings/about`);
         setAbout(data);
       } catch (err) {
-        console.error(err);
-        setError("Impossible de charger la page À propos");
+        setError(err?.friendlyMessage || "Something went wrong. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
     fetchAbout();
   }, []);
-
 
 
   if (loading) return null;
