@@ -54,8 +54,8 @@ const Register = () => {
 
 
   return (
-    <div className="auth-page min-vh-100 d-flex align-items-center">
-    <div className="container">
+    <div className="auth-page min-vh-100 d-flex align-items-center mt-4">
+    <div className="container mb-4">
       <div className="row justify-content-center">
         <div className="col-lg-5 col-md-7">
           <div className="auth-card animate-scaleIn">

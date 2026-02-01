@@ -10,14 +10,14 @@ function Footer(props) {
   return (
 <footer className="footer-redesign">
   <div className="container">
-    <div className="footer-content py-5">
+    <div className="footer-content py-4">
       <div className="row">
 
         {/* Branding */}
         <div className="col-lg-4 col-md-6 mb-4">
           <div className="footer-brand d-flex flex-column align-items-start">
-            <Link to="/" className="navbar-brand-redesign d-flex align-items-center mb-3">
-              <img src={logo} alt="MA GSM Logo" style={{ height: 60, width: 'auto', marginRight: 10 }} />
+            <Link to="/" className="navbar-brand-redesign d-flex align-items-center mb-2">
+              <img src={logo} alt="MA GSM Logo" style={{ height: 50, width: 'auto', marginRight: 10 }} />
               <span>MA GSM</span>
             </Link>
             <p className="footer-description">
@@ -27,7 +27,7 @@ function Footer(props) {
         </div>
 
         {/* Quick Links */}
-        <div className="col-lg-2 col-md-6 mb-4">
+        <div className="col-lg-2 col-md-6 mb-2">
           <h5 className="footer-title">Navigation</h5>
           <ul className="footer-links">
             <li><Link to="/">Home</Link></li>
@@ -38,7 +38,7 @@ function Footer(props) {
         </div>
 
         {/* User Actions */}
-        <div className="col-lg-3 col-md-6 mb-4">
+        <div className="col-lg-3 col-md-6 mb-2">
           <h5 className="footer-title">Mon Compte</h5>
           <ul className="footer-links">
             {isAuthenticated ? (
@@ -54,7 +54,7 @@ function Footer(props) {
         </div>
 
         {/* Social Media */}
-        <div className="col-lg-3 col-md-6 mb-4">
+        <div className="col-lg-3 col-md-6 mb-2">
           <h5 className="footer-title">Suivez-nous</h5>
           <div className="footer-social d-flex gap-3">
           <a
@@ -79,7 +79,7 @@ function Footer(props) {
     </div>
 
     {/* Footer Bottom */}
-    <div className="footer-bottom py-3 border-top d-flex justify-content-between align-items-center">
+    <div className="footer-bottom py-2 border-top d-flex justify-content-between align-items-center">
       <p className="copyright mb-0">
         © {new Date().getFullYear()} MA GSM. All rights reserved.
       </p>
