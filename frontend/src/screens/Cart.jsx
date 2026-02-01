@@ -4,7 +4,7 @@ import { FaTrash, FaMinus, FaPlus } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../constante";
-import EmptyCart from "../assets/images/empty_cart.png";
+import EmptyCart from "../assets/images/empty_cart.svg";
 import { useCart } from "../context/CartContext";
 import AlertToast from "../components/AlertToast";
 
@@ -95,7 +95,7 @@ export default function Cart() {
     return (
       <div className="text-center mt-5">
         <h2>Votre panier est vide</h2>
-        <img src={EmptyCart} alt="Empty Cart" style={{ width: 200 }} />
+        <img className="mb-3" src={EmptyCart} alt="Empty Cart" style={{ width: 200 }} />
         <div className="mt-3">
           <Link to="/" className="btn btn-dark">
             Continuer vos achats

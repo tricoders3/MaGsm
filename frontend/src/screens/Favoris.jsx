@@ -4,6 +4,7 @@ import { FiShoppingCart } from "react-icons/fi";
 import { FaHeartBroken } from "react-icons/fa";
 import axios from "axios";
 import BASE_URL from "../constante";
+import EmptyFavorite from "../assets/images/empty_favorite.svg";
 import AlertToast from "../components/AlertToast";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
@@ -121,9 +122,11 @@ const handleRemoveFavorite = async (productId) => {
     <div className="container mt-4 mb-5">
     {favorites.length > 0 && <h3 className="mb-4 text-dark">Mes Favoris</h3>}
   
+
     {favorites.length === 0 ? (
-      <div className="text-center py-5">
+      <div className="text-center mt-5">
         <h2>Favoris est vide</h2>
+        <img  className="mb-3" src={EmptyFavorite} alt="Empty Cart" style={{ width: 140 }}/>
         <p className="text-muted">Ajoutez des produits à vos favoris pour les retrouver ici</p>
       </div>
     ) : (
