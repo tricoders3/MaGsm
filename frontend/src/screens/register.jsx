@@ -42,14 +42,6 @@ const Register = () => {
   };
 
 
-  const contactViaWhatsapp = () => {
-    window.open(
-      `https://wa.me/21620771717?text=${encodeURIComponent(
-        "Bonjour, j’aimerais avoir plus d’informations 👋"
-      )}`,
-      "_blank"
-    );
-  };
   // Connexion Google
   const registerWithGoogle = () => {
     window.location.href = `${BASE_URL}/api/auth/google`;
@@ -154,24 +146,7 @@ const Register = () => {
                   </svg>
                   Continuer avec Facebook
                 </button>
-           {/* WhatsApp */}
-<button
-  className="btn btn-google w-100  mb-4 d-flex align-items-center justify-content-center gap-2"
-  onClick={contactViaWhatsapp}
- 
->
-    <svg width="24" height="24" viewBox="0 0 24 24" >
-      <path
-        fill="#25D366"
-        d="M12.04 2C6.52 2 2 6.48 2 12c0 2.11.55 4.16 1.6 5.97L2 22l4.19-1.56A9.94 9.94 0 0 0 12.04 22C17.56 22 22 17.52 22 12S17.56 2 12.04 2z"
-      />
-      <path
-        fill="white"
-        d="M15.52 13.61c-.2-.1-1.18-.58-1.36-.65-.18-.07-.31-.1-.44.1-.13.2-.5.65-.62.78-.11.13-.23.15-.43.05-.2-.1-.85-.31-1.62-.99-.6-.53-1-1.19-1.11-1.39-.12-.2-.01-.31.09-.41.09-.09.2-.23.31-.34.1-.12.13-.2.2-.34.07-.13.03-.26-.01-.36-.05-.1-.43-1.04-.59-1.43-.16-.38-.32-.33-.44-.33h-.38c-.13 0-.34.05-.52.26-.18.2-.69.67-.69 1.64 0 .97.7 1.91.8 2.04.1.13 1.38 2.1 3.33 2.95.47.2.83.32 1.11.41.46.14.88.12 1.22.07.37-.06 1.19-.49 1.35-.95.17-.47.17-.86.12-.95-.05-.08-.18-.13-.38-.23z"
-      />
-    </svg>
-      Contacter MA GSM sur WhatsApp
-    </button>
+        
               {/* Footer */}
               <div className="text-center mb-3">
                 <p className="text-muted">
