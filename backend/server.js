@@ -69,7 +69,7 @@ app.use(passport.session());
 // ------------------
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://magsm.onrender.com",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
