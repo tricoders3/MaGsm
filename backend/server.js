@@ -2,12 +2,17 @@
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
+import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
-import authRoutes from "./routes/authRoutes.js";
+import session from "express-session";
 import passport from "./passport.js";
 import cors from "cors";
-import session from "express-session";
+
+// ------------------
+// Routes
+// ------------------
+import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import categoryRoutes from './routes/categoryRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -17,10 +22,15 @@ import orderRoutes from "./routes/orderRoutes.js";
 import favoriteRoutes from './routes/favoriteRoutes.js';
 import settingsRoutes from './routes/siteSettingsRoutes.js';
 import contactMsgRoutes from "./routes/contactMsgRoutes.js";
-import brandRoutes from "./routes/brandRoutes.js";
 
 // ------------------
-// Load .env from root (MaGsm/.env)
+// Fix __dirname in ES modules
+// ------------------
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ------------------
+// Load .env
 // ------------------
 dotenv.config({ path: path.resolve("../.env") });
 
@@ -33,8 +43,8 @@ connectDB();
 // Initialize Express
 // ------------------
 const app = express();
-app.use(cookieParser());
 app.use(express.json());
+app.use(cookieParser());
 
 // ------------------
 // Express Session
@@ -44,7 +54,7 @@ app.use(
     secret: process.env.SESSION_SECRET || "fallbacksecret",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // 🔹 ok pour localhost
+    cookie: { secure: false },
   })
 );
 
@@ -60,37 +70,51 @@ app.use(passport.session());
 app.use(
   cors({
     origin: "http://localhost:3000",
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true, // 🔹 doit être true pour envoyer cookie
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
+if (process.env.NODE_ENV === "production") {
+  const buildPath = path.join(__dirname, "../frontend/build"); 
+  app.use(express.static(buildPath));
 
+  // Send index.html for all non-API routes
+  app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(path.join(buildPath, "index.html"));
+  });
+} else {
+  app.get("/*", (req, res) => {
+    res.send("API is running....");
+  });
+}
 // ------------------
-// Routes
+// API Routes
 // ------------------
 app.get("/", (req, res) => res.send("🚀 Backend running"));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
-app.use("/api/user",userRoutes);
-app.use("/api/promotions",promotionRoutes);
-app.use('/api/cart', cartRoutes);
-app.use('/api/favorites', favoriteRoutes)
-app.use('/api/orders', orderRoutes);
-app.use("/api/site-settings", settingsRoutes);  
+app.use("/api/user", userRoutes);
+app.use("/api/promotions", promotionRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/favorites", favoriteRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/site-settings", settingsRoutes);
 app.use("/api/contact", contactMsgRoutes);
-app.use("/api/brands", brandRoutes);
+
+// Facebook data deletion
 app.get("/facebook-data-deletion", (req, res) => {
-  res.status(200).send(`
+  res.send(`
     <h2>Suppression des données utilisateur</h2>
-    <p>
-      Si vous avez utilisé la connexion Facebook et souhaitez
-      supprimer vos données, veuillez nous contacter à :
-    </p>
-    <p><b>support@tonsite.com</b></p>
-    <p>Votre demande sera traitée sous 7 jours.</p>
+    <p>Contactez : <b>support@tonsite.com</b></p>
   `);
 });
+
+// ------------------
+// Serve React Build in Production
+// ------------------
+
 
 // ------------------
 // Start Server
@@ -99,5 +123,3 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
-
-

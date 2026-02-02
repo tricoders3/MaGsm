@@ -4,12 +4,14 @@
   "description": "",
   "main": "server.js",
   "type": "module",
-  "scripts": {
-    "start": "node backend/server.js",
-    "backend": "nodemon backend/server.js",
-    "frontend": "npm start --prefix frontend",
-    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
-  },
+"scripts": {
+  "start": "node backend/server.js",
+  "backend": "nodemon backend/server.js",
+  "frontend": "npm start --prefix frontend",
+  "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+  "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
+}
+,
   "keywords": [],
   "author": "",
   "license": "ISC",
