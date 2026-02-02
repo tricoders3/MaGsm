@@ -21,7 +21,7 @@ export default function Contact() {
   });
 
   const isValid = useMemo(() => {
-    if (!form.name || !form.email || !form.subject || !form.message) return false;
+    if (!form.name || !form.email  || !form.message) return false;
     const emailOk = /.+@.+\..+/.test(form.email);
     return emailOk && form.message.length >= 1;
   }, [form]);

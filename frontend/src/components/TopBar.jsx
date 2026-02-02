@@ -1,5 +1,5 @@
 import React from "react";
-import { FaPhoneAlt, FaFacebookF, FaInstagram, FaWhatsapp} from "react-icons/fa";
+import { FaPhoneAlt, FaFacebookF, FaInstagram, FaWhatsapp ,FaTiktok} from "react-icons/fa";
 
 const TopBar = () => {
   return (
@@ -24,15 +24,23 @@ const TopBar = () => {
   </a>
 
   <a
-    href="https://www.instagram.com/yourpage"
+    href="https://www.instagram.com/ma_gsm_/"
     target="_blank"
     rel="noopener noreferrer"
     className="text-light me-2"
   >
     <FaInstagram size={18}/>
   </a>
+   <a
+    href="https://www.tiktok.com/@ma_gsm"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-light me-2"
+  >
+    <FaTiktok size={18}/>
+  </a>
   <a
-            href="https://wa.me/21620771717" 
+            href="https://wa.me/21620771717?text=مرحبا%20👋%20نحب%20نستفسر%20على%20منتجاتكم%20من%20فضلكم" 
             target="_blank"
             rel="noopener noreferrer"
             className="text-light"

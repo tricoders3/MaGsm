@@ -51,8 +51,8 @@ const orderSchema = new mongoose.Schema(
     pointsEarned: { type: Number, default: 0 }, // points gagnés sur cette commande
     status: {
       type: String,
-      enum: ["pending","delivered","cancelled"],
-      default: "pending",
+      enum: ["en attente", "livré", "annulé"],
+      default: "en attente",
     },
   },
   
