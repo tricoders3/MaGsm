@@ -28,8 +28,8 @@ const HistoriqueCommandes = () => {
     fetchOrders();
   }, []);
   
-  const displayedOrders = orders.slice(0, 6);
-  const displayedCount = displayedOrders.length;
+ const displayedOrders = orders.slice(-6).reverse();
+const displayedCount = displayedOrders.length;
 
 
   if (loading) return null;
