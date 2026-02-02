@@ -305,6 +305,7 @@ if (loading) return null;
   <span>{DELIVERY_FEE} DT</span>
 </div>
 
+
 {/* 🎁 Remise fidélité */}
 {usePoints && discount > 0 && (
   <div className="d-flex justify-content-between text-success fw-bold">
@@ -312,6 +313,9 @@ if (loading) return null;
     <span>-{discount} DT</span>
   </div>
 )}
+<div className="mt-2 text-muted" style={{ fontSize: "13px" }}>
+  🚚 Livraison estimée entre <strong style={{ color: "#000" }}>24 et 72 heures</strong>
+</div>
 
 <hr />
 
@@ -319,6 +323,8 @@ if (loading) return null;
   <span>Total à payer</span>
   <span>{totalAfterDiscount} DT</span>
 </div>
+{/* 🚚 Délai de livraison */}
+
 {/* 🎁 POINTS FIDÉLITÉ */} {earnedPoints > 0 && ( <div className="mt-3 p-3 bg-light border rounded-3 text-center"> <small> 🎁 Terminez votre commande et gagnez{" "} <strong>{earnedPoints} points</strong> pour une remise sur un prochain achat </small> </div> )}
        
 {canUsePoints && (

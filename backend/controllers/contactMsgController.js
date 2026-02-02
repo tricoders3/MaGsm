@@ -4,7 +4,7 @@ export const sendMessage = async (req, res) => {
   try {
     const { name, email, phone, subject, message } = req.body
 
-    if (!name || !email || !subject || !message) {
+    if (!name || !email  || !message) {
       return res
         .status(400)
         .json({ message: "Champs obligatoires manquants" })

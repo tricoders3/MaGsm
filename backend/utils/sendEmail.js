@@ -24,6 +24,7 @@ export const sendClientOrderConfirmation = async ({ user, order, invoicePath }) 
       <p>Vous trouverez votre facture en pièce jointe.</p>
       <p><strong>Total:</strong> ${order.total} DT</p>
       <p><strong>Points fidélité gagnés:</strong> ${order.pointsEarned}</p>
+      <p>🚚 Livraison estimée entre <strong style={{ color: "#000" }}>24 et 72 heures</strong><p>
       <br />
       <p>Merci pour votre confiance 🙏</p>
     `,

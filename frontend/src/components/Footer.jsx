@@ -1,6 +1,6 @@
 
 import React from "react";
-import { FaFacebookF,  FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { FaFacebookF,  FaInstagram, FaWhatsapp, FaTiktok } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import logo from "../assets/images/logo.png"; 
 import { useAuth } from "../context/AuthContext";
@@ -63,9 +63,10 @@ function Footer(props) {
             rel="noopener noreferrer"
             className="social-link text-light"
             ><FaFacebookF /></a>
-            <a href="#" className="social-link"><FaInstagram /></a>
+            <a href="https://www.instagram.com/ma_gsm_/" target="_blank" rel="noopener noreferrer" className="social-link"><FaInstagram /></a>
+            <a href="https://www.tiktok.com/@ma_gsm" target="_blank" rel="noopener noreferrer" className="social-link"><FaTiktok /></a>
             <a
-                  href="https://wa.me/21620771717"  
+                  href="https://wa.me/21620771717?text=مرحبا%20👋%20نحب%20نستفسر%20على%20منتجاتكم%20من%20فضلكم" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="social-link text-light"
