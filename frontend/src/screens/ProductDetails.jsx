@@ -18,6 +18,11 @@ const { productName } = useParams();
   const [loading, setLoading] = useState(true);
   const [similarProducts, setSimilarProducts] = useState([]);
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
+  const [showFullDescription, setShowFullDescription] = useState(false);
+  const MAX_LENGTH = 180;
+  const isLongDescription = product?.description?.length > MAX_LENGTH;
+
+
   
   // NEW: selected image for thumbnails
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -165,7 +170,22 @@ const handleAddToFavorites = async () => {
             <span className="h4 fw-bold text-success">{discountedPrice} DT</span>
           </div>
 
-          <p className="mb-4">{product.description}</p>
+<p className="mb-3">
+  {isLongDescription && !showFullDescription
+    ? product.description.slice(0, MAX_LENGTH) + "..."
+    : product.description}
+
+  {isLongDescription && (
+    <button
+      onClick={() => setShowFullDescription(!showFullDescription)}
+      className="btn btn-link p-0 ms-2"
+      style={{ color: "#000", textDecoration: "underline" }}
+    >
+      {showFullDescription ? "Réduire" : "Lire la suite"}
+    </button>
+  )}
+</p>
+
 
           <div className="d-flex gap-3 mb-3">
             <Button variant="primary" className="d-flex align-items-center gap-2" onClick={handleAddToCart}>
