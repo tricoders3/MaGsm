@@ -4,12 +4,15 @@ import { FaSearch, FaChevronDown, FaChevronRight } from "react-icons/fa";
 import axios from "axios";
 import BASE_URL from "../constante";
 import logo from "../assets/images/logo.png";
+import { useAuth } from "../context/AuthContext";
 
 const Sidebar = ({ categories, loading }) => {
   const [openCategoryId, setOpenCategoryId] = useState(null);
   const [subcategories, setSubcategories] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
+
 
   const hideOffcanvas = () => {
     const el = document.getElementById("mobileMenu");
@@ -43,6 +46,10 @@ const Sidebar = ({ categories, loading }) => {
       console.error("Error fetching subcategories", err);
     }
   };
+      const handleLogout = () => {
+  logout();               // clears context + localStorage
+  handleNav("/login");    // redirect
+};
   const handleSearch = async () => {
     const trimmedQuery = searchQuery.trim().toLowerCase();
     if (!trimmedQuery) return;
@@ -57,7 +64,8 @@ const Sidebar = ({ categories, loading }) => {
     params: { search: trimmedQuery },
     }),
     ]);
-    
+
+
     
     navigate("/recherche", {
     state: {
@@ -160,26 +168,79 @@ const Sidebar = ({ categories, loading }) => {
         </div>
 
         {/* Links */}
-        <div className="d-lg-none d-flex flex-column gap-2 mt-2">
-          <Link to="/" className="nav-link-sidebar" onClick={(e) => { e.preventDefault(); handleNav("/"); }}>
-            Home
-          </Link>
-          <Link to="/about" className="nav-link-sidebar" onClick={(e) => { e.preventDefault(); handleNav("/about"); }}>
-            About Us
-          </Link>
-          <Link to="/offers" className="nav-link-sidebar" onClick={(e) => { e.preventDefault(); handleNav("/offers"); }}>
-            Offres
-          </Link>
-          <Link to="/contact" className="nav-link-sidebar" onClick={(e) => { e.preventDefault(); handleNav("/contact"); }}>
-            Contact
-          </Link>
-          <Link to="/login" className="nav-link-sidebar" onClick={(e) => { e.preventDefault(); handleNav("/login"); }}>
-            Se connecter
-          </Link>
-          <Link to="/register" className="nav-link-sidebar" onClick={(e) => { e.preventDefault(); handleNav("/register"); }}>
-            S’inscrire
-          </Link>
-        </div>
+       <div className="d-lg-none d-flex flex-column gap-2 mt-2">
+  <Link
+    to="/"
+    className="nav-link-sidebar"
+    onClick={(e) => { e.preventDefault(); handleNav("/"); }}
+  >
+    Home
+  </Link>
+
+  <Link
+    to="/about"
+    className="nav-link-sidebar"
+    onClick={(e) => { e.preventDefault(); handleNav("/about"); }}
+  >
+    About Us
+  </Link>
+
+  <Link
+    to="/offers"
+    className="nav-link-sidebar"
+    onClick={(e) => { e.preventDefault(); handleNav("/offers"); }}
+  >
+    Offres
+  </Link>
+
+  <Link
+    to="/contact"
+    className="nav-link-sidebar"
+    onClick={(e) => { e.preventDefault(); handleNav("/contact"); }}
+  >
+    Contact
+  </Link>
+
+  {isAuthenticated ? (
+    <>
+      {/* ✅ LOGGED IN */}
+      <Link
+        to="/profile"
+        className="nav-link-sidebar"
+        onClick={(e) => { e.preventDefault(); handleNav("/profile"); }}
+      >
+        Profil
+      </Link>
+
+      <button
+        className="nav-link-sidebar text-danger text-start bg-transparent border-0"
+        onClick={handleLogout}
+      >
+        Se déconnecter
+      </button>
+    </>
+  ) : (
+    <>
+      {/* ❌ NOT LOGGED IN */}
+      <Link
+        to="/login"
+        className="nav-link-sidebar"
+        onClick={(e) => { e.preventDefault(); handleNav("/login"); }}
+      >
+        Se connecter
+      </Link>
+
+      <Link
+        to="/register"
+        className="nav-link-sidebar"
+        onClick={(e) => { e.preventDefault(); handleNav("/register"); }}
+      >
+        S’inscrire
+      </Link>
+    </>
+  )}
+</div>
+
       </div>
     </div>
   );
