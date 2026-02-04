@@ -155,7 +155,7 @@ const handleRemoveFavorite = async (productId) => {
               {/* Image */}
               <div
                 className="product-image mt-4"
-                onClick={() => navigate(`/products/${product._id}`)}
+                onClick={() => navigate(`/products/${encodeURIComponent(product.name)}`)}
               >
                 {product.images && product.images.length > 0 ? (
                   <img

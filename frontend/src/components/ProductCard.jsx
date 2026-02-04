@@ -55,7 +55,7 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
   const handleAddToCart = async (e) => {
     e.stopPropagation();
 
-    if (stockCount === 0) {
+    if (stockCount === "out") {
       setToast({ show: true, message: "Produit en rupture de stock", type: "cart" });
       setTimeout(() => setToast({ ...toast, show: false }), 1500);
       return;

@@ -100,7 +100,7 @@ const handleAddToFavorites = async () => {
 
   // Add to cart
   const handleAddToCart = async () => {
-    if (product.countInStock === 0) {
+    if (product.countInStock === "out") {
       setToast({ show: true, message: "Produit en rupture de stock", type: "cart" });
       setTimeout(() => setToast(prev => ({ ...prev, show: false })), 1500);
       return;
