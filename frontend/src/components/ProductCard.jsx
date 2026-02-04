@@ -53,30 +53,34 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
 
   // Cart
   const handleAddToCart = async (e) => {
-    e.stopPropagation();
+  e.stopPropagation();
 
-    if (stockCount === "out") {
-      setToast({ show: true, message: "Produit en rupture de stock", type: "cart" });
-      setTimeout(() => setToast({ ...toast, show: false }), 1500);
-      return;
-    }
+  if (stockCount === "out") {
+    setToast({
+      show: true,
+      message: "Produit en rupture de stock",
+      type: "cart",
+    });
+    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 1500);
+    return;
+  }
 
-    try {
-      await axios.post(`${BASE_URL}/api/cart`, { productId: product.id, quantity: 1 }, { withCredentials: true });
+  try {
+    await axios.post(
+      `${BASE_URL}/api/cart`,
+      { productId: product.id, quantity: 1 },
+      { withCredentials: true }
+    );
 
-      // **Update cart badge instantly**
-      setCartCount(cartCount + 1);
+    setCartCount(cartCount + 1);
 
-      setToast({ show: true, message: "Produit ajouté au panier", type: "cart" });
-      setTimeout(() => setToast({ ...toast, show: false }), 1500);
-    } catch (error) {
-      if (error.response?.status === 401) navigate("/login");
-      else {
-        setToast({ show: true, message: "Impossible d'ajouter au panier", type: "cart" });
-        setTimeout(() => setToast({ ...toast, show: false }), 1500);
-      }
-    }
-  };
+    setToast({ show: true, message: "Produit ajouté au panier", type: "cart" });
+    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 1500);
+  } catch (error) {
+    if (error.response?.status === 401) navigate("/login");
+  }
+};
+
 
   // Render badge
 
@@ -120,8 +124,8 @@ const renderBadge = () => {
       </button>
       {isAuthenticated && (
       <button className="cart-btn" onClick={handleAddToCart}
-      disabled={stockCount === 0}
-      title={stockCount === 0 ? "Produit en rupture de stock" : "Ajouter au panier"}>
+      disabled={stockCount === "out"}
+      title={stockCount === "out" ? "Produit en rupture de stock" : "Ajouter au panier"}>
         <FiShoppingCart size={18} />
       </button>
        )}
