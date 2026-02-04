@@ -50,7 +50,7 @@ const loginWithGoogle = () => {
 
 
   return (
-    <div className="auth-page min-vh-100 d-flex align-items-center">
+    <div className="auth-page d-flex align-items-center">
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-lg-5 col-md-7">
@@ -91,7 +91,7 @@ const loginWithGoogle = () => {
 
                 {/* Google */}
                 <button
-                  className="btn btn-google w-100 mb-2 d-flex align-items-center justify-content-center gap-2"
+                  className="btn btn-google w-100 mb-2 social-btn gap-2"
                   onClick={loginWithGoogle}
                 >
                   {/* SVG Google */}
@@ -106,7 +106,7 @@ const loginWithGoogle = () => {
 
                 {/* Facebook */}
                 <button
-  className="btn btn-google w-100 mb-2 d-flex align-items-center justify-content-center gap-2"
+  className="btn btn-facebook w-100 mb-2 social-btn gap-2"
   onClick={loginWithFacebook}
 >
   {/* SVG Facebook icon in blue */}
@@ -117,7 +117,7 @@ const loginWithGoogle = () => {
 </button>
 
                 <div className="text-center mb-3">
-                  <p className="text-muted">
+                  <p className="text-muted auth-text">
                     Pas encore de compte ? <Link to="/register" className="text-decoration-none fw-semibold">Créer un compte</Link>
                   </p>
                 </div>

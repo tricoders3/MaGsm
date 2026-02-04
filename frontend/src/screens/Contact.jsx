@@ -106,44 +106,25 @@ export default function Contact() {
         </div>
 
         {/* Info cards */}
-        <div className="row g-3 g-md-4 mt-4">
-          <div className="col-6 col-lg-3">
-            <div className="rounded-4 shadow-soft p-3 h-100 bg-white d-flex align-items-start gap-3">
-              <FiPhone className="text-primary" size={22} />
-              <div>
-                <strong className="text-secondary">Téléphone</strong>
-                <div className="text-muted small">{contactInfo.phone}</div>
-              </div>
-            </div>
-          </div>
-          <div className="col-6 col-lg-3">
-            <div className="rounded-4 shadow-soft p-3 h-100 bg-white d-flex align-items-start gap-3">
-              <FiMail className="text-success" size={22} />
-              <div>
-                <strong className="text-secondary">Email</strong>
-                <div className="text-muted small">{contactInfo.email}</div>
-              </div>
-            </div>
-          </div>
-          <div className="col-6 col-lg-3">
-            <div className="rounded-4 shadow-soft p-3 h-100 bg-white d-flex align-items-start gap-3">
-              <FiMapPin className="text-info" size={22} />
-              <div>
-                <strong className="text-secondary">Adresse</strong>
-                <div className="text-muted small">{contactInfo.address}</div>
-              </div>
-            </div>
-          </div>
-          <div className="col-6 col-lg-3">
-            <div className="rounded-4 shadow-soft p-3 h-100 bg-white d-flex align-items-start gap-3">
-              <FiClock className="text-warning" size={22} />
-              <div>
-                <strong className="text-secondary">Horaires</strong>
-                <div className="text-muted small">{contactInfo.hours}</div>
-              </div>
-            </div>
-          </div>
+        <div className="row g-3 mt-4">
+  {[
+    { icon: <FiPhone className="text-primary" />, label: "Téléphone", value: contactInfo.phone },
+    { icon: <FiMail className="text-success" />, label: "Email", value: contactInfo.email },
+    { icon: <FiMapPin className="text-info" />, label: "Adresse", value: contactInfo.address },
+    { icon: <FiClock className="text-warning" />, label: "Horaires", value: contactInfo.hours },
+  ].map((item, index) => (
+    <div key={index} className="col-12 col-sm-6 col-md-6 col-lg-3">
+      <div className="contact-card rounded-4  p-3 d-flex align-items-start gap-3 bg-white h-100">
+        <div className="contact-icon fs-4">{item.icon}</div>
+        <div className="contact-text">
+          <strong className="text-secondary d-block mb-1">{item.label}</strong>
+          <div className="text-muted small">{item.value}</div>
         </div>
+      </div>
+    </div>
+  ))}
+</div>
+
 
         {/* Form + Map */}
         <div className="row g-4 mt-4">

@@ -39,42 +39,33 @@ const ProductsCategory = () => {
         </div>
 
         <div className="row g-4">
-          {categories.map((cat) => (
-            <div key={cat._id} className="col-lg-4 col-md-6">
-              <div
-                className="category-white-card"
-                onClick={() => navigate(`/category/${cat._id}`)}
-              >
-                {/* TEXT */}
-                <div className="category-text">
-                  <h3 className="product-title">{cat.name}</h3>
-                  <p className="product-description">
-                    {cat.description || "Explore collection"}
-                  </p>
-                </div>
-
-                {/* IMAGE */}
-                <div className="category-img">
-                  {cat.image ? (
-                    <img
-                      src={cat.image}
-                      alt={cat.name}
-                      style={{ width: "100%", objectFit: "cover" }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "200px",
-                        backgroundColor: "#f0f0f0",
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+  {categories.map((cat) => (
+    <div key={cat._id} className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+      <div
+        className="category-white-card"
+        onClick={() => navigate(`/category/${cat._id}`)}
+      >
+        {/* TEXT */}
+        <div className="category-text">
+          <h3 className="product-title">{cat.name}</h3>
+          <p className="product-description">
+            {cat.description || "Explore collection"}
+          </p>
         </div>
+
+        {/* IMAGE */}
+        <div className="category-img">
+          {cat.image ? (
+            <img src={cat.image} alt={cat.name} />
+          ) : (
+            <div className="category-img-placeholder" />
+          )}
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
       </div>
     </section>
   );

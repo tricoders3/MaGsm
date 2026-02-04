@@ -107,69 +107,155 @@ export default function Cart() {
 
   return (
     <div className="container mt-4 mb-5">
-      <h3 className="mb-4 text-dark">Votre Panier</h3>
-      <div className="row">
-        <div className="col-md-8">
-          {cart.map((item) => (
+    <h3 className="mb-4 text-dark">Votre Panier</h3>
+  
+    <div className="row">
+      {/* Cart Items */}
+      <div className="col-12 col-md-8">
+        {cart.length === 0 ? (
+          <p className="text-center text-muted">Votre panier est vide.</p>
+        ) : (
+          cart.map((item) => (
             <div
               key={item.product._id}
-              className="d-flex align-items-center justify-content-between mb-3 p-3 bg-white rounded shadow-sm"
+              className="mb-3 p-3 bg-white rounded shadow-sm"
             >
-              <div className="d-flex align-items-center">
+              {/* Desktop Layout */}
+              <div className="d-none d-md-flex align-items-center justify-content-between">
+                <div className="d-flex align-items-center">
+                  <img
+                    src={item.product.images?.[0]?.url || "https://via.placeholder.com/100"}
+                    alt={item.product.name}
+                    className="img-fluid"
+                    style={{ width: 100, height: 100, objectFit: "contain" }}
+                  />
+                  <div className="ms-3">
+                    <h5 className="text-dark">{item.product.name}</h5>
+                    <p className="text-secondary mb-1">Prix: {item.product.price} TND</p>
+                    <div className="d-flex align-items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => decreaseQuantity(item.product._id)}
+                      >
+                        <FaMinus />
+                      </Button>
+                      <span className="text-dark">{item.quantity}</span>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => increaseQuantity(item.product._id)}
+                      >
+                        <FaPlus />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+  
+                <div className="text-end">
+                  <h5 className="text-dark">{item.product.price * item.quantity} TND</h5>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    className="mt-2"
+                    onClick={() => removeItem(item.product._id)}
+                  >
+                    <FaTrash />
+                  </Button>
+                </div>
+              </div>
+  
+              {/* Mobile Layout */}
+              <div className="d-md-none">
+                {/* Image */}
                 <img
                   src={item.product.images?.[0]?.url || "https://via.placeholder.com/100"}
                   alt={item.product.name}
-                  className="img-fluid"
-                  style={{ width: 100, height: 100, objectFit: "contain" }}
+                  className="img-fluid mb-2"
+                  style={{ width: "100%", height: 200, objectFit: "contain" }}
                 />
-                <div className="ms-3">
-                  <h5 className="text-dark">{item.product.name}</h5>
-                  <p className="text-secondary mb-1">Prix: {item.product.price} TND</p>
-                  <div className="d-flex align-items-center gap-2">
-                    <Button size="sm" variant="secondary" onClick={() => decreaseQuantity(item.product._id)}>
-                      <FaMinus />
-                    </Button>
-                    <span className="text-dark">{item.quantity}</span>
-                    <Button size="sm" variant="secondary" onClick={() => increaseQuantity(item.product._id)}>
-                      <FaPlus />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              <div className="text-end">
+  
+                {/* Product Name */}
+                <h5 className="text-dark">{item.product.name}</h5>
+  
+                {/* Price */}
+                <p className="text-secondary mb-2">Prix: {item.product.price} TND</p>
+  
+           {/* Quantity + Delete inline row */}
+           <div className="d-flex flex-column gap-2">
+  {/* Quantity Controls */}
+  <div className="justify-content-center align-items-center gap-2 mb-4">
+  <Button
+    size="sm"
+    variant="secondary"
+    onClick={() => decreaseQuantity(item.product._id)}
+  >
+    <FaMinus />
+  </Button>
+
+  <span className="text-dark mx-2">{item.quantity}</span>
+
+  <Button
+    size="sm"
+    variant="secondary"
+    onClick={() => increaseQuantity(item.product._id)}
+  >
+    <FaPlus />
+  </Button>
+</div>
+
+ 
+</div>
+
+
+  
+                {/* Total Price */}
+                <div className="d-flex align-items-center">
                 <h5 className="text-dark">{item.product.price * item.quantity} TND</h5>
-                <Button variant="danger" size="sm" className="mt-2" onClick={() => removeItem(item.product._id)}>
-                  <FaTrash />
-                </Button>
+                <Button
+    variant="danger"
+    size="sm"
+    className="ms-auto flex-shrink-0"
+    onClick={() => removeItem(item.product._id)}
+  >
+    <FaTrash />
+  </Button>
+  </div>             
               </div>
+              
             </div>
-          ))}
-        </div>
-
-        <div className="col-md-4">
-          <div className="p-3 bg-white rounded shadow-sm">
-            <Button
-              variant="dark"
-              className="w-100 mb-2"
-              onClick={handleCreateOrder}
-              disabled={creatingOrder || loading || cart.length === 0} 
-            >
-              {creatingOrder ? "Création de la commande..." : "Acheter maintenant"}
-            </Button>
-
-            <Link to="/" className="btn btn-outline-secondary w-100">
-              Continuer vos achats
-            </Link>
-          </div>
+          ))
+        )}
+      </div>
+  
+      {/* Order Summary */}
+      <div className="col-12 col-md-4 mt-4 mt-md-0">
+        <div className="p-3 bg-white rounded shadow-sm d-flex flex-column gap-2">
+          <Button
+            variant="dark"
+            className="w-100 mb-2"
+            onClick={handleCreateOrder}
+            disabled={creatingOrder || loading || cart.length === 0}
+          >
+            {creatingOrder ? "Création de la commande..." : "Acheter maintenant"}
+          </Button>
+  
+          <Link to="/" className="btn btn-outline-secondary w-100">
+            Continuer vos achats
+          </Link>
         </div>
       </div>
-
-      <AlertToast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        type="success"
-        message="Commande créée avec succès ! Paiement à la livraison."
-      />
     </div>
+  
+    {/* Toast */}
+    <AlertToast
+      show={showToast}
+      onClose={() => setShowToast(false)}
+      type="success"
+      message="Commande créée avec succès ! Paiement à la livraison."
+    />
+  </div>
+  
+  
   );
 }

@@ -101,7 +101,7 @@ export default function About() {
   </div>
 </section>
       {/* Address and Contact */}
-      <section id="location" className="py-5" style={{ background: "#f8f9fa" }}>
+      <section id="location" className="py-5">
         <div className="container">
           <div className="row g-4">
             <div className="col">
