@@ -85,6 +85,7 @@ const Sidebar = ({ categories, loading }) => {
       className="offcanvas offcanvas-start"
       tabIndex="-1"
       id="mobileMenu"
+      data-bs-backdrop="false" 
       aria-labelledby="mobileMenuLabel"
     >
       {/* Header */}
@@ -102,6 +103,7 @@ const Sidebar = ({ categories, loading }) => {
           type="button"
           className="btn-close"
           data-bs-dismiss="offcanvas"
+          style={{ filter: "invert(1)"}}
         />
       </div>
 

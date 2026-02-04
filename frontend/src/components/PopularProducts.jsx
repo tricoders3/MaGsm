@@ -36,12 +36,12 @@ const PopularProducts = () => {
               id: product._id,
               name: product.name,
               description: product.description,
-              price: discountedPrice ? null : product.price, // keep null if promotion exists
+              price: discountedPrice ? null : product.price, 
               originalPrice: discountedPrice ? originalPrice : null,
               discountedPrice: discountedPrice ? discountedPrice : null,
               images: product.images || [],
               countInStock: product.countInStock,
-              category: product.category?.name || "Uncategorized",
+              category: product.category?.name || null ,
               promotion: product.promotion || null,
             };
           });

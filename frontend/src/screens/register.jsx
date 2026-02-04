@@ -54,7 +54,7 @@ const Register = () => {
 
 
   return (
-    <div className="auth-page min-vh-100 d-flex align-items-center mt-4">
+    <div className="auth-page d-flex align-items-center">
     <div className="container mb-4">
       <div className="row justify-content-center">
         <div className="col-lg-5 col-md-7">
@@ -124,7 +124,7 @@ const Register = () => {
               <div className="text-center mb-2 text-muted">OU</div>
                   {/* Google */}
                   <button
-                  className="btn btn-google w-100 mb-2 d-flex align-items-center justify-content-center gap-2"
+                  className="btn btn-google w-100 mb-2 social-btn gap-2"
                   onClick={registerWithGoogle}
                 >
                   <svg width="18" height="18" viewBox="0 0 48 48">
@@ -138,7 +138,7 @@ const Register = () => {
 
                 {/* Facebook */}
                 <button
-                  className="btn btn-google w-100 mb-2 d-flex align-items-center justify-content-center gap-2"
+                  className="btn btn-facebook w-100 mb-2 social-btn gap-2"
                   onClick={registerWithFacebook}
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2">
@@ -149,7 +149,7 @@ const Register = () => {
         
               {/* Footer */}
               <div className="text-center mb-3">
-                <p className="text-muted">
+                <p className="text-muted auth-text">
                   Déjà un compte ?{" "}
                   <Link to="/login" className="text-decoration-none fw-semibold">
                     Se connecter

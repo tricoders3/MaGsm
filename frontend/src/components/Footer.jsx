@@ -80,14 +80,16 @@ function Footer(props) {
     </div>
 
     {/* Footer Bottom */}
-    <div className="footer-bottom py-2 border-top d-flex justify-content-between align-items-center">
+    <div className="footer-bottom py-2 border-top">
+    <div className="container d-flex footer-bottom-inner">
       <p className="copyright mb-0">
         © {new Date().getFullYear()} MA GSM. All rights reserved.
       </p>
-      <div className="footer-bottom-links d-flex gap-3">
+      <div className="footer-bottom-links">
         <Link to="#">Privacy Policy</Link>
         <Link to="#">Terms of Service</Link>
       </div>
+    </div>
     </div>
   </div>
 </footer>

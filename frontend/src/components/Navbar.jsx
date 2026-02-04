@@ -123,7 +123,7 @@ function NavBar() {
                                     <FiUser /> Profil
                                   </button>
 
-                    <button   className="logout"
+                    <button className="logout d-none d-md-block"
                     onClick={() => 
                     { logout(); 
                     setShowMenu(false); 

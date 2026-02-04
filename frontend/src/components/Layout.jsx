@@ -10,7 +10,7 @@ import LoadingBinder from "./LoadingBinder";
 
 export default function Layout() {
 
-  const { user } = useAuth();
+
   return (
     <LoadingProvider>
       <SearchProvider>
@@ -18,7 +18,7 @@ export default function Layout() {
         <div className="app-layout d-flex flex-column min-vh-100">
           <TopBar />
           <Navbar />
-          {user && <GlobalSearch />}
+           <GlobalSearch />
           <main className="flex-grow-1">
             <Outlet />
           </main>

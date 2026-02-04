@@ -60,7 +60,7 @@ const { productName } = useParams();
     }
   };
   fetchProductAndSimilar();
-}, [productName]); // ✅ use productName here
+}, [productName]); 
 
 
   // Early returns
@@ -125,45 +125,51 @@ const handleAddToFavorites = async () => {
   return (
     <div className="container my-5">
       <div className="row g-4">
-        {/* Product Images */}
-        <div className="col-md-6 text-center">
-         {product.images && product.images.length > 0 ? (
-  <div>
-    {/* Main Image */}
-    <img
-      src={product.images[selectedImageIndex]?.url}
-      alt={product.name}
-      className="img-fluid rounded-3 mb-3"
-      style={{ maxHeight: "400px", objectFit: "contain" }}
-    />
 
-    {/* Thumbnails */}
-    <div className="d-flex gap-2 justify-content-center flex-wrap">
-      {product.images.map((img, index) => (
-        <img
-          key={index}
-          src={img.url}
-          alt={`thumb-${index}`}
-          className={`rounded-2 border ${selectedImageIndex === index ? "border-primary" : "border-light"}`}
-          style={{ width: "60px", height: "60px", objectFit: "cover", cursor: "pointer" }}
-          onClick={() => setSelectedImageIndex(index)}
-        />
-      ))}
+<div className="col-12 col-md-6 text-center position-relative">
+  {product.images && product.images.length > 0 ? (
+    <div className="position-relative d-inline-block">
+      {/* Badge */}
+      {promotion && (
+        <Badge
+          bg="danger"
+        >
+          Promo! {promoText}
+        </Badge>
+      )}
+      <img
+        src={product.images[selectedImageIndex]?.url}
+        alt={product.name}
+        className="img-fluid rounded-3"
+        style={{ maxHeight: "400px", objectFit: "contain", width: "100%" }}
+      />
+
+  
+      <div className="d-flex gap-2 justify-content-center flex-wrap mt-2">
+        {product.images.map((img, index) => (
+          <img
+            key={index}
+            src={img.url}
+            alt={`thumb-${index}`}
+            className={`rounded-2 border ${selectedImageIndex === index ? "border-secondary" : "border-light"}`}
+            style={{ width: "60px", height: "60px", objectFit: "cover", cursor: "pointer" }}
+            onClick={() => setSelectedImageIndex(index)}
+          />
+        ))}
+      </div>
     </div>
-  </div>
-) : (
-  <div className="bg-light p-5 rounded-3">No image available</div>
-)}
-
-        </div>
+  ) : (
+    <div className="bg-light p-5 rounded-3">No image available</div>
+  )}
+</div>
 
         {/* Product Info */}
-        <div className="col-md-6">
+        <div className="col-12 col-md-6">
           <h2 className="fw-bold">{product.name}</h2>
           <p className="text-muted mb-1"><strong>Marque:</strong> {product.brand}</p>
           <p className="text-muted mb-3"><strong>Catégorie:</strong> {product.category?.name || "N/A"}</p>
 
-          {promotion && <Badge bg="danger" className="mb-3">Promo! {promoText}</Badge>}
+        
 
           <div className="mb-3">
             {promotion && <span className="text-decoration-line-through me-2 text-muted">{product.price} DT</span>}
@@ -187,11 +193,11 @@ const handleAddToFavorites = async () => {
 </p>
 
 
-          <div className="d-flex gap-3 mb-3">
-            <Button variant="primary" className="d-flex align-items-center gap-2" onClick={handleAddToCart}>
+          <div className="d-flex flex-column flex-sm-row gap-2 gap-sm-3 mb-3">
+            <Button variant="btn btn-primary" className="gap-2" onClick={handleAddToCart}>
               <FiShoppingCart /> Ajouter au panier
             </Button>
-            <Button variant="btn btn-primary-redesign" onClick={handleAddToFavorites}>
+            <Button variant="btn btn-primary-redesign gap-2" onClick={handleAddToFavorites}>
               <FiHeart /> Ajouter aux favoris
             </Button>
           </div>
