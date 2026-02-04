@@ -22,6 +22,7 @@ import orderRoutes from "./routes/orderRoutes.js";
 import favoriteRoutes from './routes/favoriteRoutes.js';
 import settingsRoutes from './routes/siteSettingsRoutes.js';
 import contactMsgRoutes from "./routes/contactMsgRoutes.js";
+import brandRoutes from "./routes/brandRoutes.js";
 
 // ------------------
 // Fix __dirname in ES modules
@@ -102,7 +103,7 @@ app.use("/api/favorites", favoriteRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/site-settings", settingsRoutes);
 app.use("/api/contact", contactMsgRoutes);
-
+app.use ("/api/brands", brandRoutes);
 // Facebook data deletion
 app.get("/facebook-data-deletion", (req, res) => {
   res.send(`
