@@ -58,7 +58,7 @@ const PopularProducts = () => {
   }, []);
   
 
-
+  if (products.length === 0) return null;
 
   if (loading) return null;
   if (error) return null;
