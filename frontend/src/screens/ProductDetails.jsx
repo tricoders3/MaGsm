@@ -8,6 +8,7 @@ import ProductCard from "../components/ProductCard";
 import { useCart } from "../context/CartContext";
 import AlertToast from "../components/AlertToast"; // <-- import AlertToast
 
+
 function ProductDetails() {
   const navigate = useNavigate();
   const { productId } = useParams();
@@ -97,10 +98,14 @@ const handleAddToFavorites = async () => {
   }
 };
 
+const handleAddToCartSafe = () => {
+  if (product.countInStock === "out") return;
+  handleAddToCart();
+};
 
   // Add to cart
   const handleAddToCart = async () => {
-    if (product.countInStock === 0) {
+    if (product.countInStock === "out") {
       setToast({ show: true, message: "Produit en rupture de stock", type: "cart" });
       setTimeout(() => setToast(prev => ({ ...prev, show: false })), 1500);
       return;
@@ -194,17 +199,41 @@ const handleAddToFavorites = async () => {
 
 
           <div className="d-flex flex-column flex-sm-row gap-2 gap-sm-3 mb-3">
-            <Button variant="btn btn-primary" className="gap-2" onClick={handleAddToCart}>
-              <FiShoppingCart /> Ajouter au panier
-            </Button>
+          <Button
+  variant="btn btn-primary"
+  className="gap-2"
+  onClick={handleAddToCartSafe}
+  title={
+    product.countInStock === "out"
+      ? "Produit en rupture de stock"
+      : "Ajouter au panier"
+  }
+>
+  <FiShoppingCart /> Ajouter au panier
+</Button>
+
+
+
             <Button variant="btn btn-primary-redesign gap-2" onClick={handleAddToFavorites}>
               <FiHeart /> Ajouter aux favoris
             </Button>
           </div>
 
           <div>
-            <p className="text-muted mb-1"><strong>Disponibilité:</strong> {product.countInStock > 0 ? <span className="text-success">En stock</span> : <span className="text-danger">Rupture de stock</span>}</p>
-          </div>
+  <p className="text-muted mb-1">
+    <strong>Disponibilité:</strong>{" "}
+    {product.countInStock === "out" ? (
+      <span
+       className="text-danger">Rupture de stock
+       
+  </span>
+       
+    ) : (
+      <span className="text-success">En stock</span>
+    )}
+  </p>
+</div>
+
         </div>
       </div>
 
