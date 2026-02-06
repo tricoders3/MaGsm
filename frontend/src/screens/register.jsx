@@ -15,31 +15,33 @@ const Register = () => {
 
   // Register classique
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (password !== confirmPassword) {
-      toast.error("Les mots de passe ne correspondent pas");
-      return;
-    }
+  if (password !== confirmPassword) {
+    toast.error("Les mots de passe ne correspondent pas");
+    return;
+  }
 
-    try {
-      const res = await axios.post(
-        `${BASE_URL}/api/auth/register`,
-        { name, email, password },
-        { headers: { "Content-Type": "application/json" } }
-      );
+  try {
+    const res = await axios.post(
+      `${BASE_URL}/api/auth/register`,
+      { name, email, password },
+      { headers: { "Content-Type": "application/json" } }
+    );
 
-      toast.success(res.data.message || "Inscription réussie");
-      setTimeout(() => {
-        navigate("/waiting-approval");
-      }, 1000);
-    } catch (err) {
-      console.error(err);
-      toast.error(
-        err.response?.data?.message || "Erreur lors de l'inscription"
-        );
-    }
-  };
+    console.log("Backend response:", res.data); // pour debug
+
+    toast.success(res.data.message || "Inscription réussie");
+
+    navigate("/waiting-approval"); // direct navigate, pas besoin de setTimeout
+  } catch (err) {
+    console.error("Register error:", err.response?.data || err);
+    toast.error(
+      err.response?.data?.message || "Erreur lors de l'inscription"
+    );
+  }
+};
+
 
 
   // Connexion Google
