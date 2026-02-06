@@ -51,7 +51,6 @@ function Products() {
         setLoading(false);
       } catch (err) {
         console.error(err);
-        setError("Failed to load products");
         setLoading(false);
       }
     };

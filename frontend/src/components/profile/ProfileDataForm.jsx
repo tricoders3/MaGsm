@@ -54,7 +54,7 @@ const ProfileDataForm = () => {
     <div className="col-12 col-sm-10 col-md-8 col-lg-6">
   <form onSubmit={handleSubmit}>
   <div className="card shadow-sm rounded-4 border-0">
-  <div className="card-body px-5 p-4">
+  <div className="card-body px-3 p-4">
 
         {/* PERSONAL INFO */}
         <h4 className="card-title text-center mb-4">Informations personnelles</h4>

@@ -16,23 +16,66 @@ export default function Cart() {
   const [creatingOrder, setCreatingOrder] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
-  // Fetch cart on mount
+  const getDiscountedPrice = (product, promotion) => {
+    if (!promotion) return product.price;
+
+    let discounted = product.price;
+
+    if (promotion.discountType === "percentage") {
+      discounted =
+        product.price - (product.price * promotion.discountValue) / 100;
+    } else {
+      discounted = product.price - promotion.discountValue;
+    }
+
+    return Math.max(discounted, 0);
+  };
+
+  /* ================================
+     FETCH CART + PROMOTIONS
+  ================================== */
   useEffect(() => {
     const fetchCart = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${BASE_URL}/api/cart`, { withCredentials: true });
-        const items = res.data.cart?.items || [];
-        setCart(items); // ✅ store full cart in context
-        setCartCount(items.reduce((sum, i) => sum + i.quantity, 0));
+
+        const res = await axios.get(`${BASE_URL}/api/cart`, {
+          withCredentials: true,
+        });
+
+        const rawItems = res.data.cart?.items || [];
+
+        // 🔥 Fetch promotion per product (same as ProductDetails)
+        const itemsWithPromos = await Promise.all(
+          rawItems.map(async (item) => {
+            try {
+              const promoRes = await axios.get(
+                `${BASE_URL}/api/promotions/product/${item.product._id}`
+              );
+              return {
+                ...item,
+                promotion: promoRes.data.promotion || null,
+              };
+            } catch {
+              return { ...item, promotion: null };
+            }
+          })
+        );
+
+        setCart(itemsWithPromos);
+        setCartCount(
+          itemsWithPromos.reduce((sum, i) => sum + i.quantity, 0)
+        );
       } catch (error) {
         console.error("Erreur en récupérant le panier :", error);
       } finally {
         setLoading(false);
       }
     };
+
     fetchCart();
   }, [setCart, setCartCount]);
+
 
   // Increase quantity
   const increaseQuantity = async (productId) => {
@@ -81,7 +124,13 @@ export default function Cart() {
   };
 
   // Total price
-  const totalPrice = cart?.reduce((sum, item) => sum + item.product.price * item.quantity, 0) || 0;
+  const totalPrice = cart.reduce(
+    (sum, item) =>
+      sum +
+      getDiscountedPrice(item.product, item.promotion) * item.quantity,
+    0
+  );
+
 
   // Navigate to checkout
   const handleCreateOrder = () => {
@@ -131,7 +180,23 @@ export default function Cart() {
                   />
                   <div className="ms-3">
                     <h5 className="text-dark">{item.product.name}</h5>
-                    <p className="text-secondary mb-1">Prix: {item.product.price} TND</p>
+                    <div className="mb-1">
+  {item.promotion ? (
+    <>
+      <span className="text-decoration-line-through text-muted me-2">
+        {item.product.price} TND
+      </span>
+      <span className="fw-bold text-danger">
+        {getDiscountedPrice(item.product, item.promotion)} TND
+      </span>
+    </>
+  ) : (
+    <span className="text-secondary">
+      Prix: {item.product.price} TND
+    </span>
+  )}
+</div>
+
                     <div className="d-flex align-items-center gap-2">
                       <Button
                         size="sm"
@@ -153,7 +218,10 @@ export default function Cart() {
                 </div>
   
                 <div className="text-end">
-                  <h5 className="text-dark">{item.product.price * item.quantity} TND</h5>
+                <h5 className="text-dark">
+  {getDiscountedPrice(item.product, item.promotion) * item.quantity} TND
+</h5>
+
                   <Button
                     variant="danger"
                     size="sm"
@@ -179,7 +247,23 @@ export default function Cart() {
                 <h5 className="text-dark">{item.product.name}</h5>
   
                 {/* Price */}
-                <p className="text-secondary mb-2">Prix: {item.product.price} TND</p>
+                <div className="mb-2">
+  {item.promotion ? (
+    <>
+      <span className="text-decoration-line-through text-muted me-2">
+        {item.product.price} TND
+      </span>
+      <span className="fw-bold text-danger">
+        {getDiscountedPrice(item.product, item.promotion)} TND
+      </span>
+    </>
+  ) : (
+    <span className="text-secondary">
+      Prix: {item.product.price} TND
+    </span>
+  )}
+</div>
+
   
            {/* Quantity + Delete inline row */}
            <div className="d-flex flex-column gap-2">
@@ -211,7 +295,10 @@ export default function Cart() {
   
                 {/* Total Price */}
                 <div className="d-flex align-items-center">
-                <h5 className="text-dark">{item.product.price * item.quantity} TND</h5>
+                <h5 className="text-dark">
+  {getDiscountedPrice(item.product, item.promotion) * item.quantity} TND
+</h5>
+
                 <Button
     variant="danger"
     size="sm"
@@ -230,6 +317,13 @@ export default function Cart() {
   
       {/* Order Summary */}
       <div className="col-12 col-md-4 mt-4 mt-md-0">
+      <div className="p-3">
+  <span className="fw-semibold text-dark d-block">Total</span>
+  <span className="fw-bold fs-5 text-dark d-block">
+    {totalPrice.toFixed(2)} TND
+  </span>
+</div>
+
         <div className="p-3 bg-white rounded shadow-sm d-flex flex-column gap-2">
           <Button
             variant="dark"

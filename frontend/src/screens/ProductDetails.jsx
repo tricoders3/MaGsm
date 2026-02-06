@@ -146,7 +146,7 @@ const handleAddToCartSafe = () => {
         src={product.images[selectedImageIndex]?.url}
         alt={product.name}
         className="img-fluid rounded-3"
-        style={{ maxHeight: "400px", objectFit: "contain", width: "100%" }}
+        style={{ maxHeight: "300px", objectFit: "contain", width: "100%" }}
       />
 
   

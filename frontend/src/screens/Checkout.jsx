@@ -38,6 +38,18 @@ const isValid =
   form.city &&
   form.country;
 
+  const getDiscountedPrice = (product, promotion) => {
+    if (!promotion) return product.price;
+  
+    let discounted = product.price;
+    if (promotion.discountType === "percentage") {
+      discounted = product.price - (product.price * promotion.discountValue) / 100;
+    } else {
+      discounted = product.price - promotion.discountValue;
+    }
+    return Math.max(discounted, 0);
+  };
+  
   // 🔹 Fetch cart if empty
    useEffect(() => {
     const fetchData = async () => {
@@ -78,7 +90,7 @@ const isValid =
           setCartCount(items.reduce((s, i) => s + i.quantity, 0));
         }
       } catch (err) {
-        console.error("Erreur chargement checkout :", err);
+
       } finally {
         setLoading(false);
       }
@@ -107,7 +119,8 @@ const isValid =
     email: billing.email,
     phone: billing.phone,
   },
-  useLoyaltyPoints: usePoints, // 🔹 nouveau
+  useLoyaltyPoints: usePoints, 
+  
 };
 
 
@@ -141,9 +154,10 @@ const isValid =
 // Calculs sous-total et total avec livraison
 const DELIVERY_FEE = 7; // Livraison à domicile
 const subTotal = cart?.reduce(
-  (sum, item) => sum + (item.product.price || 0) * item.quantity,
-  0
-) || 0;
+    (sum, item) => sum + getDiscountedPrice(item.product, item.promotion) * item.quantity,
+    0
+  ) || 0;
+  
 
 const totalWithDelivery = subTotal + DELIVERY_FEE;
 
@@ -270,28 +284,39 @@ if (loading) return null;
       </div>
     </div>
 
-    {/* ===================== */}
-    {/* 🛒 VOTRE COMMANDE */}
-    {/* ===================== */}
+
     <div className="col-lg-5">
       <div className="card p-4 shadow-sm rounded-4">
         <h4 className="fw-bold mb-4 text-dark border-bottom pb-2">
           Votre commande
         </h4>
 
-        {cart.map((item) => (
-          <div
-            key={item.product._id}
-            className="d-flex justify-content-between mb-2"
-          >
-            <span>
-              {item.product.name} × {item.quantity}
+        {cart.map((item) => {
+  const price = getDiscountedPrice(item.product, item.promotion);
+  return (
+    <div
+      key={item.product._id}
+      className="d-flex justify-content-between mb-2 flex-column flex-sm-row"
+    >
+      <span>
+        {item.product.name} × {item.quantity}
+      </span>
+      <span className="text-end">
+        {item.promotion ? (
+          <>
+            <span className="text-decoration-line-through me-2 text-muted">
+              {item.product.price} DT
             </span>
-            <span>
-              {(item.product.price || 0) * item.quantity} DT
-            </span>
-          </div>
-        ))}
+            <span className="fw-bold">{price} DT</span>
+          </>
+        ) : (
+          <span className="fw-bold">{price} DT</span>
+        )}
+      </span>
+    </div>
+  );
+})}
+
 
         <hr />
 
@@ -325,7 +350,8 @@ if (loading) return null;
 </div>
 {/* 🚚 Délai de livraison */}
 
-{/* 🎁 POINTS FIDÉLITÉ */} {earnedPoints > 0 && ( <div className="mt-3 p-3 bg-light border rounded-3 text-center"> <small> 🎁 Terminez votre commande et gagnez{" "} <strong>{earnedPoints} points</strong> pour une remise sur un prochain achat </small> </div> )}
+{/* 🎁 POINTS FIDÉLITÉ */} 
+{earnedPoints > 0 && ( <div className="mt-3 p-3 bg-light border rounded-3 text-center"> <small> 🎁 Terminez votre commande et gagnez{" "} <strong>{earnedPoints} points</strong> pour une remise sur un prochain achat </small> </div> )}
        
 {canUsePoints && (
   <div className="mt-3 form-check">

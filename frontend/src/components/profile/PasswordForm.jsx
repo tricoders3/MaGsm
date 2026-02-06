@@ -28,7 +28,7 @@ const PasswordForm = () => {
       toast.success("Mot de passe modifié avec succès");
       setPassword({ currentPassword: "", newPassword: "", confirmPassword: "" });
     } catch (err) {
-      toast.error(err.response?.data?.message || "Erreur lors du changement");
+
     } finally {
       setLoading(false);
     }
@@ -39,7 +39,7 @@ const PasswordForm = () => {
     <div className="row justify-content-center">
     <div className="col-12 col-sm-10 col-md-8 col-lg-6">
     <div className="card shadow-sm rounded-4 border-0">
-    <div className="card-body px-5 p-4">
+    <div className="card-body px-3 p-4">
     <h4 className="card-title text-center mb-4">Modifier le mot de passe</h4>
         <form onSubmit={handleSubmit}>
           {user?.provider === "local" && (

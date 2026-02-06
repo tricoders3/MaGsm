@@ -21,7 +21,7 @@ const UserPoints = () => {
       setPoints(data.loyaltyPoints || 0);
 
     } catch (err) {
-      toast.error("Erreur lors du chargement des points");
+
     } finally {
       setLoading(false);
     }
@@ -35,7 +35,7 @@ const UserPoints = () => {
     <div className="container">
       <div className="row justify-content-center">
         <div className="card shadow-sm rounded-4 border-0">
-          <div className="card-body px-5 p-4">
+          <div className="card-body px-3 p-4">
         
         {/* Header */}
         <div className="d-flex justify-content-between align-items-center mb-3">

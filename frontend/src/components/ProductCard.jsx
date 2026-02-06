@@ -50,6 +50,22 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
       }
     }
   };
+const getProductPrice = (product) => {
+  if (product.promotion) {
+    if (product.promotion.discountType === "percentage") {
+      return (
+        product.price -
+        (product.price * product.promotion.discountValue) / 100
+      );
+    }
+
+    if (product.promotion.discountType === "fixed") {
+      return product.price - product.promotion.discountValue;
+    }
+  }
+
+  return product.price;
+};
 
   // Cart
   const handleAddToCart = async (e) => {

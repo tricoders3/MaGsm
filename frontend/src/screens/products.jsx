@@ -45,7 +45,6 @@ function Products() {
         setLoading(false);
       } catch (err) {
         console.error(err);
-        setError("Erreur lors du chargement des produits");
         setLoading(false);
       }
     };
