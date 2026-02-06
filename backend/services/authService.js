@@ -10,20 +10,28 @@ export const registerUser = async ({ name, email, password }) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  console.log("Creating user in DB...");
   const user = await User.create({
     name,
     email,
     password: hashedPassword,
     role: "guest",
     isApproved: false,
-    pendingRequest: true // on peut mettre true si on veut notifier l’admin directement
+    pendingRequest: true
   });
+  console.log("User created:", user.email);
 
-  // ENVOI EMAIL À L’ADMIN
-  await sendAdminRequestEmail(user);
+  try {
+    console.log("Sending email to admin...");
+    //await sendAdminRequestEmail(user);
+    console.log("Email sent to admin");
+  } catch (err) {
+    console.error("Email error:", err);
+  }
 
   return user;
 };
+
 
 
 export const approveUser = async (userId) => {
