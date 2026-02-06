@@ -95,7 +95,25 @@ function NavBar() {
             <div className="d-flex align-items-center gap-3">
 
               {/* Auth */}
-              <div className="d-none d-lg-flex">
+          
+ {/* Cart */}
+ {isAuthenticated && (
+      <div className="position-relative">
+        <button className="nav-icon-redesign" onClick={() => navigate("/cart")}>
+          <FaShoppingBag />
+        </button>
+        <Badge count={cartCount} />
+      </div>
+ )}
+      {/* Favorites */}
+      <div className="position-relative">
+        <button className="nav-icon-redesign" onClick={() => navigate("/favoris")}>
+          <FaHeart />
+        </button>
+        <Badge count={favoritesCount} />
+      </div>
+
+      <div className="d-none d-lg-flex">
                 {isAuthenticated ? (
                   <div className="nav-avatar-wrapper" ref={menuRef}>
                     <button
@@ -142,24 +160,6 @@ function NavBar() {
                   </button>
                 )}
               </div>
- {/* Cart */}
- {isAuthenticated && (
-      <div className="position-relative">
-        <button className="nav-icon-redesign" onClick={() => navigate("/cart")}>
-          <FaShoppingBag />
-        </button>
-        <Badge count={cartCount} />
-      </div>
- )}
-      {/* Favorites */}
-      <div className="position-relative">
-        <button className="nav-icon-redesign" onClick={() => navigate("/favoris")}>
-          <FaHeart />
-        </button>
-        <Badge count={favoritesCount} />
-      </div>
-
-
               {/* Mobile Menu */}
               <button
                 className="nav-icon-redesign"

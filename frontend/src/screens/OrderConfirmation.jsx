@@ -30,7 +30,7 @@ export default function OrderConfirmation() {
     };
     fetchOrders();
   }, [orderId]);
-  // ===== Calculs frais et remise =====
+
 const deliveryFee = order?.deliveryFee || 7; // frais de livraison par défaut
 const discount = order?.discount || 0;       // remise appliquée
 const subTotal = (order?.items || []).reduce(

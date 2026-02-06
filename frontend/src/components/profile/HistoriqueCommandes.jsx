@@ -19,7 +19,7 @@ const HistoriqueCommandes = () => {
 
         setOrders(data || []);
       } catch (err) {
-        toast.error("Erreur lors du chargement des commandes");
+   
       } finally {
         setLoading(false);
       }
@@ -38,7 +38,7 @@ const displayedCount = displayedOrders.length;
     <div className="container">
       <div className="row justify-content-center">
         <div className="card shadow-sm rounded-4 border-0">
-          <div className="card-body px-5 p-4">
+          <div className="card-body px-3 p-4">
           <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between mb-4 gap-2">
   <h4 className="card-title mb-0">
     Historique des commandes

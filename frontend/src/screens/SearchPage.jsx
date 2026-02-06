@@ -41,7 +41,6 @@ export default function Recherche() {
         setProducts(mapped);
       } catch (err) {
         console.error(err);
-        setError("Erreur lors du chargement des produits");
       } finally {
         setLoading(false);
       }
