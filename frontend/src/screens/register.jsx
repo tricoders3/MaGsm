@@ -26,7 +26,7 @@ const Register = () => {
     const res = await axios.post(
       `${BASE_URL}/api/auth/register`,
       { name, email, password },
-      { headers: { "Content-Type": "application/json" } }
+      { withCredentials: true }
     );
 
     console.log("Backend response:", res.data); // pour debug
