@@ -55,12 +55,7 @@ app.use(
     secret: process.env.SESSION_SECRET || "fallbacksecret",
     resave: false,
     saveUninitialized: true,
-    cookie: {
-      secure: process.env.NODE_ENV === "production", // obligatoire en HTTPS
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // nécessaire pour cookies cross-site
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
-    },
+    cookie: { secure: false },
   })
 );
 
@@ -75,14 +70,11 @@ app.use(passport.session());
 // ------------------
 app.use(
   cors({
-    origin: process.env.NODE_ENV === "production"
-      ? "https://magsm.onrender.com"
-      : "http://localhost:3000",
+    origin: ["https://magsm.onrender.com", "http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
-
 if (process.env.NODE_ENV === "production") {
   const buildPath = path.join(__dirname, "../frontend/build"); 
   app.use(express.static(buildPath));
