@@ -129,7 +129,7 @@ const isValid =
     
     if (newOrderId) navigate(`/order-confirmation/${newOrderId}`);
     else navigate("/orders");
-    }, 1500);
+    });
   } catch (error) {
     console.error("Erreur lors de la création de la commande :", error);
     alert("Impossible de créer la commande, réessayez !");

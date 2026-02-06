@@ -70,19 +70,19 @@ app.use(passport.session());
 // ------------------
 app.use(
   cors({
-    origin: "https://magsm.onrender.com",
+    origin: ["https://magsm.onrender.com", "http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 if (process.env.NODE_ENV === "production") {
-  const buildPath = path.join(__dirname, "../frontend/build");
+  const buildPath = path.join(__dirname, "../frontend/build"); 
   app.use(express.static(buildPath));
+
+  // Send index.html for all non-API routes
   app.get(/^(?!\/api).*/, (req, res) => {
     res.sendFile(path.join(buildPath, "index.html"));
   });
-
-
 } else {
   app.get("/*", (req, res) => {
     res.send("API is running....");
