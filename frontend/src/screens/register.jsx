@@ -26,7 +26,7 @@ const Register = () => {
       const res = await axios.post(
         `${BASE_URL}/api/auth/register`,
         { name, email, password },
-        { withCredentials: true }
+        { headers: { "Content-Type": "application/json" } }
       );
 
       toast.success(res.data.message || "Inscription réussie");

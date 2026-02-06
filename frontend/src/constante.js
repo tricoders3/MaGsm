@@ -1,6 +1,4 @@
-const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://magsm.onrender.com"
-    : "http://localhost:8080";
+const BASE_URL = "https://magsm.onrender.com"
+
 
 export default BASE_URL;
