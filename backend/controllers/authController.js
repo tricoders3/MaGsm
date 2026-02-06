@@ -11,10 +11,37 @@ import { sendEmail } from "../utils/sendEmail.js"; // Ton utils pour envoyer mai
  */
 export const register = async (req, res) => {
   try {
-    const user = await registerUser(req.body);
-    res.status(201).json({ message: "Inscription réussie, en attente de validation.", user });
+    const { name, email, password } = req.body;
+
+    // Check if user exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: "Email déjà utilisé" });
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create user
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role: "guest",
+      isApproved: false,
+      pendingRequest: true,
+    });
+
+    // Send email to admin
+    await sendAdminRequestEmail(user);
+
+    console.log("New user created:", user.email); // debug
+
+    res.status(201).json({
+      message: "Inscription réussie, en attente de validation.",
+      user,
+    });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error("Register error:", err);
+    res.status(500).json({ message: "Erreur serveur" });
   }
 };
 
