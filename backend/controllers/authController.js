@@ -58,6 +58,7 @@ export const login = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+           isApproved: user.isApproved,
       },
     });
   } catch (error) {

@@ -26,10 +26,16 @@ const Login = () => {
         { withCredentials: true }
       );
   
-      if (res.data.user) {
-        login(res.data.user); 
-        navigate("/");
-      }
+     if (res.data.user) {
+  login(res.data.user);
+
+  if (!res.data.user.isApproved) {
+    navigate("/waiting-approval");
+  } else {
+    navigate("/");
+  }
+}
+
     } catch (err) {
       console.error(err);
       toast.error("Email ou mot de passe incorrect");
@@ -45,7 +51,7 @@ const loginWithGoogle = () => {
   // Connexion Facebook
   const loginWithFacebook = () => {
     toast.info("Redirection vers Facebook…");
-    window.location.href = `https://magsm.onrender.com/api/auth/facebook`;
+    window.location.href = `${BASE_URL}/api/auth/facebook`;
   };
 
 
