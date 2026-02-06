@@ -51,7 +51,7 @@ export const createOrderFromCart = async (req, res) => {
 
     // 4️⃣ Emails (non bloquant)
     try {
-      await sendAdminOrderNotification({ user, order });
+      //await sendAdminOrderNotification({ user, order });
       await sendClientOrderConfirmation({ user, order, invoicePath });
     } catch (mailError) {
       console.error("Erreur email:", mailError.message);
