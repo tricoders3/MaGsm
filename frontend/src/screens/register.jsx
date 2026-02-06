@@ -31,7 +31,7 @@ const handleSubmit = async (e) => {
     const res = await axios.post(
       `${BASE_URL}/api/auth/register`,
       { name, email, password },
-      { withCredentials: true }
+      
     );
 
     console.log("Backend response:", res.data); // 🔹 Backend returned something
