@@ -1,4 +1,4 @@
-// backend/server.js
+// server.js
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
@@ -44,39 +44,33 @@ connectDB();
 // Initialize Express
 // ------------------
 const app = express();
+
+// ------------------
+// Middlewares
+// ------------------
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-// ------------------
-// Express Session
-// ------------------
-
-
-// ------------------
-// Passport
-// ------------------
-app.use(passport.initialize());
-app.use(passport.session());
 
 // ------------------
 // CORS
 // ------------------
 app.use(
   cors({
-    origin: ["https://magsm.onrender.com"], // frontend URL
-    credentials: true,
+    origin: ["https://magsm.onrender.com", "http://localhost:3000"],
+    credentials: true, // مهم
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 
 // ------------------
-// Session
+// Session middleware
 // ------------------
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "fallbacksecret",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: false, // false مهم
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // true فقط في HTTPS
@@ -85,24 +79,16 @@ app.use(
     },
   })
 );
-if (process.env.NODE_ENV === "production") {
-  const buildPath = path.join(__dirname, "../frontend/build"); 
-  app.use(express.static(buildPath));
 
-  // Send index.html for all non-API routes
-  app.get(/^(?!\/api).*/, (req, res) => {
-    res.sendFile(path.join(buildPath, "index.html"));
-  });
-} else {
-  app.get("/*", (req, res) => {
-    res.send("API is running....");
-  });
-}
+// ------------------
+// Passport
+// ------------------
+app.use(passport.initialize());
+app.use(passport.session()); // مهم جدًا بعد session
+
 // ------------------
 // API Routes
 // ------------------
-app.get("/", (req, res) => res.send("🚀 Backend running"));
-
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
@@ -113,24 +99,24 @@ app.use("/api/favorites", favoriteRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/site-settings", settingsRoutes);
 app.use("/api/contact", contactMsgRoutes);
-app.use ("/api/brands", brandRoutes);
-// Facebook data deletion
-app.get("/facebook-data-deletion", (req, res) => {
-  res.send(`
-    <h2>Suppression des données utilisateur</h2>
-    <p>Contactez : <b>support@tonsite.com</b></p>
-  `);
-});
+app.use("/api/brands", brandRoutes);
 
 // ------------------
-// Serve React Build in Production
+// React build in production
 // ------------------
+if (process.env.NODE_ENV === "production") {
+  const buildPath = path.join(__dirname, "../frontend/build");
+  app.use(express.static(buildPath));
 
+  app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(path.join(buildPath, "index.html"));
+  });
+} else {
+  app.get("/", (req, res) => res.send("🚀 Backend running"));
+}
 
 // ------------------
-// Start Server
+// Start server
 // ------------------
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
