@@ -31,14 +31,14 @@ const Brands = () => {
   return (
     <section className="brands-section py-md-3 py-0">
       <div className="container">
-        <div className="mb-5">
+        <div className="mb-3">
           <h2 className="section-title">Nos Marques</h2>
           <p className="section-subtitle">
             Découvrez nos marques partenaires de confiance
           </p>
         </div>
 
-        <div className="brands-slider">
+        <div className="brands-slider mb-3">
           <div className="brands-track">
             {brands.map((brand) => (
               <div key={brand._id} className="brand-slide">

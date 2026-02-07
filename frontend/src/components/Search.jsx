@@ -19,7 +19,7 @@ export default function GlobalSearch() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const skipSuggestions = location.state?.skipSuggestions || false;
+
 
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);

@@ -204,7 +204,7 @@ const handleAddToCartSafe = () => {
 
           <div className="mb-3">
             {promotion && <span className="text-decoration-line-through me-2 text-muted">{product.price} DT</span>}
-            <span className="h4 fw-bold text-success">{discountedPrice} DT</span>
+            <span className="h4 fw-bold text-danger">{discountedPrice} DT</span>
           </div>
 
 <p className="mb-3">

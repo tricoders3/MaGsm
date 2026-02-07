@@ -107,7 +107,7 @@ const HeroSlider = () => {
 
                     <Link
                       to="/products"
-                      className="btn-redesign btn-primary-redesign btn-lg-redesign"
+                      className="btn-redesign btn-primary-redesign btn-lg-redesign mb-2"
                     >
                       En savoir plus
                     </Link>
@@ -131,7 +131,7 @@ const HeroSlider = () => {
                       </div>
                     </div>
 
-                    <h2 className="hero-title mt-4">{slide.title}</h2>
+                    <h2 className="hero-title mt-3">{slide.title}</h2>
                   </div>
                 </div>
 

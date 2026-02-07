@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaSearch, FaChevronDown, FaChevronRight } from "react-icons/fa";
+import { FiLogOut } from "react-icons/fi";
 import axios from "axios";
 import BASE_URL from "../constante";
 import logo from "../assets/images/logo.png";
@@ -85,7 +86,7 @@ const Sidebar = ({ categories, loading }) => {
       setSearchLoading(false);
     }
   };
-  
+
   return (
     <div
       className="offcanvas offcanvas-start"
@@ -96,17 +97,10 @@ const Sidebar = ({ categories, loading }) => {
     >
       {/* Header */}
       <div className="offcanvas-header d-flex align-items-center justify-content-between">
-        <Link
-          to="/"
-          className="d-flex align-items-center gap-2 logo-link"
-          onClick={(e) => {
-            e.preventDefault();
-            handleNav("/");
-          }}
-        >
-          <img src={logo} alt="MA GSM Logo" className="logo-img" />
-          <span className="logo-text">MA GSM</span>
-        </Link>
+          <Link to="/" className="d-flex align-items-center">
+                   <img src={logo} alt="MA GSM" style={{ height: 60, marginRight: 10 }} />
+                   <span>MA GSM</span>
+           </Link>
 
         <button
           type="button"
@@ -238,14 +232,15 @@ const Sidebar = ({ categories, loading }) => {
                   handleNav("/profile");
                 }}
               >
-                Profil
+                Profile
               </Link>
 
               <button
                 className="nav-link-sidebar text-danger text-start bg-transparent border-0"
                 onClick={handleLogout}
               >
-                Se déconnecter
+         <FiLogOut size={18} className="me-2" />Se déconnecter
+
               </button>
             </>
           ) : (

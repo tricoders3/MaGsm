@@ -58,7 +58,7 @@ const totalAfterDiscount = subTotal + deliveryFee - discount;
   }
 
   return (
-    <div className="container mt-md-5 mb-5">
+    <div className="container mt-3 mb-3">
     <div className="card border-0 shadow-lg rounded-5 overflow-hidden">
       <div className="p-4 text-center">
         <FiCheckCircle size={40} className="text-success mb-2" />

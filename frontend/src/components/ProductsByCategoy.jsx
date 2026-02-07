@@ -50,7 +50,7 @@ const SubcategoryProducts = () => {
   return (
     <section className="products-section py-5">
       <div className="container">
-        <h2 className="section-title mb-5">Produits</h2>
+        <h2 className="section-title mb-3">Produits</h2>
         <div className="row g-3">
           {products.map((p) => (
             <div key={p._id} className="col-6 col-sm-6 col-md-4 col-lg-3">

@@ -185,12 +185,12 @@ const renderBadge = () => {
 ) : (
   <>
     {/* Price */}
-    <p className="product-price">
+    <p className="product-price text-muted">
   {product.price ? (
     `${product.price} DT`
   ) : (
     <>
-      <span className="original-price">{product.originalPrice} DT</span>{" "}
+      <span className="original-price text-muted">{product.originalPrice} DT</span>{" "}
       <span className="discounted-price">{product.discountedPrice} DT</span>
     </>
   )}

@@ -120,9 +120,9 @@ const handleRemoveFavorite = async (productId) => {
 
   return (
     <div className="container mt-4 mb-5">
-    {favorites.length > 0 && <h3 className="mb-4 text-dark">Mes Favoris</h3>}
-  
-
+    {favorites.length > 0 &&   <div className="mt-5">
+    <h2>Mes favoris</h2>
+    </div>}
     {favorites.length === 0 ? (
       <div className="text-center mt-5">
         <h2>Favoris est vide</h2>
@@ -183,7 +183,7 @@ const handleRemoveFavorite = async (productId) => {
                       {product.price} DT
                     </span>
                   )}
-                  <span className="discounted-price fw-bold text-success">
+                  <span className="discounted-price fw-bold text-muted">
                     {calculateDiscountedPrice(product)} DT
                   </span>
                 </p>

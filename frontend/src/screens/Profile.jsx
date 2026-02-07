@@ -27,14 +27,13 @@ const UserProfile = () => {
   }, [initialTab]);
 
       return (
-        <div className="container-fluid py-3">
+        <div className="container mt-3 mb-3">
           <div className="row">
-    
             {/* Sidebar */}
             <div className="col-md-3 col-lg-2">
               <div className="d-flex flex-column rounded-4 shadow-sm p-2 mb-4">
                 {[
-                  { key: "profile", icon: <FiUser />, label: "Profil" },
+                  { key: "profile", icon: <FiUser />, label: "Profile" },
                   { key: "password", icon: <FiLock />, label: "Mot de passe" },
                   { key: "address", icon: <FiMapPin />, label: "Adresse" },
                   { key: "orders", icon: <FiShoppingBag />, label: "Commandes" },

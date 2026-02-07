@@ -60,21 +60,42 @@ function App() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
- useEffect(() => {
+  useEffect(() => {
     // Define all admin routes
     const adminPaths = ["/admin"];
     
-    // Check if current path starts with admin
+    // Pages where search is hidden
+    const noSearchPaths = [  
+      "/profile",
+      "/login",
+      "/register",
+      "/checkout",
+      "/order-confirmation",
+      "/not-found"
+    ];
+  
+    // Check current path
     const isAdminPage = adminPaths.some(path =>
       location.pathname.startsWith(path)
     );
-
+    const isNoSearchPage = noSearchPaths.some(path =>
+      location.pathname.startsWith(path)
+    );
+  
     if (!isAdminPage) {
       document.body.classList.add("user-page");
+  
+      // Add a class to remove search bar padding
+      if (isNoSearchPage) {
+        document.body.classList.add("no-search");
+      } else {
+        document.body.classList.remove("no-search");
+      }
     } else {
-      document.body.classList.remove("user-page");
+      document.body.classList.remove("user-page", "no-search");
     }
   }, [location.pathname]);
+  
 
   return (
     <>

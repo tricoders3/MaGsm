@@ -325,7 +325,7 @@ export default function Cart() {
         <div className="p-3 bg-white rounded shadow-sm d-flex flex-column gap-2">
           <Button
             variant="dark"
-            className="w-100 mb-2"
+            className="w-100"
             onClick={handleCreateOrder}
             disabled={creatingOrder || loading || cart.length === 0}
           >

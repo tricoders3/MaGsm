@@ -194,10 +194,8 @@ if (loading) return null;
   }
 
   return (
-<div className="container mt-md-5  mb-3">
+<div className="container mt-3 mb-3">
   <div className="row g-4">
-
-
     <div className="col-lg-7">
       <div className="card p-4 shadow-sm rounded-4">
         <h4 className="fw-bold mb-4 text-dark border-bottom pb-2">
