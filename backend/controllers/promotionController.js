@@ -223,70 +223,63 @@ export const updatePromotion = async (req, res) => {
 
 
 
+
 /**
- * @desc    Get products with an active promotion
- * @route   GET /api/promotions/promos
+ * @desc    Get products with VALID promotions
+ * @route   GET /api/promotions/products
  * @access  Public
  */
 export const getProductsWithPromo = async (req, res) => {
   try {
-    // Step 1: Find all products with a promotion assigned
-    const products = await Product.find({ promotion: { $ne: null } })
-      .populate("promotion") // populate promotion document
-      .populate("category", "name subCategories"); // populate category and subCategories
+    const now = new Date();
 
-    // Step 2: Filter only active promotions and map product data
-    const activeProducts = products
-      .filter(p => p.promotion && p.promotion.isActive)
-      .map(p => {
-        // Get subCategory name
-        let subCategoryName = null;
-        if (p.category && p.subCategory) {
-          const subCat = p.category.subCategories.find(
-            sc => sc._id.toString() === p.subCategory.toString()
-          );
-          subCategoryName = subCat ? subCat.name : null;
-        }
+    // 1️⃣ Récupérer les produits avec promotions valides
+    const products = await Product.find()
+      .populate({
+        path: "promotion",
+        match: {
+          isActive: true,
+          startDate: { $lte: now },
+          endDate: { $gte: now },
+        },
+      })
+      .populate("category", "name subCategories");
 
-        const promo = p.promotion;
+    // 2️⃣ Filtrer les produits qui ont une promotion (populate match peut renvoyer null)
+    const validProducts = products.filter(p => p.promotion);
 
-        // Calculate discounted price
-        const originalPrice = p.price;
-        let discountedPrice = originalPrice;
-        if (promo.discountType === "percentage") {
-          discountedPrice = originalPrice - (originalPrice * promo.discountValue) / 100;
-        } else if (promo.discountType === "fixed") {
-          discountedPrice = originalPrice - promo.discountValue;
-        }
-        discountedPrice = Math.max(discountedPrice, 0);
+    // 3️⃣ Construire le résultat
+    const result = validProducts.map(p => {
+      const subCat = p.category?.subCategories.find(
+        sc => sc._id.toString() === p.subCategory?.toString()
+      );
 
-        return {
-          id: p._id,
-          name: p.name,
-          images: p.images || [], 
-          originalPrice,
-          discountedPrice,
-          promotion: {
-            _id: promo._id,
-            name: promo.name,
-            description: promo.description,
-            discountType: promo.discountType,
-            discountValue: promo.discountValue,
-            isActive: promo.isActive,
-            startDate: promo.startDate,
-            endDate: promo.endDate,
-          },
-          category: p.category?.name || "",
-          subCategory: subCategoryName,
-        };
-      });
+      return {
+        _id: p._id,
+        name: p.name,
+        images: p.images || [],
+        originalPrice: p.price,
+        discountedPrice: p.getFinalPrice(),
+        promotion: {
+          _id: p.promotion._id,
+          name: p.promotion.name,
+          discountType: p.promotion.discountType,
+          discountValue: p.promotion.discountValue,
+          startDate: p.promotion.startDate,
+          endDate: p.promotion.endDate,
+        },
+        category: p.category?.name || null,
+        subCategory: subCat?.name || null,
+      };
+    });
 
-    res.json(activeProducts);
+    res.json(result);
   } catch (error) {
-    console.error("Error fetching products with promotion:", error);
+    console.error("getProductsWithPromo error:", error);
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 /**
