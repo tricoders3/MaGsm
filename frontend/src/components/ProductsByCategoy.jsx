@@ -52,22 +52,26 @@ const SubcategoryProducts = () => {
       <div className="container">
         <h2 className="section-title mb-3">Produits</h2>
         <div className="row g-3">
-          {products.map((p) => (
-            <div key={p._id} className="col-6 col-sm-6 col-md-4 col-lg-3">
-              <ProductCard
-                product={{
-                  id: p._id,
-                  name: p.name,
-                  images: p.images?.length ? p.images : [{ url: "/assets/images/default.png" }],
-                  description: p.description,
-                  price: p.price,
-                  promotion: p.promotion || null,
-                }}
-                badgeType={p.promotion ? 'promo' : 'stock'}
-                stockCount={p.countInStock}
-              />
-            </div>
-          ))}
+        {products.map((p) => (
+  <div key={p.id} className="col-6 col-sm-6 col-md-4 col-lg-3">
+    <ProductCard
+      product={{
+        id: p.id,
+        name: p.name,
+        images: p.images?.length
+          ? p.images
+          : [{ url: "/assets/images/default.png" }],
+        description: p.description,
+        price: p.price,
+        discountedPrice: p.hasPromotion ? p.discountedPrice : null,
+        hasPromotion: p.hasPromotion,
+      }}
+      badgeType={p.hasPromotion ? "promo" : "stock"}
+      stockCount={p.countInStock}
+    />
+  </div>
+))}
+
         </div>
       </div>
     </section>

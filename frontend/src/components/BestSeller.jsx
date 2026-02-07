@@ -18,17 +18,18 @@ const BestSeller = () => {
         const { data } = await axios.get(
           `${BASE_URL}/api/promotions/promos`
         );
-
         const formatted = data.map((p) => ({
           id: p.id,
           name: p.name,
           images: p.images || [],
           category: p.category,
           subCategory: p.subCategory,
-          originalPrice: p.originalPrice,
-          discountedPrice: p.discountedPrice,
-          promotion: p.promotion,
+          price: p.price,
+          promotion: p.promotion || null,
+          discountedPrice: p.promotion?.discountedPrice ?? null,
+          hasPromotion: !!p.promotion,
         }));
+        
 
         setProducts(formatted);
       } catch (err) {

@@ -56,7 +56,7 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
   const handleAddToCart = async (e) => {
   e.stopPropagation();
 
-  if (stockCount === "out") {
+  if (product.countInStock === "out") {
     setToast({
       show: true,
       message: "Produit en rupture de stock",
@@ -94,7 +94,7 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
       );
     }
   
-    if (badgeType === "promo" && product.promotion) {
+    if (badgeType === "promo" && product.hasPromotion && product.promotion) {
       return (
         <span className="badge-offer">
           {product.promotion.discountType === "percentage"
@@ -126,8 +126,8 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
       </button>
       {isAuthenticated && (
       <button className="cart-btn" onClick={handleAddToCart}
-      disabled={stockCount === "out"}
-      title={stockCount === "out" ? "Produit en rupture de stock" : "Ajouter au panier"}>
+      disabled={product.countInStock === "out"}
+      title={product.countInStock === "out" ? "Produit en rupture de stock" : "Ajouter au panier"}>
         <FiShoppingCart/>
       </button>
        )}
@@ -172,13 +172,13 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
   <>
     {/* Price */}
     <p className="product-price text-muted">
-  {product.price ? (
-    `${product.price} DT`
-  ) : (
+  {product.hasPromotion && product.promotion?.discountedPrice? (
     <>
-      <span className="original-price text-muted">{product.originalPrice} DT</span>{" "}
-      <span className="discounted-price">{product.discountedPrice} DT</span>
+      <span className="original-price text-muted">{product.price} DT</span>{" "}
+      <span className="discounted-price">{product.promotion?.discountedPrice} DT</span>
     </>
+  ) : (
+    `${product.price} DT`
   )}
 </p>
 

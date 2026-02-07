@@ -18,33 +18,27 @@ const PopularProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/products/most-purchased`);
-
+        const response = await axios.get(
+          `${BASE_URL}/api/products/most-purchased`
+        );
+  
         const productsData = response.data.map((product) => {
-            let originalPrice = product.price;
-            let discountedPrice = null;
-          
-            if (product.promotion?.isActive) {
-              if (product.promotion.discountType === "percentage") {
-                discountedPrice = product.price - (product.price * product.promotion.discountValue) / 100;
-              } else if (product.promotion.discountType === "fixed") {
-                discountedPrice = product.price - product.promotion.discountValue;
-              }
-            }
-          
-            return {
-              id: product._id,
-              name: product.name,
-              description: product.description,
-              price: discountedPrice ? null : product.price, 
-              originalPrice: discountedPrice ? originalPrice : null,
-              discountedPrice: discountedPrice ? discountedPrice : null,
-              images: product.images || [],
-              countInStock: product.countInStock,
-              category: product.category?.name || null ,
-              promotion: product.promotion || null,
-            };
-          });
+          const hasPromotion = !!product.promotion;
+  
+          return {
+            id: product._id,
+            name: product.name,
+            description: product.description,
+            price: product.price,
+            discountedPrice: product.promotion?.discountedPrice,
+            images: product.images || [],
+            countInStock: product.countInStock,
+            category: product.category?.name || null,
+            promotion: product.promotion || null,
+            hasPromotion,
+          };
+        });
+  
         setProducts(productsData);
         setLoading(false);
       } catch (err) {
@@ -53,9 +47,10 @@ const PopularProducts = () => {
         setLoading(false);
       }
     };
-
+  
     fetchProducts();
   }, []);
+  
   
 
   if (products.length === 0) return null;

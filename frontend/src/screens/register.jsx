@@ -8,6 +8,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Backend URL (mettre dans .env frontend)
@@ -17,16 +18,14 @@ const Register = () => {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  console.log("Register form submitted"); // 🔹 Form triggered
-
   if (password !== confirmPassword) {
-    console.warn("Passwords do not match"); // 🔹 Password mismatch
+    console.warn("Passwords do not match"); //  Password mismatch
     toast.error("Les mots de passe ne correspondent pas");
     return;
   }
 
-  console.log("Sending data to backend:", { name, email, password }); // 🔹 Data sent
 
+  setLoading(true);
   try {
     const res = await axios.post(
       `${BASE_URL}/api/auth/register`,
@@ -34,22 +33,18 @@ const handleSubmit = async (e) => {
       
     );
 
-    console.log("Backend response:", res.data); // 🔹 Backend returned something
+    
 
     toast.success(res.data.message || "Inscription réussie");
 
-    console.log("Navigating to waiting-approval page"); // 🔹 Navigation step
     navigate("/waiting-approval"); // direct navigate
   } catch (err) {
-    console.error("Register error:", err.response?.data || err); // 🔹 Detailed error log
-    if (err.response) {
-      console.log("Status code:", err.response.status);
-      console.log("Headers:", err.response.headers);
-      console.log("Data returned:", err.response.data);
-    }
+   
     toast.error(
       err.response?.data?.message || "Erreur lors de l'inscription"
     );
+  } finally {
+    setLoading(false); 
   }
 };
 
@@ -131,9 +126,20 @@ const handleSubmit = async (e) => {
                   />
                 </div>
   
-                <button className="btn btn-primary w-100 mb-3">
-                  S’inscrire
-                </button>
+                <button
+                    className="btn btn-primary w-100 mb-3 d-flex justify-content-center align-items-center gap-2"
+                    type="submit"
+                    disabled={loading} 
+                  >
+                    {loading && (
+                      <span
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                    )}
+                    {loading ? "Inscription…" : "S’inscrire"}
+                  </button>
               </form>
               <div className="text-center mb-2 text-muted">OU</div>
                   {/* Google */}

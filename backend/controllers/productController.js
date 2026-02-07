@@ -66,8 +66,7 @@ export const getProducts = async (req, res) => {
         // ✅ subCategory name
         subCategoryName: subCat ? subCat.name : null,
 
-        // ✅ prix final calculé dynamiquement
-        discountedPrice: p.getFinalPrice(),
+    
 
         // ✅ infos promo seulement si valide
         promotion: p.promotion?.isValid
@@ -78,7 +77,10 @@ export const getProducts = async (req, res) => {
               discountValue: p.promotion.discountValue,
               startDate: p.promotion.startDate,
               endDate: p.promotion.endDate,
+                    // ✅ prix final calculé dynamiquement
+        discountedPrice: p.getFinalPrice(),
             }
+      
           : null,
 
         // ✅ flag simple pour le frontend
@@ -118,8 +120,19 @@ export const getProductById = async (req, res) => {
     res.json({
       ...product._doc,
       subCategoryName: subCat ? subCat.name : null,
-      discountedPrice: product.getFinalPrice(), // ✅
-      promotion: product.promotion?.isValid ? product.promotion : null,
+      promotion: p.promotion?.isValid
+          ? {
+              _id: p.promotion._id,
+              name: p.promotion.name,
+              discountType: p.promotion.discountType,
+              discountValue: p.promotion.discountValue,
+              startDate: p.promotion.startDate,
+              endDate: p.promotion.endDate,
+                    // ✅ prix final calculé dynamiquement
+        discountedPrice: p.getFinalPrice(),
+            }
+      
+          : null,
       hasPromotion: !!product.promotion?.isValid,
     });
   } catch (error) {
@@ -215,8 +228,19 @@ export const getProductsByCategory = async (req, res) => {
       return {
         ...p._doc,
         subCategoryName: subCat ? subCat.name : null,
-        discountedPrice: p.getFinalPrice(), // ✅
-        promotion: p.promotion?.isValid ? p.promotion : null,
+     promotion: p.promotion?.isValid
+          ? {
+              _id: p.promotion._id,
+              name: p.promotion.name,
+              discountType: p.promotion.discountType,
+              discountValue: p.promotion.discountValue,
+              startDate: p.promotion.startDate,
+              endDate: p.promotion.endDate,
+                    // ✅ prix final calculé dynamiquement
+        discountedPrice: p.getFinalPrice(),
+            }
+      
+          : null,
         hasPromotion: !!p.promotion?.isValid,
       };
     });
@@ -250,8 +274,19 @@ export const getProductsBySubCategory = async (req, res) => {
       return {
         ...p._doc,
         subCategoryName: subCat ? subCat.name : null,
-        discountedPrice: p.getFinalPrice(), // ✅
-        promotion: p.promotion?.isValid ? p.promotion : null,
+         promotion: p.promotion?.isValid
+          ? {
+              _id: p.promotion._id,
+              name: p.promotion.name,
+              discountType: p.promotion.discountType,
+              discountValue: p.promotion.discountValue,
+              startDate: p.promotion.startDate,
+              endDate: p.promotion.endDate,
+                    // ✅ prix final calculé dynamiquement
+        discountedPrice: p.getFinalPrice(),
+            }
+      
+          : null,
         hasPromotion: !!p.promotion?.isValid,
       };
     });
@@ -382,6 +417,20 @@ export const getMostPurchasedProducts = async (req, res) => {
         totalSold: sale ? sale.totalSold : 0,
         subCategoryName,
         images: p.images || [], // return all images
+        promotion: p.promotion?.isValid
+          ? {
+              _id: p.promotion._id,
+              name: p.promotion.name,
+              discountType: p.promotion.discountType,
+              discountValue: p.promotion.discountValue,
+              startDate: p.promotion.startDate,
+              endDate: p.promotion.endDate,
+                    // ✅ prix final calculé dynamiquement
+        discountedPrice: p.getFinalPrice(),
+            }
+      
+          : null,
+        hasPromotion: !!p.promotion?.isValid,
       };
     });
 
@@ -409,8 +458,19 @@ export const getProductByName = async (req, res) => {
     res.json({
       ...product._doc,
       subCategoryName: subCat ? subCat.name : null,
-      discountedPrice: product.getFinalPrice(), // ✅
-      promotion: product.promotion?.isValid ? product.promotion : null,
+     promotion: p.promotion?.isValid
+          ? {
+              _id: p.promotion._id,
+              name: p.promotion.name,
+              discountType: p.promotion.discountType,
+              discountValue: p.promotion.discountValue,
+              startDate: p.promotion.startDate,
+              endDate: p.promotion.endDate,
+                    // ✅ prix final calculé dynamiquement
+        discountedPrice: p.getFinalPrice(),
+            }
+      
+          : null,
       hasPromotion: !!product.promotion?.isValid,
     });
   } catch (error) {

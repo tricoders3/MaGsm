@@ -21,7 +21,6 @@ function Products() {
     const fetchProducts = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/api/products`);
-
         const mappedProducts = res.data.map((product) => ({
           id: product._id,
           name: product.name,
@@ -31,15 +30,11 @@ function Products() {
           subCategoryId: product.subCategory || product.subCategory?._id || "",
           images: product.images?.length ? product.images : [{ url: "/assets/images/default.png" }],
           price: product.price,
-          originalPrice: product.promotion ? product.price : null,
-          discountedPrice: product.promotion
-            ? product.promotion.discountType === "percentage"
-              ? Math.round(product.price * (1 - product.promotion.discountValue / 100))
-              : product.price - product.promotion.discountValue
-            : null,
-          promotion: product.promotion,
-          countInStock: product.countInStock || 1,
+          promotion: product.promotion, 
+          countInStock: product.countInStock || "in",
+          hasPromotion: !!product.promotion, 
         }));
+        
 
         setProducts(mappedProducts);
         setLoading(false);

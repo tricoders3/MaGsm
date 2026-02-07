@@ -13,12 +13,14 @@ import { useAuth } from "../context/AuthContext";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
   // Connexion classique (email/password)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await axios.post(
         `${BASE_URL}/api/auth/login`,
@@ -39,20 +41,28 @@ const Login = () => {
     } catch (err) {
       console.error(err);
       toast.error("Email ou mot de passe incorrect");
-    }
+    } finally {
+      setLoading(false); 
+    } 
   };
 
 
   // Connexion Google
-const loginWithGoogle = () => {
-  toast.info("Redirection vers Google…");
-  window.location.href = `${BASE_URL}/api/auth/google`;
-};
+  const loginWithGoogle = () => {
+    if (window.innerWidth > 768) {
+      toast.info("Redirection vers Google…");
+    }
+    window.location.href = `${BASE_URL}/api/auth/google`;
+  };
+  
   // Connexion Facebook
   const loginWithFacebook = () => {
-    toast.info("Redirection vers Facebook…");
+    if (window.innerWidth > 768) {
+      toast.info("Redirection vers Facebook…");
+    }
     window.location.href = `${BASE_URL}/api/auth/facebook`;
   };
+  
 
 
   return (
@@ -90,7 +100,14 @@ const loginWithGoogle = () => {
                     />
                   </div>
 
-                  <button className="btn btn-primary w-100 mb-3">Se connecter</button>
+                  <button className="btn btn-primary w-100 mb-3"
+                   type="submit"
+                   disabled={loading} >
+                   {loading && (
+                      <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    )}
+                    {loading ? "Connexion…" : "Se connecter"}
+                  </button>
                 </form>
 
                 <div className="text-center mb-2 text-muted">OU</div>

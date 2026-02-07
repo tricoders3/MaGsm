@@ -258,8 +258,8 @@ export const getProductsWithPromo = async (req, res) => {
         _id: p._id,
         name: p.name,
         images: p.images || [],
-        originalPrice: p.price,
-        discountedPrice: p.getFinalPrice(),
+        price: p.price,
+        
         promotion: {
           _id: p.promotion._id,
           name: p.promotion.name,
@@ -267,6 +267,7 @@ export const getProductsWithPromo = async (req, res) => {
           discountValue: p.promotion.discountValue,
           startDate: p.promotion.startDate,
           endDate: p.promotion.endDate,
+          discountedPrice: p.getFinalPrice(),
         },
         category: p.category?.name || null,
         subCategory: subCat?.name || null,
@@ -318,7 +319,7 @@ export const getPromotionByProduct = async (req, res) => {
     res.json({
       productId: product._id,
       originalPrice,
-      discountedPrice,
+      
       promotion: {
         _id: promo._id,
         name: promo.name,
@@ -328,6 +329,7 @@ export const getPromotionByProduct = async (req, res) => {
         startDate: promo.startDate,
         endDate: promo.endDate,
         isActive: promo.isActive,
+        discountedPrice,
       },
     });
   } catch (error) {

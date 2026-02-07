@@ -114,7 +114,7 @@ function NavBar() {
       </div>
 
       <div className="d-none d-lg-flex">
-                {isAuthenticated ? (
+                {isAuthenticated ?  (
                   <div className="nav-avatar-wrapper" ref={menuRef}>
                     <button
                       className="nav-avatar"
