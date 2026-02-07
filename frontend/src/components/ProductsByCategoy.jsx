@@ -60,6 +60,7 @@ const SubcategoryProducts = () => {
                   name: p.name,
                   images: p.images?.length ? p.images : [{ url: "/assets/images/default.png" }],
                   description: p.description,
+                  price: p.price,
                   promotion: p.promotion || null,
                 }}
                 badgeType={p.promotion ? 'promo' : 'stock'}

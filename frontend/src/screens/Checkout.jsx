@@ -194,7 +194,7 @@ if (loading) return null;
   }
 
   return (
-<div className="container mt-5 mb-5">
+<div className="container mt-md-5  mb-3">
   <div className="row g-4">
 
 
@@ -312,7 +312,7 @@ if (loading) return null;
             <span className="text-decoration-line-through me-2 text-muted">
               {item.product.price} DT
             </span>
-            <span className="fw-bold">{price} DT</span>
+            <span className="fw-bold text-danger">{price} DT</span>
           </>
         ) : (
           <span className="fw-bold">{price} DT</span>

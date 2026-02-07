@@ -34,34 +34,62 @@ const { productName } = useParams();
   }, [product]);
 
   // Fetch product & similar products
- useEffect(() => {
-  const fetchProductAndSimilar = async () => {
-    try {
-      // Fetch product by name
-      const resProduct = await axios.get(`${BASE_URL}/api/products/name/${encodeURIComponent(productName)}`);
-      const currentProduct = resProduct.data;
-      setProduct(currentProduct);
+  useEffect(() => {
+    const fetchProductAndSimilar = async () => {
+      try {
+        const resProduct = await axios.get(
+          `${BASE_URL}/api/products/name/${encodeURIComponent(productName)}`
+        );
+        const currentProduct = resProduct.data;
+        setProduct(currentProduct);
 
-      // Fetch promotion
-      const resPromo = await axios.get(`${BASE_URL}/api/promotions/product/${currentProduct._id}`);
-      setPromotion(resPromo.data.promotion || null);
+        const resPromo = await axios.get(
+          `${BASE_URL}/api/promotions/product/${currentProduct._id}`
+        );
+        setPromotion(resPromo.data.promotion || null);
 
-      // Fetch similar products
-      if (currentProduct.category?._id) {
-        const res = await axios.get(`${BASE_URL}/api/products/category/${currentProduct.category._id}`);
-        const similar = res.data
-          .filter(p => p._id !== currentProduct._id && p.subCategory === currentProduct.subCategory)
-          .slice(0, 4);
-        setSimilarProducts(similar);
+       
+        if (currentProduct.category?._id) {
+          const res = await axios.get(
+            `${BASE_URL}/api/products/category/${currentProduct.category._id}`
+          );
+
+          const filtered = res.data
+            .filter(
+              p =>
+                p._id !== currentProduct._id &&
+                p.subCategory === currentProduct.subCategory
+            )
+            .slice(0, 4);
+
+          // 🔥 FETCH PROMOTION FOR EACH SIMILAR PRODUCT
+          const withPromotions = await Promise.all(
+            filtered.map(async (p) => {
+              try {
+                const promoRes = await axios.get(
+                  `${BASE_URL}/api/promotions/product/${p._id}`
+                );
+                return {
+                  ...p,
+                  promotion: promoRes.data.promotion || null,
+                };
+              } catch {
+                return { ...p, promotion: null };
+              }
+            })
+          );
+
+          setSimilarProducts(withPromotions);
+        }
+      } catch (err) {
+        console.error("Error loading product details", err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Error loading product details", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchProductAndSimilar();
-}, [productName]); 
+    };
+
+    fetchProductAndSimilar();
+  }, [productName]);
 
 
   // Early returns
@@ -237,7 +265,7 @@ const handleAddToCartSafe = () => {
 
       {/* Similar Products */}
       {similarProducts.length > 0 && (
-        <div className="mt-5">
+        <div className="mt-3 mt-md-5">
           <div className="mb-4">
             <h2 className="section-title">Produits similaires</h2>
             <p className="section-subtitle d-inline">Découvrez d'autres articles qui pourraient vous intéresser dans la même catégorie.</p>
@@ -246,7 +274,7 @@ const handleAddToCartSafe = () => {
           <div className="row g-3">
             {similarProducts.map((prod) => (
               <div key={prod._id} className="col-6 col-sm-6 col-md-4 col-lg-3">
-                <ProductCard
+                <ProductCard 
   product={{
     id: prod._id,
     name: prod.name,
@@ -254,7 +282,6 @@ const handleAddToCartSafe = () => {
     images: prod.images?.length ? prod.images : [{ url: "/assets/images/default.png" }],
     category: prod.subCategoryName || "N/A",
     countInStock: prod.countInStock,
-    description: prod.description,
     promotion: prod.promotion || null,
   }}
   badgeType={prod.promotion ? "promo" : "stock"}

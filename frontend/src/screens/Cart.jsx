@@ -156,15 +156,13 @@ export default function Cart() {
 
   return (
     <div className="container mt-4 mb-5">
-    <h3 className="mb-4 text-dark">Votre Panier</h3>
-  
+       <div className="mt-5">
+    <h2>Votre panier</h2>
+    </div>
     <div className="row">
       {/* Cart Items */}
       <div className="col-12 col-md-8">
-        {cart.length === 0 ? (
-          <p className="text-center text-muted">Votre panier est vide.</p>
-        ) : (
-          cart.map((item) => (
+          {cart.map((item) => (
             <div
               key={item.product._id}
               className="mb-3 p-3 bg-white rounded shadow-sm"
@@ -312,12 +310,12 @@ export default function Cart() {
               
             </div>
           ))
-        )}
+        }
       </div>
   
       {/* Order Summary */}
       <div className="col-12 col-md-4 mt-4 mt-md-0">
-      <div className="p-3">
+      <div className="mb-2 p-3">
   <span className="fw-semibold text-dark d-block">Total</span>
   <span className="fw-bold fs-5 text-dark d-block">
     {totalPrice.toFixed(2)} TND

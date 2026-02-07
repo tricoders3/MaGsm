@@ -13,10 +13,13 @@ export default function GlobalSearch() {
     setCategoryId,
     subCategoryId,
     setSubCategoryId,
+    fromSidebar,
+    setFromSidebar
   } = useGlobalSearch();
 
   const navigate = useNavigate();
   const location = useLocation();
+  const skipSuggestions = location.state?.skipSuggestions || false;
 
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -52,7 +55,7 @@ export default function GlobalSearch() {
   );
 
   const isCategoryPage = location.pathname.startsWith("/category");
-  const showDropdownFiltered = showDropdown && !isMobile;
+  
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -62,7 +65,7 @@ export default function GlobalSearch() {
   }, []);
 
   useEffect(() => {
-    if (!query.trim() || hideSearch) {
+    if (!query.trim() || hideSearch || location.state?.fromSidebar) {
       setSuggestions([]);
       setShowDropdown(false);
       setSelectedSuggestionIndex(-1);
@@ -94,10 +97,10 @@ export default function GlobalSearch() {
       } finally {
         setLoadingSuggestions(false);
       }
-    }, 200); // Faster response for better UX
+    }, 200);
 
     return () => clearTimeout(delay);
-  }, [query, hideSearch]);
+  }, [query, hideSearch, location.state?.fromSidebar ]);
 
   useEffect(() => {
     if (!location.pathname.startsWith("/recherche")) {
@@ -301,7 +304,7 @@ export default function GlobalSearch() {
               autoComplete="off"
             />
 
-          {showDropdownFiltered && (
+            {showDropdown && (
               <div className="search-dropdown shadow">
                 {loadingSuggestions ? (
                   <div className="search-loading">

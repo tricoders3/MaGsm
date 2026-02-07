@@ -27,7 +27,7 @@ const UserProfile = () => {
   }, [initialTab]);
 
       return (
-        <div className="container-fluid py-4">
+        <div className="container-fluid py-3">
           <div className="row">
     
             {/* Sidebar */}

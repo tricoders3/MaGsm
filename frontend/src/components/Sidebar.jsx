@@ -14,8 +14,8 @@ const Sidebar = ({ categories, loading }) => {
   const [localQuery, setLocalQuery] = useState("");
 
   const navigate = useNavigate();
-  const { user, isAuthenticated, logout } = useAuth();
-  const { query, setQuery } = useGlobalSearch(); // use global search query
+  const {  isAuthenticated, logout } = useAuth();
+  const { setQuery, setFromSidebar } = useGlobalSearch(); // use global search query
 
   // Hide sidebar
   const hideOffcanvas = () => {
@@ -53,7 +53,6 @@ const Sidebar = ({ categories, loading }) => {
     logout(); // clears context + localStorage
     handleNav("/login"); // redirect
   };
-
   const handleSidebarSearch = async () => {
     const trimmedQuery = localQuery.trim();
     if (!trimmedQuery) return;
@@ -66,13 +65,14 @@ const Sidebar = ({ categories, loading }) => {
         axios.get(`${BASE_URL}/api/promotions/promos`, { params: { search: trimmedQuery.toLowerCase() } }),
       ]);
   
-      // Only now update the global query for the search results page
+      // Only set global query when navigating to the search page
       setQuery(trimmedQuery);
   
       navigate("/recherche", {
         state: {
           products: productsRes.data || [],
           promotions: promosRes.data || [],
+          fromSidebar: true, // optional
         },
       });
   
@@ -85,6 +85,7 @@ const Sidebar = ({ categories, loading }) => {
       setSearchLoading(false);
     }
   };
+  
   return (
     <div
       className="offcanvas offcanvas-start"
