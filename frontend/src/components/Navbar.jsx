@@ -74,7 +74,7 @@ function NavBar() {
 
       <nav className={`navbar-redesign ${isScrolled ? "scrolled" : ""}`}>
         <div className="container">
-          <div className="d-flex justify-content-between align-items-center w-100 py-3">
+          <div className="d-flex justify-content-between align-items-center w-100 py-md-3 py-0">
 
             {/* Logo */}
             <Link to="/" className="navbar-brand-redesign d-flex align-items-center">

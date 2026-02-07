@@ -100,56 +100,61 @@ const isValid =
   }, []);
 
 
- const handleConfirm = async () => {
-  if (!isValid || !cart || cart.length === 0) return;
-  setSubmitting(true);
-
-  try {
-    // Construire le payload avec shippingAddress et billingDetails
- const payload = {
-  shippingAddress: {
-    street: form.street,
-    postalCode: form.postalCode,
-    city: form.city,
-    region: form.region,
-    country: form.country,
-  },
-  billingDetails: {
-    name: billing.name,
-    email: billing.email,
-    phone: billing.phone,
-  },
-  useLoyaltyPoints: usePoints, 
+  const handleConfirm = async () => {
+    if (!isValid || !cart || cart.length === 0) return;
+    setSubmitting(true);
   
-};
-
-
-    const { data } = await axios.post(`${BASE_URL}/api/orders`, payload, {
-      withCredentials: true,
-    });
-
-    const newOrderId = data?.order?._id;
-    setShowToast(true);
-
-    setTimeout(() => {
-    setShowToast(false);
-    
-    
-
-    setCart([]);
-    setCartCount(0);
-    
-    
-    if (newOrderId) navigate(`/order-confirmation/${newOrderId}`);
-    else navigate("/orders");
-    });
-  } catch (error) {
-    console.error("Erreur lors de la création de la commande :", error);
-    alert("Impossible de créer la commande, réessayez !");
-  } finally {
-    setSubmitting(false);
-  }
-};
+    try {
+      // Build the payload
+      const payload = {
+        shippingAddress: {
+          street: form.street,
+          postalCode: form.postalCode,
+          city: form.city,
+          region: form.region,
+          country: form.country,
+        },
+        billingDetails: {
+          name: billing.name,
+          email: billing.email,
+          phone: billing.phone,
+        },
+        useLoyaltyPoints: usePoints,
+        items: cart.map(item => ({
+          productId: item.product._id,
+          name: item.product.name,
+          quantity: item.quantity,
+          price: getDiscountedPrice(item.product, item.promotion),
+        })),
+        deliveryFee: DELIVERY_FEE,
+        discount: usePoints && discount > 0 ? discount : 0,
+        total: totalAfterDiscount,
+      };
+  
+      const { data } = await axios.post(`${BASE_URL}/api/orders`, payload, {
+        withCredentials: true,
+      });
+  
+      const newOrderId = data?.order?._id;
+      setShowToast(true);
+  
+      setTimeout(() => {
+        setShowToast(false);
+        setCart([]);
+        setCartCount(0);
+  
+        if (newOrderId) navigate(`/order-confirmation/${newOrderId}`);
+        else navigate("/orders");
+      }, 1500);
+    } catch (error) {
+      console.error("Erreur lors de la création de la commande :", error);
+      alert("Impossible de créer la commande, réessayez !");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+  
+  
 
 // Calculs sous-total et total avec livraison
 const DELIVERY_FEE = 7; // Livraison à domicile

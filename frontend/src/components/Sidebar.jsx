@@ -11,6 +11,7 @@ const Sidebar = ({ categories, loading }) => {
   const [openCategoryId, setOpenCategoryId] = useState(null);
   const [subcategories, setSubcategories] = useState({});
   const [searchLoading, setSearchLoading] = useState(false);
+  const [localQuery, setLocalQuery] = useState("");
 
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
@@ -53,40 +54,37 @@ const Sidebar = ({ categories, loading }) => {
     handleNav("/login"); // redirect
   };
 
-  // ✅ Mobile search handler (global, no categories)
-  const handleSearch = async () => {
-    const trimmedQuery = query.trim().toLowerCase();
-    if (!trimmedQuery) return; // don't search empty
-
+  const handleSidebarSearch = async () => {
+    const trimmedQuery = localQuery.trim();
+    if (!trimmedQuery) return;
+  
     setSearchLoading(true);
-
+  
     try {
       const [productsRes, promosRes] = await Promise.all([
-        axios.get(`${BASE_URL}/api/products`, {
-          params: { search: trimmedQuery },
-        }),
-        axios.get(`${BASE_URL}/api/promotions/promos`, {
-          params: { search: trimmedQuery },
-        }),
+        axios.get(`${BASE_URL}/api/products`, { params: { search: trimmedQuery.toLowerCase() } }),
+        axios.get(`${BASE_URL}/api/promotions/promos`, { params: { search: trimmedQuery.toLowerCase() } }),
       ]);
-
+  
+      // Only now update the global query for the search results page
+      setQuery(trimmedQuery);
+  
       navigate("/recherche", {
         state: {
           products: productsRes.data || [],
           promotions: promosRes.data || [],
         },
       });
-
+  
       hideOffcanvas();
-    } catch (e) {
-      console.error("Erreur lors de la recherche mobile:", e);
+    } catch (err) {
+      console.error(err);
       navigate("/recherche", { state: { products: [], promotions: [] } });
       hideOffcanvas();
     } finally {
       setSearchLoading(false);
     }
   };
-
   return (
     <div
       className="offcanvas offcanvas-start"
@@ -121,20 +119,21 @@ const Sidebar = ({ categories, loading }) => {
       <div className="offcanvas-body d-flex flex-column gap-2">
         {/* Mobile search */}
         <div className="mobile-search-wrapper d-lg-none d-flex align-items-center">
-          <input
-            type="text"
-            placeholder="Rechercher un produit ou promotion..."
-            className="mobile-search-input flex-grow-1"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            disabled={searchLoading}
-          />
-          <FaSearch
-            className="mobile-search-icon ms-2"
-            onClick={handleSearch}
-            style={{ cursor: "pointer" }}
-          />
+        <input
+  type="text"
+  placeholder="Rechercher un produit ou promotion..."
+  className="mobile-search-input flex-grow-1"
+  value={localQuery}
+  onChange={(e) => setLocalQuery(e.target.value)}
+  onKeyDown={(e) => e.key === "Enter" && handleSidebarSearch()}
+  disabled={searchLoading}
+/>
+<FaSearch
+  className="mobile-search-icon ms-2"
+  onClick={handleSidebarSearch}
+  style={{ cursor: "pointer" }}
+/>
+
         </div>
 
         {/* Categories */}

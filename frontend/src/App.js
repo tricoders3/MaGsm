@@ -1,5 +1,5 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import OAuthSuccess from "./components/OAuthSuccess";
 import Home from "./screens/Home";
 import Login from "./screens/login";
@@ -54,9 +54,27 @@ import { ToastContainer } from "react-toastify";
 
 function App() {
   const [user, setUser] = useState(null);
+  const location = useLocation();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
+ useEffect(() => {
+    // Define all admin routes
+    const adminPaths = ["/admin"];
+    
+    // Check if current path starts with admin
+    const isAdminPage = adminPaths.some(path =>
+      location.pathname.startsWith(path)
+    );
 
+    if (!isAdminPage) {
+      document.body.classList.add("user-page");
+    } else {
+      document.body.classList.remove("user-page");
+    }
+  }, [location.pathname]);
 
   return (
     <>

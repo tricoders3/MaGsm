@@ -125,7 +125,7 @@ const renderBadge = () => {
   
   return (
     <>
-    <div className="product-card h-100">
+    <div className="product-card h-100 d-flex flex-column">
       {/* Badges & Actions */}
       <div className="card-badges">
   {renderBadge()}
@@ -142,7 +142,7 @@ const renderBadge = () => {
       <button className="cart-btn" onClick={handleAddToCart}
       disabled={stockCount === "out"}
       title={stockCount === "out" ? "Produit en rupture de stock" : "Ajouter au panier"}>
-        <FiShoppingCart size={18} />
+        <FiShoppingCart/>
       </button>
        )}
     </div>
@@ -151,7 +151,7 @@ const renderBadge = () => {
 
       {/* Image */}
       <div
-  className="product-image mt-4"
+  className="product-image mt-3 flex-shrink-0"
   onClick={() =>
     navigate(`/products/${encodeURIComponent(product.name)}`)
   }
@@ -165,7 +165,7 @@ const renderBadge = () => {
       </div>
 
       {/* Content */}
-      <div className="product-content text-center">
+      <div className="product-content text-center d-flex flex-column flex-grow-1 justify-content-end mt-3">
         <h6 className="product-title">{product.name}</h6>
         <p className="product-category">{product.category}</p>
         {product.description && <p className="product-description">{product.description}</p>}
@@ -174,7 +174,7 @@ const renderBadge = () => {
     {/* Voir prix */}
     <p className="product-price">
       <button
-        className="btn btn-price"
+        className="btn-redesign btn-price mt-auto"
         onClick={() => setShowPriceModal(true)}
       >
         Voir prix

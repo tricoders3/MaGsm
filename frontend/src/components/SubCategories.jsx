@@ -91,9 +91,9 @@ const CategoryView = () => {
 
         {/* PRODUCTS */}
         <div className="col-12 col-md-9">
-        <div className="row g-4">
+        <div className="row g-3">
           {paginatedProducts.map((product) => (
-            <div key={product._id} className="col-12 col-sm-6 col-md-4 col-lg-4">
+            <div key={product._id} className="col-6 col-sm-6 col-md-4 col-lg-3">
               <ProductCard
                 product={{
                   id: product._id,

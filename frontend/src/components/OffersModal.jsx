@@ -84,55 +84,55 @@ const OffersModal = () => {
 
   return (
     <div
-      className="offers-overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="offers-title"
-      onClick={() => setShow(false)}
+    className="offers-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="offers-title"
+    onClick={() => setShow(false)}
+  >
+    <div
+      className="offers-modal card border-0 shadow-lg animate-in"
+      onClick={(e) => e.stopPropagation()}
     >
-      <div
-        className="offers-modal card border-0 shadow-lg animate-in"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="row g-4 align-items-center justify-content-center">
-          <div className="col-12 col-lg-10">
-            <div className="offer-hero text-center">
-              <div className="offer-kicker">
-                {activePromo?.name || "Offres Spéciales"}
-              </div>
+      <div className="row g-4 align-items-center justify-content-center">
+        <div className="col-12 col-lg-10">
+          <div className="offer-hero text-center">
+            <div className="offer-kicker">
+              {activePromo?.name || "Offres Spéciales"}
+            </div>
 
-              <h1 id="offers-title" className="offer-headline">
-                Jusqu’à{" "}
-                <span className="gradient-text">
-                  -{maxDiscount}%
-                </span>
-              </h1>
+            <h1 id="offers-title" className="offer-headline">
+              Jusqu’à{" "}
+              <span className="gradient-text">
+                -{maxDiscount}%
+              </span>
+            </h1>
 
-              <p className="offer-subtext mt-3">
-                {activePromo?.description ||
-                  "Des remises limitées sur les meilleurs accessoires et gadgets."}
-              </p>
+            <p className="offer-subtext mt-3">
+              {activePromo?.description ||
+                "Des remises limitées sur les meilleurs accessoires et gadgets."}
+            </p>
 
-              <div className="d-flex flex-wrap gap-2 mt-4 justify-content-center">
-                <button
-                  className="offer-btn offer-btn-primary"
-                  onClick={() => (window.location.href = "/products")}
-                >
-                  Voir les offres
-                </button>
+            <div className="d-flex gap-2 mt-4 justify-content-center offers-actions">
+              <button
+                className="offer-btn offer-btn-primary"
+                onClick={() => (window.location.href = "/products")}
+              >
+                Voir les offres
+              </button>
 
-                <button
-                  className="offer-btn offer-btn-secondary"
-                  onClick={() => setShow(false)}
-                >
-                  Plus tard
-                </button>
-              </div>
+              <button
+                className="offer-btn offer-btn-secondary"
+                onClick={() => setShow(false)}
+              >
+                Plus tard
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
   );
 };
 

@@ -51,9 +51,9 @@ const SubcategoryProducts = () => {
     <section className="products-section py-5">
       <div className="container">
         <h2 className="section-title mb-5">Produits</h2>
-        <div className="row g-4">
+        <div className="row g-3">
           {products.map((p) => (
-            <div key={p._id} className="col-xl-3 col-lg-4 col-md-6">
+            <div key={p._id} className="col-6 col-sm-6 col-md-4 col-lg-3">
               <ProductCard
                 product={{
                   id: p._id,

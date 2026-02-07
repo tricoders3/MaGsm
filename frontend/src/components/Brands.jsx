@@ -29,7 +29,7 @@ const Brands = () => {
   }
 
   return (
-    <section className="brands-section py-5">
+    <section className="brands-section py-md-3 py-0">
       <div className="container">
         <div className="mb-5">
           <h2 className="section-title">Nos Marques</h2>

@@ -26,6 +26,7 @@ export default function GlobalSearch() {
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [showDropdown, setShowDropdown] = useState(false);
 
+
   const HIDE_CATEGORY_FILTERS_ROUTES = [
     "/offers",
     "/top-products",
@@ -51,6 +52,7 @@ export default function GlobalSearch() {
   );
 
   const isCategoryPage = location.pathname.startsWith("/category");
+  const showDropdownFiltered = showDropdown && !isMobile;
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -299,7 +301,7 @@ export default function GlobalSearch() {
               autoComplete="off"
             />
 
-            {showDropdown && (
+          {showDropdownFiltered && (
               <div className="search-dropdown shadow">
                 {loadingSuggestions ? (
                   <div className="search-loading">

@@ -128,27 +128,25 @@ const handleAddToCartSafe = () => {
 
 
   return (
-    <div className="container my-5">
+    <div className="container my-5 product-details-page">
       <div className="row g-4">
 
 <div className="col-12 col-md-6 text-center position-relative">
   {product.images && product.images.length > 0 ? (
-    <div className="position-relative d-inline-block">
-      {/* Badge */}
-      {promotion && (
-        <Badge
-          bg="danger"
-        >
-          Promo! {promoText}
-        </Badge>
-      )}
-      <img
-        src={product.images[selectedImageIndex]?.url}
-        alt={product.name}
-        className="img-fluid rounded-3"
-        style={{ maxHeight: "300px", objectFit: "contain", width: "100%" }}
-      />
+     <div className="product-image-wrapper d-inline-block position-relative">
+     {/* Badge above the image */}
+     {promotion && (
+       <Badge bg="danger" className="product-badge mb-2">
+         Promo! {promoText}
+       </Badge>
+     )}
 
+     {/* Main Image */}
+     <img
+       src={product.images[selectedImageIndex]?.url}
+       alt={product.name}
+       className="img-fluid rounded-3 product-main-image"
+     />
   
       <div className="d-flex gap-2 justify-content-center flex-wrap mt-2">
         {product.images.map((img, index) => (
@@ -245,9 +243,9 @@ const handleAddToCartSafe = () => {
             <p className="section-subtitle d-inline">Découvrez d'autres articles qui pourraient vous intéresser dans la même catégorie.</p>
           </div>
 
-          <div className="row g-4">
+          <div className="row g-3">
             {similarProducts.map((prod) => (
-              <div key={prod._id} className="col-12 col-sm-6 col-md-3">
+              <div key={prod._id} className="col-6 col-sm-6 col-md-4 col-lg-3">
                 <ProductCard
   product={{
     id: prod._id,
