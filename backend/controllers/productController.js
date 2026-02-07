@@ -49,43 +49,50 @@ export const createProduct = async (req, res) => {
  */
 export const getProducts = async (req, res) => {
   try {
-    // 1️⃣ Get all products and populate category & promotion
+    // 1️⃣ Get all products with category & promotion
     const products = await Product.find()
       .populate("category", "name subCategories")
-      .populate("promotion"); // populate promotion if exists
+      .populate("promotion");
 
     const result = products.map((p) => {
-      // 2️⃣ Get subCategory name from category.subCategories
+      // 2️⃣ Resolve subCategory name
       const subCat = p.category?.subCategories.find(
         (sc) => sc._id.toString() === p.subCategory?.toString()
       );
 
-      // 3️⃣ Prepare promotion info only if exists
-      const promoInfo = p.promotion
-        ? {
-            _id: p.promotion._id,
-            name: p.promotion.name,
-            discountType: p.promotion.discountType,
-            discountValue: p.promotion.discountValue,
-            startDate: p.promotion.startDate,
-            endDate: p.promotion.endDate,
-            isActive: p.promotion.isActive,
-          }
-        : null;
-
       return {
         ...p._doc,
+
+        // ✅ subCategory name
         subCategoryName: subCat ? subCat.name : null,
-        promotion: promoInfo,
+
+        // ✅ prix final calculé dynamiquement
+        discountedPrice: p.getFinalPrice(),
+
+        // ✅ infos promo seulement si valide
+        promotion: p.promotion?.isValid
+          ? {
+              _id: p.promotion._id,
+              name: p.promotion.name,
+              discountType: p.promotion.discountType,
+              discountValue: p.promotion.discountValue,
+              startDate: p.promotion.startDate,
+              endDate: p.promotion.endDate,
+            }
+          : null,
+
+        // ✅ flag simple pour le frontend
+        hasPromotion: !!p.promotion?.isValid,
       };
     });
 
     res.json(result);
   } catch (error) {
-    console.error(error);
+    console.error("getProducts error:", error);
     res.status(500).json({ message: "Error fetching products" });
   }
 };
+
 
 
 
@@ -97,17 +104,29 @@ export const getProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id)
-     .populate("category", "name subCategories"); 
+      .populate("category", "name subCategories")
+      .populate("promotion");
 
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    res.json(product);
+    const subCat = product.category?.subCategories.find(
+      (sc) => sc._id.toString() === product.subCategory?.toString()
+    );
+
+    res.json({
+      ...product._doc,
+      subCategoryName: subCat ? subCat.name : null,
+      discountedPrice: product.getFinalPrice(), // ✅
+      promotion: product.promotion?.isValid ? product.promotion : null,
+      hasPromotion: !!product.promotion?.isValid,
+    });
   } catch (error) {
     res.status(500).json({ message: "Error fetching product" });
   }
 };
+
 
 /**
  * @desc    Update product
@@ -184,18 +203,21 @@ export const getProductsByCategory = async (req, res) => {
   try {
     const products = await Product.find({
       category: req.params.categoryId,
-    }).populate("category", "name subCategories")
-     .populate("promotion");
+    })
+      .populate("category", "name subCategories")
+      .populate("promotion");
 
-    // Map subCategory id to name
     const result = products.map((p) => {
-      const subCat = p.category.subCategories.find(
-        (sc) => sc._id.toString() === p.subCategory.toString()
+      const subCat = p.category?.subCategories.find(
+        (sc) => sc._id.toString() === p.subCategory?.toString()
       );
+
       return {
         ...p._doc,
         subCategoryName: subCat ? subCat.name : null,
-        promotion: p.promotion || null,
+        discountedPrice: p.getFinalPrice(), // ✅
+        promotion: p.promotion?.isValid ? p.promotion : null,
+        hasPromotion: !!p.promotion?.isValid,
       };
     });
 
@@ -206,6 +228,7 @@ export const getProductsByCategory = async (req, res) => {
   }
 };
 
+
 /**
  * @desc    Get products by subCategory
  * @route   GET /api/products/subcategory/:subCategoryId
@@ -213,30 +236,33 @@ export const getProductsByCategory = async (req, res) => {
  */
 export const getProductsBySubCategory = async (req, res) => {
   try {
-    // Find all products
-    const products = await Product.find().populate("category", "name subCategories")
-    .populate("promotion"); ;
+    const products = await Product.find({
+      subCategory: req.params.subCategoryId,
+    })
+      .populate("category", "name subCategories")
+      .populate("promotion");
 
-    // Filter by subCategory id
-    const filtered = products.filter(
-      (p) => p.subCategory.toString() === req.params.subCategoryId
-    ).map((p) => {
-      const subCat = p.category.subCategories.find(
-        (sc) => sc._id.toString() === p.subCategory.toString()
+    const result = products.map((p) => {
+      const subCat = p.category?.subCategories.find(
+        (sc) => sc._id.toString() === p.subCategory?.toString()
       );
+
       return {
         ...p._doc,
         subCategoryName: subCat ? subCat.name : null,
-        promotion: p.promotion || null,
+        discountedPrice: p.getFinalPrice(), // ✅
+        promotion: p.promotion?.isValid ? p.promotion : null,
+        hasPromotion: !!p.promotion?.isValid,
       };
     });
 
-    res.json(filtered);
+    res.json(result);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error fetching products by subCategory" });
   }
 };
+
 export  const getBestSellingProducts = async (req, res) => {
   try {
     // Aggregate quantity sold per product
@@ -368,14 +394,25 @@ export const getMostPurchasedProducts = async (req, res) => {
 
 export const getProductByName = async (req, res) => {
   try {
-    const name = req.params.name;
-    const product = await Product.findOne({ name })
-      .populate("category")
+    const product = await Product.findOne({ name: req.params.name })
+      .populate("category", "name subCategories")
       .populate("promotion");
 
-    if (!product) return res.status(404).json({ message: "Produit introuvable" });
+    if (!product) {
+      return res.status(404).json({ message: "Produit introuvable" });
+    }
 
-    res.json(product);
+    const subCat = product.category?.subCategories.find(
+      (sc) => sc._id.toString() === product.subCategory?.toString()
+    );
+
+    res.json({
+      ...product._doc,
+      subCategoryName: subCat ? subCat.name : null,
+      discountedPrice: product.getFinalPrice(), // ✅
+      promotion: product.promotion?.isValid ? product.promotion : null,
+      hasPromotion: !!product.promotion?.isValid,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
