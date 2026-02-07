@@ -61,7 +61,7 @@ const totalAfterDiscount = subTotal + deliveryFee - discount;
     <div className="container mt-md-5 mb-5">
     <div className="card border-0 shadow-lg rounded-5 overflow-hidden">
       <div className="p-4 text-center">
-        <FiCheckCircle size={48} className="text-success mb-2" />
+        <FiCheckCircle size={40} className="text-success mb-2" />
         <h4 className="fw-bold text-dark mb-1">Commande confirmée</h4>
         <p className="text-muted mb-0">
           Merci pour votre achat. Votre commande a bien été enregistrée.
