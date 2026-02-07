@@ -50,22 +50,7 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
       }
     }
   };
-const getProductPrice = (product) => {
-  if (product.promotion) {
-    if (product.promotion.discountType === "percentage") {
-      return (
-        product.price -
-        (product.price * product.promotion.discountValue) / 100
-      );
-    }
 
-    if (product.promotion.discountType === "fixed") {
-      return product.price - product.promotion.discountValue;
-    }
-  }
-
-  return product.price;
-};
 
   // Cart
   const handleAddToCart = async (e) => {
@@ -100,16 +85,15 @@ const getProductPrice = (product) => {
 
   // Render badge
 
-const renderBadge = () => {
+  const renderBadge = () => {
     if (badgeType === "stock") {
-      return stockCount > 0 ? (
+      return product.countInStock === "in" ? (
         <span className="badge-stock">EN STOCK</span>
       ) : (
-        <span className="out-of-stock">
-          RUPTURE
-        </span>
+        <span className="out-of-stock">RUPTURE</span>
       );
     }
+  
     if (badgeType === "promo" && product.promotion) {
       return (
         <span className="badge-offer">
@@ -119,8 +103,10 @@ const renderBadge = () => {
         </span>
       );
     }
+  
     return null;
   };
+  
   
   
   return (

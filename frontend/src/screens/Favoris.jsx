@@ -130,9 +130,9 @@ const handleRemoveFavorite = async (productId) => {
         <p className="text-muted">Ajoutez des produits à vos favoris pour les retrouver ici</p>
       </div>
     ) : (
-      <div className="row g-4">
+      <div className="row g-3">
         {favorites.map((product) => (
-          <div className="col-12 col-sm-6 col-md-3" key={product._id}>
+          <div className="col-6 col-sm-6 col-md-3" key={product._id}>
             <div className="product-card h-100">
               {/* Badges & Actions */}
               <div className="card-badges">
