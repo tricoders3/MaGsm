@@ -528,8 +528,8 @@ const fetchProducts = async () => {
                   <div className="fw-semibold">{p.name}</div>
                 </div>
               </td>
-              <td className="text-muted text-center">{p.originalPrice.toFixed(2)} TND</td>
-              <td className="text-success text-center">{p.discountedPrice.toFixed(2)} TND</td>
+              <td className="text-muted text-center">{p.price.toFixed(2)} TND</td>
+              <td className="text-success text-center">{p.promotion.discountedPrice.toFixed(2)} TND</td>
               <td className="text-muted text-center">{p.promotion?.name || "-"}</td>
             </tr>
           ))}
