@@ -1162,7 +1162,6 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="c" cx="50%" cy="50%"><stop offset="0%" stop-color="%233b82f6" stop-opacity="0.1"/><stop offset="100%" stop-color="%233b82f6" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="150" fill="url(%23c)"/><circle cx="800" cy="600" r="200" fill="url(%23c)"/><circle cx="400" cy="800" r="120" fill="url(%23c)"/></svg>');
   opacity: 0.6;
 }
 
