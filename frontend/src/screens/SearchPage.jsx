@@ -36,6 +36,8 @@ export default function Recherche() {
           images: product.images?.length ? product.images : [{ url: "/assets/images/default.png" }],
           price: product.price,
           promotion: product.promotion,
+          discountedPrice: product.discountedPrice,
+          hasPromotion: product.hasPromotion,
           countInStock: product.countInStock || 1,
         }));
         setProducts(mapped);
@@ -53,8 +55,9 @@ export default function Recherche() {
       const matchesName = p.name?.toLowerCase().includes(query.toLowerCase());
       const matchesCat = !categoryId || p.categoryId === categoryId;
       const matchesSub = !subCategoryId || p.subCategoryId === subCategoryId;
-      const matchesMin = minPrice === "" || Number(p.price) >= Number(minPrice);
-      const matchesMax = maxPrice === "" || Number(p.price) <= Number(maxPrice);
+      const effectivePrice = p.discountedPrice || p.price;
+      const matchesMin = minPrice === "" || Number(effectivePrice) >= Number(minPrice);
+      const matchesMax = maxPrice === "" || Number(effectivePrice) <= Number(maxPrice);
       const matchesStock = !inStockOnly || (p.countInStock ?? 0) > 0;
       return matchesName && matchesCat && matchesSub && matchesMin && matchesMax && matchesStock;
     });
@@ -63,9 +66,17 @@ export default function Recherche() {
     if (sortBy === "name_asc") {
       arr = [...arr].sort((a, b) => a.name.localeCompare(b.name));
     } else if (sortBy === "price_asc") {
-      arr = [...arr].sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+      arr = [...arr].sort((a, b) => {
+        const priceA = a.discountedPrice || a.price || 0;
+        const priceB = b.discountedPrice || b.price || 0;
+        return priceA - priceB;
+      });
     } else if (sortBy === "price_desc") {
-      arr = [...arr].sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+      arr = [...arr].sort((a, b) => {
+        const priceA = a.discountedPrice || a.price || 0;
+        const priceB = b.discountedPrice || b.price || 0;
+        return priceB - priceA;
+      });
     }
     // relevance keeps original order
     return arr;
