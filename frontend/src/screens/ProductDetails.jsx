@@ -106,25 +106,47 @@ const { productName } = useParams();
   ) : "";
 
   // Add to favorites
-const handleAddToFavorites = async () => {
-  try {
-    await axios.post(`${BASE_URL}/api/favorites/${product._id}`, {}, { withCredentials: true });
-    setFavoritesCount(favoritesCount + 1);
-    setToast({ show: true, message: "Produit ajouté aux favoris", type: "favorite" });
-    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 1500);
-  } catch (error) {
-    if (error.response?.status === 401) navigate("/login");
-    else {
-      setToast({ show: true, message: "Impossible d'ajouter aux favoris", type: "favorite" });
+  const handleAddToFavorites = async () => {
+    try {
+      await axios.post(
+        `${BASE_URL}/api/favorites/${product._id}`,
+        {},
+        { withCredentials: true }
+      );
+  
+      setFavoritesCount(favoritesCount + 1);
+      setToast({ show: true, message: "Produit ajouté aux favoris", type: "favorite" });
       setTimeout(() => setToast(prev => ({ ...prev, show: false })), 1500);
+  
+    } catch (error) {
+      const errMsg = error.response?.data?.message || "";
+  
+      if (error.response?.status === 401) {
+        navigate("/login");
+  
+      } else if (
+        error.response?.status === 409 ||
+        errMsg.toLowerCase().includes("already in favorites") ||
+        errMsg.toLowerCase().includes("déjà dans vos favoris")
+      ) {
+        setToast({
+          show: true,
+          message: "Produit déjà dans vos favoris",
+          type: "favorite"
+        });
+        setTimeout(() => setToast(prev => ({ ...prev, show: false })), 1500);
+  
+      } else {
+        setToast({
+          show: true,
+          message: "Impossible d'ajouter aux favoris",
+          type: "favorite"
+        });
+        setTimeout(() => setToast(prev => ({ ...prev, show: false })), 1500);
+      }
     }
-  }
-};
-
-const handleAddToCartSafe = () => {
-  if (product.countInStock === "out") return;
-  handleAddToCart();
-};
+  };
+  
 
   // Add to cart
   const handleAddToCart = async () => {
@@ -235,7 +257,7 @@ const handleAddToCartSafe = () => {
           <Button
   variant="btn btn-primary"
   className="gap-2"
-  onClick={handleAddToCartSafe}
+  onClick={handleAddToCart}
   title={
     product.countInStock === "out"
       ? "Produit en rupture de stock"
