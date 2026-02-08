@@ -33,7 +33,9 @@ const OAuthSuccess = () => {
         });
 
         navigate("/");
+        if (window.innerWidth > 768) {
         toast.success("Connexion réussie !");
+      }
       } catch (err) {
         
         navigate("/login");
