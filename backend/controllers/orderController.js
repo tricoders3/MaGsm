@@ -19,11 +19,18 @@ export const createOrderFromCart = async (req, res) => {
       return res.status(400).json({ message: "Panier vide" });
     }
 
+    // ✅ EXTRACTION CORRECTE
     const { shippingAddress, billingDetails, useLoyaltyPoints } = req.body;
 
-    if (!shippingAddress) return res.status(400).json({ message: "Adresse de livraison requise" });
-    if (!billingDetails) return res.status(400).json({ message: "Détails de facturation requis" });
+    if (!shippingAddress) {
+      return res.status(400).json({ message: "Adresse de livraison requise" });
+    }
 
+    if (!billingDetails) {
+      return res.status(400).json({ message: "Détails de facturation requis" });
+    }
+
+    // ✅ APPEL CORRECT
     const order = await createOrder(
       req.user,
       cart,
@@ -34,37 +41,35 @@ export const createOrderFromCart = async (req, res) => {
 
     const user = await User.findById(req.user.id);
 
-let invoicePath = null;
+ res.status(201).json({
+  message: "Commande créée avec succès",
+  order,
+});
 
-try {
-  invoicePath = await generateInvoicePDF(order, user);
-} catch (pdfError) {
-  console.error("Erreur génération facture:", pdfError.message);
-}
+// 🔥 BACKGROUND
+setImmediate(async () => {
+  try {
+    const invoiceBuffer = await generateInvoicePDF(order, user);
+    await sendAdminOrderNotification({ user, order });
+    await sendClientOrderConfirmation({ user, order, invoiceBuffer });
+  } catch (err) {
+    console.error("EMAIL/PDF ERROR:", err);
+  }
+});
 
-try {
-  await sendAdminOrderNotification({ user, order });
-  await sendClientOrderConfirmation({ user, order, invoicePath });
-} catch (mailError) {
-  console.error("Erreur email:", mailError.message);
-}
-
-
-    // Vider le panier
+    // 5️⃣ Vider le panier
     await clearCart(req.user.id);
-
 
     res.status(201).json({
       message: "Commande créée avec succès",
       order,
-      loyaltyPoints: user.loyaltyPoints,
+      loyaltyPoints: user.loyaltyPoints, // déjà mis à jour dans createOrder
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
-
 
 // USER – GET HIS ORDERS
 export const getOrdersForUser = async (req, res) => {
