@@ -41,21 +41,21 @@ export const createOrderFromCart = async (req, res) => {
 
     const user = await User.findById(req.user.id);
 
- res.status(201).json({
-  message: "Commande créée avec succès",
-  order,
-});
+    // 3️⃣ Générer la facture PDF
+    let invoicePath = null;
+    try {
+      invoicePath = await generateInvoicePDF(order, user);
+    } catch (pdfError) {
+      console.error("Erreur génération facture:", pdfError.message);
+    }
 
-// 🔥 BACKGROUND
-setImmediate(async () => {
-  try {
-    const invoiceBuffer = await generateInvoicePDF(order, user);
-    await sendAdminOrderNotification({ user, order });
-    await sendClientOrderConfirmation({ user, order, invoiceBuffer });
-  } catch (err) {
-    console.error("EMAIL/PDF ERROR:", err);
-  }
-});
+    // 4️⃣ Emails (non bloquant)
+    try {
+      await sendAdminOrderNotification({ user, order });
+      await sendClientOrderConfirmation({ user, order, invoicePath });
+    } catch (mailError) {
+      console.error("Erreur email:", mailError.message);
+    }
 
     // 5️⃣ Vider le panier
     await clearCart(req.user.id);

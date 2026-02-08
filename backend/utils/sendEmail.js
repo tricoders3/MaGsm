@@ -13,28 +13,29 @@ const transporter = nodemailer.createTransport({
 
 
 
-export const sendClientOrderConfirmation = async ({ user, order, invoiceBuffer }) => {
-  const mailOptions = {
+export const sendClientOrderConfirmation = async ({ user, order, invoicePath }) => {
+  await transporter.sendMail({
     from: `"MaGsm Boutique" <${process.env.SMTP_USER}>`,
     to: user.email,
-    subject: "Confirmation de commande",
+    subject: "Confirmation de commande & facture",
     html: `
-      <h3>Bonjour ${user.name}</h3>
-      <p>Votre commande est confirmée </p>
-      <p>Total : <b>${order.total} DT</b></p>
+      <h3>Bonjour ${user.name},</h3>
+      <p>Votre commande a bien été enregistrée.</p>
+      <p>Vous trouverez votre facture en pièce jointe.</p>
+      <p><strong>Total:</strong> ${order.total} DT</p>
+      <p><strong>Points fidélité gagnés:</strong> ${order.pointsEarned}</p>
+      <p>🚚 Livraison estimée entre <strong style={{ color: "#000" }}>24 et 72 heures</strong><p>
+      <br />
+      <p>Merci pour votre confiance 🙏</p>
     `,
     attachments: [
       {
         filename: `facture-${order._id}.pdf`,
-        content: invoiceBuffer,
-        contentType: "application/pdf",
+        path: invoicePath,
       },
     ],
-  };
-
-  await transporter.sendMail(mailOptions);
+  });
 };
-
 
 
 
