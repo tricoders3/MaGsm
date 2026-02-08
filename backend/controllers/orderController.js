@@ -19,7 +19,6 @@ export const createOrderFromCart = async (req, res) => {
       return res.status(400).json({ message: "Panier vide" });
     }
 
-    // ✅ EXTRACTION CORRECTE
     const { shippingAddress, billingDetails, useLoyaltyPoints } = req.body;
 
     if (!shippingAddress) {
@@ -30,7 +29,7 @@ export const createOrderFromCart = async (req, res) => {
       return res.status(400).json({ message: "Détails de facturation requis" });
     }
 
-    // ✅ APPEL CORRECT
+    // 1️⃣ Create order
     const order = await createOrder(
       req.user,
       cart,
@@ -41,35 +40,49 @@ export const createOrderFromCart = async (req, res) => {
 
     const user = await User.findById(req.user.id);
 
-    // 3️⃣ Générer la facture PDF
-    let invoicePath = null;
-    try {
-      invoicePath = await generateInvoicePDF(order, user);
-    } catch (pdfError) {
-      console.error("Erreur génération facture:", pdfError.message);
-    }
-
-    // 4️⃣ Emails (non bloquant)
-    try {
-      await sendAdminOrderNotification({ user, order });
-      await sendClientOrderConfirmation({ user, order, invoicePath });
-    } catch (mailError) {
-      console.error("Erreur email:", mailError.message);
-    }
-
-    // 5️⃣ Vider le panier
+    // 2️⃣ Clear cart
     await clearCart(req.user.id);
 
+    // 3️⃣ SEND RESPONSE IMMEDIATELY 🔥
     res.status(201).json({
       message: "Commande créée avec succès",
       order,
-      loyaltyPoints: user.loyaltyPoints, // déjà mis à jour dans createOrder
+      loyaltyPoints: user.loyaltyPoints,
     });
+
+    // 4️⃣ BACKGROUND TASK (PDF + EMAILS)
+    setImmediate(async () => {
+      try {
+        let invoiceBuffer = null;
+
+        try {
+          invoiceBuffer = await generateInvoicePDF(order, user); // ✅ BUFFER
+        } catch (pdfError) {
+          console.error("PDF ERROR:", pdfError.message);
+        }
+
+        await sendAdminOrderNotification({ user, order });
+
+        await sendClientOrderConfirmation({
+          user,
+          order,
+          invoiceBuffer, // ✅ buffer not path
+        });
+
+        console.log("✅ Order emails sent");
+      } catch (err) {
+        console.error("BACKGROUND ERROR:", err);
+      }
+    });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.error("CREATE ORDER ERROR:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ message: error.message });
+    }
   }
 };
+
 
 // USER – GET HIS ORDERS
 export const getOrdersForUser = async (req, res) => {

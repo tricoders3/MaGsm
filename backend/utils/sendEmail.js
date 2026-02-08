@@ -51,6 +51,7 @@ export const sendClientOrderConfirmation = async ({
 
 
 
+
 export const sendAdminOrderNotification = async ({ user, order }) => {
   await transporter.sendMail({
     from: `"Shop" <${process.env.SMTP_USER}>`,
