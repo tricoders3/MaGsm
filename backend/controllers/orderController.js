@@ -34,30 +34,21 @@ export const createOrderFromCart = async (req, res) => {
 
     const user = await User.findById(req.user.id);
 
-    // 🔹 Génération PDF (non bloquante)
-    let invoicePath = null;
-    (async () => {
-      try {
-        invoicePath = await generateInvoicePDF(order, user);
-      } catch (pdfError) {
-        console.error("Erreur génération facture:", pdfError.message);
-      }
-    })();
+let invoicePath = null;
 
-    // 🔹 Emails (non bloquante)
-    (async () => {
-      try {
-        await sendAdminOrderNotification({ user, order });
-      } catch (mailError) {
-        console.error("Erreur email admin:", mailError.message);
-      }
+try {
+  invoicePath = await generateInvoicePDF(order, user);
+} catch (pdfError) {
+  console.error("Erreur génération facture:", pdfError.message);
+}
 
-      try {
-        await sendClientOrderConfirmation({ user, order, invoicePath });
-      } catch (mailError) {
-        console.error("Erreur email client:", mailError.message);
-      }
-    })();
+try {
+  await sendAdminOrderNotification({ user, order });
+  await sendClientOrderConfirmation({ user, order, invoicePath });
+} catch (mailError) {
+  console.error("Erreur email:", mailError.message);
+}
+
 
     // Vider le panier
     await clearCart(req.user.id);
