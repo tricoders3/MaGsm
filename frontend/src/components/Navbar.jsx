@@ -95,7 +95,18 @@ function NavBar() {
             <div className="d-flex align-items-center gap-3">
 
               {/* Auth */}
-          
+              
+              <div className="d-flex d-lg-none align-items-center ">
+
+  {!isAuthenticated && (
+    <button
+      className="nav-icon-redesign"
+      onClick={() => navigate("/login")}
+    >
+      <FaUser />
+    </button>
+  )}
+  </div>
  {/* Cart */}
  {isAuthenticated && (
       <div className="position-relative">
@@ -141,7 +152,7 @@ function NavBar() {
                                     <FiUser /> Profil
                                   </button>
 
-                    <button className="logout d-none d-md-block"
+                    <button className="logout"
                     onClick={() => 
                     { logout(); 
                     setShowMenu(false); 

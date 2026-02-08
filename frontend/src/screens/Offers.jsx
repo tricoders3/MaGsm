@@ -112,15 +112,7 @@ export default function OfferPage() {
                 <p className="lead text-muted mb-2">
                   {heroPromotion.description || "Profitez de remises exclusives sur nos produits"}
                 </p>
-                <div className="d-flex gap-3">
-                
-                  <button
-                    className="btn btn-outline-promo"
-                    onClick={() => navigate("/")}
-                  >
-                    Retour à l'accueil
-                  </button>
-                </div>
+               
               </div>
 
               <div className="col-lg-4 text-lg-end">
