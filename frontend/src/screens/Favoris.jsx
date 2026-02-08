@@ -29,12 +29,16 @@ useEffect(() => {
             const promoRes = await axios.get(`${BASE_URL}/api/promotions/product/${fav._id}`);
             promotion = promoRes.data.promotion || null;
           } catch (err) {}
-          return { ...fav, promotion };
+          return { 
+            ...fav, 
+            promotion,
+            discountedPrice: promotion?.discountedPrice || fav.price
+          };
         })
       );
 
       setFavorites(favProducts);
-      setFavoritesCount(favProducts.length); // ✅ update the badge instantly
+      setFavoritesCount(favProducts.length); 
     } catch (error) {
       console.error("Erreur favorites:", error);
     } finally {
@@ -52,7 +56,7 @@ const handleRemoveFavorite = async (productId) => {
     const updatedFavorites = favorites.filter((p) => p._id !== productId);
     setFavorites(updatedFavorites);
 
-    // ✅ Update global badge
+    // Update global badge
     setFavoritesCount(updatedFavorites.length);
 
     setToast({ show: true, message: "Retiré des favoris", type: "favorite" });
@@ -98,20 +102,6 @@ const handleRemoveFavorite = async (productId) => {
       return <span className="badge-offer">{promoText}</span>;
     }
     return null;
-  };
-
-  const calculateDiscountedPrice = (product) => {
-    let price = product.price;
-    if (product.promotion) {
-      const promo = product.promotion;
-      if (promo.discountType === "percentage") {
-        price = price - (price * promo.discountValue) / 100;
-      } else {
-        price = price - promo.discountValue;
-      }
-      price = Math.max(price, 0);
-    }
-    return price;
   };
 
   if (loading) return null;
@@ -177,16 +167,23 @@ const handleRemoveFavorite = async (productId) => {
                 <h6 className="product-title">{product.name}</h6>
                 <p className="product-category">{product.brand}</p>
                 {isAuthenticated && (    
-                <p className="product-price">
-                  {product.promotion && (
-                    <span className="original-price text-decoration-line-through me-2 text-muted">
-                      {product.price} DT
-                    </span>
-                  )}
-                  <span className="discounted-price fw-bold text-muted">
-                    {calculateDiscountedPrice(product)} DT
-                  </span>
-                </p>
+             <p className="product-price text-muted">
+             {product.promotion && product.discountedPrice ? (
+               <>
+                 <span className="original-price text-muted text-decoration-line-through me-2">
+                   {product.price} DT
+                 </span>
+                 <span className="discounted-price fw-bold text-danger">
+                   {product.discountedPrice} DT
+                 </span>
+               </>
+             ) : (
+               <span className="text-muted">
+                 {product.price} DT
+               </span>
+             )}
+           </p>
+           
                 )}
               </div>
             </div>

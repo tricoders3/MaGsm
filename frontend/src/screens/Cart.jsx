@@ -16,24 +16,7 @@ export default function Cart() {
   const [creatingOrder, setCreatingOrder] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
-  const getDiscountedPrice = (product, promotion) => {
-    if (!promotion) return product.price;
 
-    let discounted = product.price;
-
-    if (promotion.discountType === "percentage") {
-      discounted =
-        product.price - (product.price * promotion.discountValue) / 100;
-    } else {
-      discounted = product.price - promotion.discountValue;
-    }
-
-    return Math.max(discounted, 0);
-  };
-
-  /* ================================
-     FETCH CART + PROMOTIONS
-  ================================== */
   useEffect(() => {
     const fetchCart = async () => {
       try {
@@ -127,7 +110,7 @@ export default function Cart() {
   const totalPrice = cart.reduce(
     (sum, item) =>
       sum +
-      getDiscountedPrice(item.product, item.promotion) * item.quantity,
+      (item.promotion?.discountedPrice || item.product.price) * item.quantity,
     0
   );
 
@@ -185,7 +168,7 @@ export default function Cart() {
         {item.product.price} TND
       </span>
       <span className="fw-bold text-danger">
-        {getDiscountedPrice(item.product, item.promotion)} TND
+        {item.promotion?.discountedPrice || item.product.price} TND
       </span>
     </>
   ) : (
@@ -217,7 +200,7 @@ export default function Cart() {
   
                 <div className="text-end">
                 <h5 className="text-dark">
-  {getDiscountedPrice(item.product, item.promotion) * item.quantity} TND
+  {(item.promotion?.discountedPrice || item.product.price) * item.quantity} TND
 </h5>
 
                   <Button
@@ -252,7 +235,7 @@ export default function Cart() {
         {item.product.price} TND
       </span>
       <span className="fw-bold text-danger">
-        {getDiscountedPrice(item.product, item.promotion)} TND
+        {item.promotion?.discountedPrice || item.product.price} TND
       </span>
     </>
   ) : (
@@ -294,7 +277,7 @@ export default function Cart() {
                 {/* Total Price */}
                 <div className="d-flex align-items-center">
                 <h5 className="text-dark">
-  {getDiscountedPrice(item.product, item.promotion) * item.quantity} TND
+  {(item.promotion?.discountedPrice || item.product.price) * item.quantity} TND
 </h5>
 
                 <Button

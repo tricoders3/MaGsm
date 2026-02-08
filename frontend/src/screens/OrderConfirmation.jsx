@@ -14,7 +14,6 @@ export default function OrderConfirmation() {
       try {
         setLoading(true);
         setError(null);
-        // Use user orders endpoint, then find by id on the client side
         const { data } = await axios.get(`${BASE_URL}/api/orders`, { withCredentials: true });
         const found = (data || []).find((o) => String(o._id) === String(orderId));
         if (!found) {
@@ -81,24 +80,37 @@ const totalAfterDiscount = subTotal + deliveryFee - discount;
         </h6>
   
         <div className="product-list mb-4">
-          {(order.items || []).map((it, idx) => (
-            <div
-              key={idx}
-              className="d-flex justify-content-between align-items-center py-3 border-bottom"
-            >
-              <div>
-                <div className="fw-semibold">
-                  {it.product?.name || "Produit"}
-                </div>
-                <small className="text-muted">
-                  Quantité : {it.quantity}
-                </small>
-              </div>
-              <strong>
-                {(it.price || 0) * (it.quantity || 0)} TND
-              </strong>
-            </div>
-          ))}
+  <div className="product-list mb-4">
+  {(order.items || []).map((it, idx) => (
+    <div key={idx} className="d-flex justify-content-between align-items-center py-3 border-bottom">
+      <div>
+        <div className="fw-semibold">{it.name}</div>
+        <small className="text-muted">Quantité : {it.quantity}</small>
+      </div>
+      <div className="text-end">
+        <div className="fw-semibold">
+          {it.originalPrice && it.originalPrice > it.price ? (
+            <>
+              <span className="text-decoration-line-through text-muted me-2">
+                {it.originalPrice} TND
+              </span>
+              <span className="fw-bold text-danger">
+                {it.price} TND × {it.quantity} = {it.price * it.quantity} TND
+              </span>
+            </>
+          ) : (
+            <>
+              {it.price} TND × {it.quantity} = {it.price * it.quantity} TND
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
+
+
         </div>
 <h6 className="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
   Détails de facturation

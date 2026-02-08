@@ -257,8 +257,10 @@ export const getProductsWithPromo = async (req, res) => {
       return {
         _id: p._id,
         name: p.name,
+        description: p.description,
         images: p.images || [],
         price: p.price,
+        countInStock: p.countInStock || "in",
         
         promotion: {
           _id: p.promotion._id,
@@ -269,6 +271,7 @@ export const getProductsWithPromo = async (req, res) => {
           endDate: p.promotion.endDate,
           discountedPrice: p.getFinalPrice(),
         },
+        hasPromotion: !!p.promotion,
         category: p.category?.name || null,
         subCategory: subCat?.name || null,
       };

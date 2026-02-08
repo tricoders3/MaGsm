@@ -43,6 +43,7 @@ const { productName } = useParams();
         const currentProduct = resProduct.data;
         setProduct(currentProduct);
 
+      
         const resPromo = await axios.get(
           `${BASE_URL}/api/promotions/product/${currentProduct._id}`
         );
@@ -96,19 +97,13 @@ const { productName } = useParams();
   if (loading) return <div className="text-center mt-5"><Spinner animation="border" variant="primary" /></div>;
   if (!product) return <div className="text-center mt-5"><h3>Produit introuvable</h3></div>;
 
-  // Calculate discounted price
-  let discountedPrice = product.price;
-  let promoText = "";
-  if (promotion) {
-    if (promotion.discountType === "percentage") {
-      discountedPrice = product.price - (product.price * promotion.discountValue) / 100;
-      promoText = `-${promotion.discountValue}%`;
-    } else {
-      discountedPrice = product.price - promotion.discountValue;
-      promoText = `-${promotion.discountValue} DT`;
-    }
-    discountedPrice = Math.max(discountedPrice, 0);
-  }
+  // Use backend discountedPrice
+  const discountedPrice = product.discountedPrice || product.price;
+  const promoText = promotion ? (
+    promotion.discountType === "percentage"
+      ? `-${promotion.discountValue}%`
+      : `-${promotion.discountValue} DT`
+  ) : "";
 
   // Add to favorites
 const handleAddToFavorites = async () => {
@@ -201,12 +196,24 @@ const handleAddToCartSafe = () => {
           <p className="text-muted mb-3"><strong>Catégorie:</strong> {product.category?.name || "N/A"}</p>
 
         
-
           <div className="mb-3">
-            {promotion && <span className="text-decoration-line-through me-2 text-muted">{product.price} DT</span>}
-            <span className="h4 fw-bold text-danger">{discountedPrice} DT</span>
-          </div>
+  <p className="product-price text-muted">
+    {promotion ? (
+      <>
+        <span className="original-price text-muted">
+          {product.price} DT
+        </span>{" "}
+        <span className="discounted-price">
+          {discountedPrice} DT
+        </span>
+      </>
+    ) : (
+      `${product.price} DT`
+    )}
+  </p>
+</div>
 
+    
 <p className="mb-3">
   {isLongDescription && !showFullDescription
     ? product.description.slice(0, MAX_LENGTH) + "..."
@@ -283,6 +290,8 @@ const handleAddToCartSafe = () => {
     category: prod.subCategoryName || "N/A",
     countInStock: prod.countInStock,
     promotion: prod.promotion || null,
+    discountedPrice: prod.promotion?.discountedPrice || null,
+    hasPromotion: !!prod.promotion,
   }}
   badgeType={prod.promotion ? "promo" : "stock"}
   stockCount={prod.countInStock}

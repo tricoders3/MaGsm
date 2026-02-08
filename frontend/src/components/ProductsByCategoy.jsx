@@ -63,8 +63,9 @@ const SubcategoryProducts = () => {
           : [{ url: "/assets/images/default.png" }],
         description: p.description,
         price: p.price,
-        discountedPrice: p.hasPromotion ? p.discountedPrice : null,
+        discountedPrice: p.discountedPrice,
         hasPromotion: p.hasPromotion,
+        promotion: p.promotion,
       }}
       badgeType={p.hasPromotion ? "promo" : "stock"}
       stockCount={p.countInStock}

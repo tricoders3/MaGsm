@@ -1,5 +1,5 @@
 import React from 'react';
-import BestSeller from '../components/BestSeller';
+import BestSeller from '../components/BestOffer';
 import PopularProducts from '../components/PopularProducts';
 import HeroCarousel from '../components/HeroSection';
 import ProductsCategory from '../components/ProductsCategory';

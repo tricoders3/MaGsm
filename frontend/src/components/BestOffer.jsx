@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FiArrowRight } from "react-icons/fi";
 import axios from "axios";
 import BASE_URL from "../constante";
-import ProductCard from "../components/ProductCard";
+import ProductCard from "./ProductCard";
 
 
 const BestSeller = () => {
@@ -19,14 +19,14 @@ const BestSeller = () => {
           `${BASE_URL}/api/promotions/promos`
         );
         const formatted = data.map((p) => ({
-          id: p.id,
+          id: p._id,
           name: p.name,
           images: p.images || [],
           category: p.category,
           subCategory: p.subCategory,
           price: p.price,
           promotion: p.promotion || null,
-          discountedPrice: p.promotion?.discountedPrice ?? null,
+          discountedPrice: p.promotion?.discountedPrice || p.price,
           hasPromotion: !!p.promotion,
         }));
         

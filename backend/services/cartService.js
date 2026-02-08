@@ -17,76 +17,75 @@ export const getUserCart = async (userId) => {
 };
 
 export const updateCartLoyaltyPoints = async (userId) => {
-  const cart = await Cart.findOne({ user: userId }).populate('items.product')
+  const cart = await Cart.findOne({ user: userId })
 
   if (!cart || cart.items.length === 0) {
     cart.loyaltyPoints = 0
   } else {
-    const total = cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+    const total = cart.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    )
     cart.loyaltyPoints = calculateLoyaltyPoints(total)
   }
 
   await cart.save()
   return cart.loyaltyPoints
 }
-// Ajouter un produit au panier
-export const addToCart = async (userId, productId, quantity = 1) => {
-  const product = await Product.findById(productId)
-  if (!product) throw new Error('Product not found')
 
-  if (product.countInStock < quantity) {
-    throw new Error('Not enough stock')
+// Ajouter un produit au panier
+
+export const addToCart = async (userId, productId, quantity = 1) => {
+  const product = await Product
+    .findById(productId)
+    .populate("promotion") // REQUIRED
+
+  if (!product) throw new Error("Product not found")
+
+  if (product.countInStock === "out") {
+    throw new Error("Product out of stock")
   }
+
+  const finalPrice = product.getFinalPrice() 
 
   const cart = await getUserCart(userId)
 
   const itemIndex = cart.items.findIndex(
-    (item) => item.product._id.toString() === productId
+    item => item.product._id.toString() === productId
   )
 
   if (itemIndex > -1) {
-    const newQuantity = cart.items[itemIndex].quantity + quantity
+    cart.items[itemIndex].quantity += quantity
 
-    if (product.countInStock < newQuantity) {
-      throw new Error('Not enough stock')
-    }
-
-    cart.items[itemIndex].quantity = newQuantity
   } else {
     cart.items.push({
       product: productId,
-      quantity
+      quantity,
+      price: finalPrice, // discounted 
     })
   }
 
   await cart.save()
-  return await cart.populate('items.product')
+  return await cart.populate("items.product")
 }
+
 
 // Modifier la quantité d’un produit
 export const updateCartItem = async (userId, productId, quantity) => {
-  if (quantity < 1) throw new Error('Quantity must be at least 1')
-
-  const product = await Product.findById(productId)
-  if (!product) throw new Error('Product not found')
-
-  if (product.countInStock < quantity) {
-    throw new Error('Not enough stock')
-  }
-
-  const cart = await getUserCart(userId)
+  const cart = await Cart.findOne({ user: userId });
+  if (!cart) throw new Error("Panier introuvable");
 
   const item = cart.items.find(
-    (item) => item.product._id.toString() === productId
-  )
+    i => i.product.toString() === productId
+  );
+  if (!item) throw new Error("Produit introuvable dans le panier");
 
-  if (!item) throw new Error('Product not in cart')
+  item.quantity = quantity;
 
-  item.quantity = quantity
-  await cart.save()
 
-  return await cart.populate('items.product')
-}
+  await cart.save();
+  return cart;
+};
 
 // Supprimer un produit du panier
 export const removeFromCart = async (userId, productId) => {

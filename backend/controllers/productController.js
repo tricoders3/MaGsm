@@ -120,16 +120,16 @@ export const getProductById = async (req, res) => {
     res.json({
       ...product._doc,
       subCategoryName: subCat ? subCat.name : null,
-      promotion: p.promotion?.isValid
+      promotion: product.promotion?.isValid
           ? {
-              _id: p.promotion._id,
-              name: p.promotion.name,
-              discountType: p.promotion.discountType,
-              discountValue: p.promotion.discountValue,
-              startDate: p.promotion.startDate,
-              endDate: p.promotion.endDate,
+              _id: product.promotion._id,
+              name: product.promotion.name,
+              discountType: product.promotion.discountType,
+              discountValue: product.promotion.discountValue,
+              startDate: product.promotion.startDate,
+              endDate: product.promotion.endDate,
                     // ✅ prix final calculé dynamiquement
-        discountedPrice: p.getFinalPrice(),
+        discountedPrice: product.getFinalPrice(),
             }
       
           : null,
@@ -242,6 +242,7 @@ export const getProductsByCategory = async (req, res) => {
       
           : null,
         hasPromotion: !!p.promotion?.isValid,
+        discountedPrice: p.promotion?.isValid ? p.getFinalPrice() : null,
       };
     });
 
@@ -288,6 +289,7 @@ export const getProductsBySubCategory = async (req, res) => {
       
           : null,
         hasPromotion: !!p.promotion?.isValid,
+        discountedPrice: p.promotion?.isValid ? p.getFinalPrice() : null,
       };
     });
 
@@ -458,20 +460,21 @@ export const getProductByName = async (req, res) => {
     res.json({
       ...product._doc,
       subCategoryName: subCat ? subCat.name : null,
-     promotion: p.promotion?.isValid
+     promotion: product.promotion?.isValid
           ? {
-              _id: p.promotion._id,
-              name: p.promotion.name,
-              discountType: p.promotion.discountType,
-              discountValue: p.promotion.discountValue,
-              startDate: p.promotion.startDate,
-              endDate: p.promotion.endDate,
+              _id: product.promotion._id,
+              name: product.promotion.name,
+              discountType: product.promotion.discountType,
+              discountValue: product.promotion.discountValue,
+              startDate: product.promotion.startDate,
+              endDate: product.promotion.endDate,
                     // ✅ prix final calculé dynamiquement
-        discountedPrice: p.getFinalPrice(),
+        discountedPrice: product.getFinalPrice(),
             }
       
           : null,
       hasPromotion: !!product.promotion?.isValid,
+      discountedPrice: product.promotion?.isValid ? product.getFinalPrice() : null,
     });
   } catch (error) {
     console.error(error);

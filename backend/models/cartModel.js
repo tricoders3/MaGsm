@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 const cartItemSchema = new mongoose.Schema({
   product: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product', 
+    ref: 'Product',
     required: true
   },
   quantity: {
@@ -11,8 +11,13 @@ const cartItemSchema = new mongoose.Schema({
     required: true,
     min: 1,
     default: 1
+  },
+  price: {
+    type: Number,
+    required: true // 🔥 THIS UNBLOCKS EVERYTHING
   }
 })
+
 
 const cartSchema = new mongoose.Schema(
   {

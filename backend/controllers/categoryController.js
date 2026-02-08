@@ -179,18 +179,32 @@ export const getSubCategories = async (req, res) => {
 
 export const getProductsBySubCategory = async (req, res) => {
   try {
-    // Find all products that belong to the subCategory
+    // Find all products that belong to the subCategory with promotion info
     const products = await Product.find({ subCategory: req.params.subCategoryId })
-      .populate("category", "name subCategories"); // populate category info
+      .populate("category", "name subCategories")
+      .populate("promotion");
 
-    // Map subCategory id to name
+    // Map subCategory id to name and include promotion/discountedPrice
     const result = products.map((p) => {
       const subCat = p.category.subCategories.find(
         (sc) => sc._id.toString() === p.subCategory.toString()
       );
+      
       return {
         ...p._doc,
         subCategoryName: subCat ? subCat.name : null,
+        promotion: p.promotion?.isValid
+          ? {
+              _id: p.promotion._id,
+              name: p.promotion.name,
+              discountType: p.promotion.discountType,
+              discountValue: p.promotion.discountValue,
+              startDate: p.promotion.startDate,
+              endDate: p.promotion.endDate,
+              discountedPrice: p.getFinalPrice(),
+            }
+          : null,
+        hasPromotion: !!p.promotion?.isValid,
       };
     });
 

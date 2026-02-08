@@ -38,18 +38,6 @@ const isValid =
   form.city &&
   form.country;
 
-  const getDiscountedPrice = (product, promotion) => {
-    if (!promotion) return product.price;
-  
-    let discounted = product.price;
-    if (promotion.discountType === "percentage") {
-      discounted = product.price - (product.price * promotion.discountValue) / 100;
-    } else {
-      discounted = product.price - promotion.discountValue;
-    }
-    return Math.max(discounted, 0);
-  };
-  
   // 🔹 Fetch cart if empty
    useEffect(() => {
     const fetchData = async () => {
@@ -105,7 +93,6 @@ const isValid =
     setSubmitting(true);
   
     try {
-      // Build the payload
       const payload = {
         shippingAddress: {
           street: form.street,
@@ -119,23 +106,19 @@ const isValid =
           email: billing.email,
           phone: billing.phone,
         },
-        useLoyaltyPoints: usePoints,
+        useLoyaltyPoints: usePoints, // backend handles discount
         items: cart.map(item => ({
           productId: item.product._id,
           name: item.product.name,
           quantity: item.quantity,
-          price: getDiscountedPrice(item.product, item.promotion),
+          price: item.promotion?.discountedPrice || item.product.price,
         })),
-        deliveryFee: DELIVERY_FEE,
-        discount: usePoints && discount > 0 ? discount : 0,
-        total: totalAfterDiscount,
       };
   
       const { data } = await axios.post(`${BASE_URL}/api/orders`, payload, {
         withCredentials: true,
       });
   
-      const newOrderId = data?.order?._id;
       setShowToast(true);
   
       setTimeout(() => {
@@ -143,7 +126,7 @@ const isValid =
         setCart([]);
         setCartCount(0);
   
-        if (newOrderId) navigate(`/order-confirmation/${newOrderId}`);
+        if (data?.order?._id) navigate(`/order-confirmation/${data.order._id}`);
         else navigate("/orders");
       }, 1500);
     } catch (error) {
@@ -157,25 +140,21 @@ const isValid =
   
 
 // Calculs sous-total et total avec livraison
-const DELIVERY_FEE = 7; // Livraison à domicile
+const DELIVERY_FEE = 7;
 const subTotal = cart?.reduce(
-    (sum, item) => sum + getDiscountedPrice(item.product, item.promotion) * item.quantity,
-    0
-  ) || 0;
-  
+  (sum, item) => sum + (item.promotion?.discountedPrice || item.product.price) * item.quantity,
+  0
+);
 
 const totalWithDelivery = subTotal + DELIVERY_FEE;
 
-// Points fidélité
-const pointsPer100DT = 10;
-const earnedPoints = Math.floor((totalWithDelivery / 100) * pointsPer100DT);
-// 🔹 Remise si utilisation des points fidélité
+// Points discount display
 const discount = usePoints && userLoyaltyPoints >= 1000
   ? Math.floor(userLoyaltyPoints / 1000) * 10
   : 0;
 
-// 🔹 Total final après remise
 const totalAfterDiscount = totalWithDelivery - discount;
+const earnedPoints = Math.floor((totalAfterDiscount / 100) * 10);
 
 
  
@@ -295,7 +274,7 @@ if (loading) return null;
         </h4>
 
         {cart.map((item) => {
-  const price = getDiscountedPrice(item.product, item.promotion);
+  const price = item.promotion?.discountedPrice || item.product.price;
   return (
     <div
       key={item.product._id}

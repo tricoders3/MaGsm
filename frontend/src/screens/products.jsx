@@ -31,7 +31,10 @@ function Products() {
           images: product.images?.length ? product.images : [{ url: "/assets/images/default.png" }],
           price: product.price,
           promotion: product.promotion, 
-          countInStock: product.countInStock || "in",
+          countInStock:
+         product.countInStock === "in" || product.countInStock === "out"
+        ? product.countInStock
+        : null,
           hasPromotion: !!product.promotion, 
         }));
         

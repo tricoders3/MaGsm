@@ -24,10 +24,11 @@ export const createOrder = async (
   // 🔹 Items
   const items = cart.items.map(item => ({
     product: item.product._id,
-    name: item.product.name,
-    price: item.product.price,
+    name: item.product.name, 
+    price: item.price ?? item.product.price,
     quantity: item.quantity,
   }));
+  
 
   // 🔹 Sous-total
   const subTotal = items.reduce(

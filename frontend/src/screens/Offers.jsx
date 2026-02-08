@@ -26,32 +26,38 @@ export default function OfferPage() {
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
+        // Use the correct endpoint that returns products with promotions
         const res = await axios.get(`${BASE_URL}/api/promotions/promos`);
+  
         const mapped = res.data.map((p) => ({
           id: p._id,
           name: p.name,
           description: p.description,
-           images: p.images || [],
+          images: p.images || [],
+          price: p.price,
+          discountedPrice: p.promotion?.discountedPrice || p.price,
+          hasPromotion: !!p.promotion,
+  
           category: p.category,
           subCategory: p.subCategory,
-          originalPrice: p.originalPrice,
-          discountedPrice: p.discountedPrice,
-          promotion: p.promotion,
-          countInStock: p.countInStock || 1,
+          countInStock: p.countInStock || "in",
+          promotion: p.promotion || null,
         }));
+  
         setProducts(mapped);
-
+  
         const promoResp = await axios.get(`${BASE_URL}/api/promotions`);
         setPromotions(promoResp.data.filter((p) => p.isActive));
-
+  
         setLoading(false);
       } catch (err) {
         setLoading(false);
       }
     };
-
+  
     fetchPromotions();
   }, []);
+  
 
   // Reset page when search changes
   useEffect(() => {

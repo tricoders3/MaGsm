@@ -103,6 +103,8 @@ const CategoryView = () => {
                   countInStock: product.countInStock,
                   description: product.description,
                   promotion: product.promotion || null,
+                  discountedPrice: product.discountedPrice,
+                  hasPromotion: product.hasPromotion,
                 }}
                 badgeType={product.promotion ? "promo" : "stock"}
                 isFavorite={favorites.includes(product._id)}

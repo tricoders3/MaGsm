@@ -84,9 +84,13 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
 
 
   // Render badge
-
   const renderBadge = () => {
+   
     if (badgeType === "stock") {
+      if (product.countInStock !== "in" && product.countInStock !== "out") {
+        return null;
+      }
+  
       return product.countInStock === "in" ? (
         <span className="badge-stock">EN STOCK</span>
       ) : (
@@ -94,6 +98,7 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
       );
     }
   
+    // promo badge
     if (badgeType === "promo" && product.hasPromotion && product.promotion) {
       return (
         <span className="badge-offer">
@@ -126,7 +131,6 @@ const { cartCount, setCartCount, favoritesCount, setFavoritesCount } = useCart()
       </button>
       {isAuthenticated && (
       <button className="cart-btn" onClick={handleAddToCart}
-      disabled={product.countInStock === "out"}
       title={product.countInStock === "out" ? "Produit en rupture de stock" : "Ajouter au panier"}>
         <FiShoppingCart/>
       </button>
