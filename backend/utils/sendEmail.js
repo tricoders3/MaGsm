@@ -13,29 +13,41 @@ const transporter = nodemailer.createTransport({
 
 
 
-export const sendClientOrderConfirmation = async ({ user, order, invoicePath }) => {
-  await transporter.sendMail({
+export const sendClientOrderConfirmation = async ({
+  user,
+  order,
+  invoiceBuffer, // 👈 بدل invoicePath
+}) => {
+  const mailOptions = {
     from: `"MaGsm Boutique" <${process.env.SMTP_USER}>`,
     to: user.email,
     subject: "Confirmation de commande & facture",
     html: `
       <h3>Bonjour ${user.name},</h3>
-      <p>Votre commande a bien été enregistrée.</p>
+      <p>Votre commande a bien été enregistrée ✅</p>
       <p>Vous trouverez votre facture en pièce jointe.</p>
-      <p><strong>Total:</strong> ${order.total} DT</p>
-      <p><strong>Points fidélité gagnés:</strong> ${order.pointsEarned}</p>
-      <p>🚚 Livraison estimée entre <strong style={{ color: "#000" }}>24 et 72 heures</strong><p>
+      <p><strong>Total :</strong> ${order.total} DT</p>
+      <p><strong>Points fidélité gagnés :</strong> ${order.pointsEarned}</p>
+      <p>🚚 Livraison estimée entre <b>24 et 72 heures</b></p>
       <br />
       <p>Merci pour votre confiance 🙏</p>
     `,
-    attachments: [
+  };
+
+  // ✅ Ajouter la facture seulement si elle existe
+  if (invoiceBuffer) {
+    mailOptions.attachments = [
       {
         filename: `facture-${order._id}.pdf`,
-        path: invoicePath,
+        content: invoiceBuffer,              // 👈 BUFFER
+        contentType: "application/pdf",
       },
-    ],
-  });
+    ];
+  }
+
+  await transporter.sendMail(mailOptions);
 };
+
 
 
 
