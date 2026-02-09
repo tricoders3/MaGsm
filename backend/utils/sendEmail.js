@@ -41,7 +41,7 @@ export const sendClientOrderConfirmation = async ({ user, order, invoicePath }) 
 
 export const sendAdminOrderNotification = async ({ user, order }) => {
   await transporter.sendMail({
-    from: `"Shop" <${process.env.SMTP_USER}>`,
+    from: `"MaGsm" <${process.env.SMTP_USER}>`,
     to: process.env.ADMIN_EMAIL,
     subject: "🛒 Nouvelle commande",
     html: `
@@ -56,7 +56,7 @@ export const sendAdminOrderNotification = async ({ user, order }) => {
 // Fonction générique pour envoyer un mail
 export const sendEmail = async ({ to, subject, text, html }) => {
   await transporter.sendMail({
-    from: `"Shop" <${process.env.SMTP_USER}>`,
+    from: `"MaGsm" <${process.env.SMTP_USER}>`,
     to,
     subject,
     text, // optionnel si html fourni
