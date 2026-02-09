@@ -37,8 +37,8 @@ export const createOrderFromCart = async (req, res) => {
       shippingAddress,
       useLoyaltyPoints
     );
+const user = await User.findById(req.user.id).select("name email phone loyaltyPoints");
 
-    const user = await User.findById(req.user.id);
 
     // 2️⃣ Clear cart
     await clearCart(req.user.id);
