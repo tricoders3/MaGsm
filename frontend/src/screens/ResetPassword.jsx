@@ -15,14 +15,18 @@ const ResetPassword = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post(`${BASE_URL}/api/auth/reset-password/${token}`, {
+      // 🔹 Changer POST en PUT car backend attend PUT
+      await axios.put(`${BASE_URL}/api/auth/reset-password/${token}`, {
         newPassword: password,
       });
+
       toast.success("Mot de passe réinitialisé avec succès !");
       navigate("/login");
     } catch (err) {
       console.error(err);
-      toast.error("Erreur lors de la réinitialisation du mot de passe");
+      toast.error(
+        err.response?.data?.message || "Erreur lors de la réinitialisation du mot de passe"
+      );
     } finally {
       setLoading(false);
     }
