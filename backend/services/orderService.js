@@ -38,28 +38,34 @@ export const createOrder = async (
 
   const deliveryFee = 8;
 
-  // 🔹 Gestion points → remise
+  // 🔹 Gestion fidélité
   let discount = 0;
   let pointsUsed = 0;
 
-  if (useLoyaltyPoints && dbUser.loyaltyPoints >= 1000) {
-    // règle : 1000 pts = 10 DT
-    const maxDiscount = Math.floor(dbUser.loyaltyPoints / 1000) * 10;
+  if (useLoyaltyPoints && dbUser.loyaltyPoints >= 500) {
+    // 🔁 1 point = 0.1 DT
+    const POINT_VALUE_DT = 0.1;
 
-    discount = Math.min(maxDiscount, subTotal);
-    pointsUsed = Math.floor(discount / 10) * 1000;
+    // remise max possible selon points
+    const maxDiscountFromPoints = dbUser.loyaltyPoints * POINT_VALUE_DT;
 
-    // 🔻 Déduction des points
+    // remise finale (ne dépasse jamais le sous-total)
+    discount = Math.min(maxDiscountFromPoints, subTotal);
+
+    // points réellement consommés
+    pointsUsed = Math.floor(discount / POINT_VALUE_DT);
+
+    // 🔻 déduction des points
     dbUser.loyaltyPoints -= pointsUsed;
   }
 
   // 🔹 Total final
-  const total = subTotal + deliveryFee - discount;
+  const total = Math.max(subTotal + deliveryFee - discount, 0);
 
-  // 🔹 Points gagnés
+  // 🔹 Points gagnés (100 DT = 10 points)
   const pointsEarned = calculateLoyaltyPoints(total);
 
-  // 🔹 Ajouter les points gagnés
+  // 🔹 Ajout des points gagnés
   dbUser.loyaltyPoints += pointsEarned;
 
   // 🔹 Sauvegarde UNIQUE du user
