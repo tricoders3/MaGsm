@@ -15,35 +15,51 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [rememberMe, setRememberMe] = useState(false);
   const { login } = useAuth();
 
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberMeEmail");
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
+
   // Connexion classique (email/password)
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const res = await axios.post(
         `${BASE_URL}/api/auth/login`,
         { email, password },
         { withCredentials: true }
       );
-  
-     if (res.data.user) {
-  login(res.data.user);
 
-  if (!res.data.user.isApproved) {
-    navigate("/waiting-approval");
-  } else {
-    navigate("/");
-  }
-}
+      if (res.data.user) {
+        login(res.data.user); // save user in context
 
+        // ✅ Handle Remember Me
+        if (rememberMe) {
+          localStorage.setItem("rememberMeEmail", email); // remember only email
+        } else {
+          localStorage.removeItem("rememberMeEmail");
+        }
+
+        if (!res.data.user.isApproved) {
+          navigate("/waiting-approval");
+        } else {
+          navigate("/");
+        }
+      }
     } catch (err) {
       console.error(err);
       toast.error("Email ou mot de passe incorrect");
     } finally {
-      setLoading(false); 
-    } 
+      setLoading(false);
+    }
   };
 
 
@@ -99,8 +115,23 @@ const Login = () => {
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
-                  <div className="mb-3 text-end">
-  <Link to="/forgot-password" >
+                  <div className="mb-3 d-flex justify-content-between align-items-center">
+  {/* Remember Me */}
+  <div className="form-check mb-0">
+    <input
+      type="checkbox"
+      className="form-check-input"
+      id="rememberMe"
+      checked={rememberMe}
+      onChange={(e) => setRememberMe(e.target.checked)}
+    />
+    <label className="form-check-label" htmlFor="rememberMe">
+      Se souvenir de moi
+    </label>
+  </div>
+
+  {/* Forgot Password */}
+  <Link to="/forgot-password" className="forgot-password-link">
     Mot de passe oublié ?
   </Link>
 </div>

@@ -43,6 +43,8 @@ export default function GlobalSearch() {
     "/register",
     "/checkout",
     "/order-confirmation",
+    "/reset-password",
+    "/forgot-password",
     "/not-found",
   ];
 

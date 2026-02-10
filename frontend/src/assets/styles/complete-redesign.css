@@ -1552,7 +1552,15 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
+.forgot-password-link {
+  color: #000;               
+  text-decoration: none;               
+  transition: color 0.2s ease;
+}
 
+.forgot-password-link:hover {
+  color: #555;         
+}
 .form-input {
   background: var(--white);
   border: 2px solid var(--gray-200);
@@ -2322,6 +2330,34 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
     box-shadow: var(--shadow-md);            
     cursor: not-allowed;                   
     opacity: 0.8;                           
+  }
+  .social-icons-row {
+    display: flex;
+    justify-content: center; /* center horizontally */
+    align-items: center;
+    gap: 16px;               /* spacing like the screenshot */
+    margin-top: 16px;
+  }
+  
+  .social-icon-btn {
+    width: 44px !important;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 !important;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+  }
+  
+  
+  
+  .social-icon-btn:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+  }
+  
+  .social-icon-btn:active {
+    transform: scale(0.95);
   }
   
 .btn-google, .btn-facebook {
@@ -4920,6 +4956,9 @@ body.dark .status-approve-badge {
     font-size: 1rem;
     padding: 0.7rem 0.9rem;
  
+  }
+  .form-check-labe,  .forgot-password-link {
+    font-size: 0.8rem !important;
   }
   .auth-text {
     font-size: 0.9rem;

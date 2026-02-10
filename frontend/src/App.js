@@ -142,10 +142,10 @@ function App() {
 <Route path="/products/:productName" element={<ProductDetails />} />
 <Route path="/not-found" element={<NotFound />} />
 <Route path="*" element={<Navigate to="/not-found" />} />
-
-  </Route>
 <Route path="/forgot-password" element={<ForgotPassword />} />
 <Route path="/reset-password/:token" element={<ResetPassword />} />
+  </Route>
+
 <Route element={<AdminRoute />}>
     <Route path="/admin" element={<AdminLayout />}>
       <Route index element={<AdminDashboard />} />

@@ -33,7 +33,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="auth-page d-flex align-items-center">
+    <div className="d-flex align-items-center justify-content-center mt-4">
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-lg-5 col-md-7">
