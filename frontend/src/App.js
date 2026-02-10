@@ -31,13 +31,14 @@ import Promos from "./screens/admin/Promos";
 import Products from "./screens/products.jsx";
 import Users from "./screens/admin/Users";
 import WaitingApproval from "./screens/waiting-approval.jsx";
-
+import ForgotPassword from "./screens/ForgotPassword.jsx";
 import AdminAbout from "./screens/admin/AdminAbout";
 import Brands from "./screens/admin/Brands.jsx";
 import AdminContact from "./screens/admin/AdminContact";
 import Profile from "./screens/Profile.jsx";
 import PendingUsers from "./screens/admin/PendingUsers.jsx";
 import ProductDetails from "./screens/ProductDetails.jsx";
+import ResetPassword from "./screens/ResetPassword.jsx";
 import './assets/css/style.css';
 import './assets/css/responsive.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -143,7 +144,8 @@ function App() {
 <Route path="*" element={<Navigate to="/not-found" />} />
 
   </Route>
-
+<Route path="/forgot-password" element={<ForgotPassword />} />
+<Route path="/reset-password/:token" element={<ResetPassword />} />
 <Route element={<AdminRoute />}>
     <Route path="/admin" element={<AdminLayout />}>
       <Route index element={<AdminDashboard />} />

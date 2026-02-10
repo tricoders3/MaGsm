@@ -13,48 +13,35 @@ const transporter = nodemailer.createTransport({
 
 
 
-export const sendClientOrderConfirmation = async ({
-  user,
-  order,
-  invoiceBuffer, // 👈 بدل invoicePath
-}) => {
-  const mailOptions = {
+export const sendClientOrderConfirmation = async ({ user, order, invoicePath }) => {
+  await transporter.sendMail({
     from: `"MaGsm Boutique" <${process.env.SMTP_USER}>`,
     to: user.email,
     subject: "Confirmation de commande & facture",
     html: `
       <h3>Bonjour ${user.name},</h3>
-      <p>Votre commande a bien été enregistrée ✅</p>
+      <p>Votre commande a bien été enregistrée.</p>
       <p>Vous trouverez votre facture en pièce jointe.</p>
-      <p><strong>Total :</strong> ${order.total} DT</p>
-      <p><strong>Points fidélité gagnés :</strong> ${order.pointsEarned}</p>
-      <p>🚚 Livraison estimée entre <b>24 et 72 heures</b></p>
+      <p><strong>Total:</strong> ${order.total} DT</p>
+      <p><strong>Points fidélité gagnés:</strong> ${order.pointsEarned}</p>
+      <p>🚚 Livraison estimée entre <strong style={{ color: "#000" }}>24 et 72 heures</strong><p>
       <br />
       <p>Merci pour votre confiance 🙏</p>
     `,
-  };
-
-  // ✅ Ajouter la facture seulement si elle existe
-  if (invoiceBuffer) {
-    mailOptions.attachments = [
+    attachments: [
       {
         filename: `facture-${order._id}.pdf`,
-        content: invoiceBuffer,              // 👈 BUFFER
-        contentType: "application/pdf",
+        path: invoicePath,
       },
-    ];
-  }
-
-  await transporter.sendMail(mailOptions);
+    ],
+  });
 };
-
-
 
 
 
 export const sendAdminOrderNotification = async ({ user, order }) => {
   await transporter.sendMail({
-    from: `"Shop" <${process.env.SMTP_USER}>`,
+    from: `"MaGsm" <${process.env.SMTP_USER}>`,
     to: process.env.ADMIN_EMAIL,
     subject: "🛒 Nouvelle commande",
     html: `
@@ -69,7 +56,7 @@ export const sendAdminOrderNotification = async ({ user, order }) => {
 // Fonction générique pour envoyer un mail
 export const sendEmail = async ({ to, subject, text, html }) => {
   await transporter.sendMail({
-    from: `"Shop" <${process.env.SMTP_USER}>`,
+    from: `"MaGsm" <${process.env.SMTP_USER}>`,
     to,
     subject,
     text, // optionnel si html fourni

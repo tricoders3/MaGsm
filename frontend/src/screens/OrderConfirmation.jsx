@@ -30,7 +30,7 @@ export default function OrderConfirmation() {
     fetchOrders();
   }, [orderId]);
 
-const deliveryFee = order?.deliveryFee || 7; // frais de livraison par défaut
+const deliveryFee = order?.deliveryFee || 8; // frais de livraison par défaut
 const discount = order?.discount || 0;       // remise appliquée
 const subTotal = (order?.items || []).reduce(
   (sum, item) => sum + (item.price || 0) * (item.quantity || 0),

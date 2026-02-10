@@ -4,7 +4,8 @@ import {
 approveUser,getPendingRequestsService,
    updateUserPassword, generatePasswordResetToken, resetUserPassword, createPasswordForSocialUser
 } from "../services/authService.js";
-import { sendEmail } from "../utils/sendEmail.js"; // Ton utils pour envoyer mail
+import { sendEmail } from "../utils/sendEmail.js"; 
+import userModel from "../models/userModel.js";
 
 /**
  * Register (email / password)
@@ -188,31 +189,52 @@ export const createPassword = async (req, res) => {
 /**
  * 🔹 Forgot password
  */
+
+
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    const resetToken = await generatePasswordResetToken(email);
+
+    // Normaliser l'email
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Vérifier si l'utilisateur existe
+    const user = await userModel.findOne({ email: normalizedEmail });
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Générer token de réinitialisation
+    const resetToken = await generatePasswordResetToken(normalizedEmail);
 
     const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
+    // Envoyer l'email via nodemailer
     await sendEmail({
-      to: email,
+      to: normalizedEmail,
       subject: "Réinitialisation du mot de passe",
       html: `
         <h2>Réinitialisation du mot de passe</h2>
-        <p>Cliquez sur le lien ci-dessous :</p>
+        <p>Bonjour ${user.name},</p>
+        <p>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :</p>
         <a href="${resetUrl}">${resetUrl}</a>
-        <p>Expire dans 10 minutes</p>
+        <p>Ce lien expire dans 10 minutes.</p>
+        <br/>
+        <p>Si vous n'avez pas demandé cette réinitialisation, ignorez ce message.</p>
       `,
     });
 
-    res.status(200).json({
-      message: "Email de réinitialisation envoyé",
-    });
+    res.status(200).json({ message: "Email de réinitialisation envoyé" });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("FORGOT PASSWORD ERROR:", error);
+    res.status(500).json({ message: "Erreur serveur, veuillez réessayer plus tard" });
   }
 };
+
+
+
+
+
 
 /**
  * 🔹 Reset password
