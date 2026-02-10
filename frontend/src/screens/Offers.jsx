@@ -35,7 +35,7 @@ export default function OfferPage() {
           description: p.description,
           images: p.images || [],
           price: p.price,
-          discountedPrice: p.promotion?.discountedPrice || p.price,
+          discountedPrice: p.promotion?.discountedPrice || null,
           hasPromotion: !!p.promotion,
   
           category: p.category,
@@ -45,6 +45,7 @@ export default function OfferPage() {
         }));
   
         setProducts(mapped);
+        setFilteredProducts(mapped); // Initialize filteredProducts with all products
   
         const promoResp = await axios.get(`${BASE_URL}/api/promotions`);
         setPromotions(promoResp.data.filter((p) => p.isActive));
@@ -112,7 +113,6 @@ export default function OfferPage() {
                 <p className="lead text-muted mb-2">
                   {heroPromotion.description || "Profitez de remises exclusives sur nos produits"}
                 </p>
-               
               </div>
 
               <div className="col-lg-4 text-lg-end">
@@ -142,7 +142,7 @@ export default function OfferPage() {
         {/* Filters + Products */}
         <div className="row">
           <div className="col-12 col-md-3 mb-4">
-            <ProductPromoFilters onFilter={handleFilter} />
+            <ProductPromoFilters onFilter={handleFilter} products={products} />
           </div>
 
           <div className="col-12 col-md-9">
