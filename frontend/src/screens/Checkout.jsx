@@ -140,7 +140,7 @@ const isValid =
   
 
 // Calculs sous-total et total avec livraison
-const DELIVERY_FEE = 7;
+const DELIVERY_FEE = 8;
 const subTotal = cart?.reduce(
   (sum, item) => sum + (item.promotion?.discountedPrice || item.product.price) * item.quantity,
   0

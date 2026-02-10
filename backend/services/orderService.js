@@ -36,7 +36,7 @@ export const createOrder = async (
     0
   );
 
-  const deliveryFee = 7;
+  const deliveryFee = 8;
 
   // 🔹 Gestion points → remise
   let discount = 0;

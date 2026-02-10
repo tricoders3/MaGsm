@@ -137,7 +137,7 @@ generateTableRow(
   "Frais de livraison",
   "",
   "",
-  `${order.deliveryFee || 7} DT`
+  `${order.deliveryFee || 8} DT`
 );
 currentY += 20;
 
