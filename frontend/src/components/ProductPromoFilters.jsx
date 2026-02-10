@@ -2,8 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import BASE_URL from "../constante";
 
-export default function ProductPromoFilters({ onFilter }) {
-  const [products, setProducts] = useState([]);
+export default function ProductPromoFilters({ onFilter, products }) {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
 
@@ -13,24 +12,20 @@ export default function ProductPromoFilters({ onFilter }) {
   const [loading, setLoading] = useState(true);
   const [subLoading, setSubLoading] = useState(false);
 
-  // 🔹 Load promo products
+  // 🔹 Set loading state based on products prop
   useEffect(() => {
-    const loadPromos = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/api/promotions/promos`);
-        setProducts(res.data || []);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadPromos();
-  }, []);
+    setLoading(!products || products.length === 0);
+  }, [products]);
 
-  // 🔹 Extract unique categories
+  // 🔹 Extract unique categories with names
   useEffect(() => {
-    const uniqueCats = [
-      ...new Set(products.map((p) => (p.category?._id || p.category)))
-    ];
+    const uniqueCats = products.reduce((acc, p) => {
+      const catName = p.category; // category is already a string name
+      if (catName && !acc.find(c => c.name === catName)) {
+        acc.push({ id: catName, name: catName }); // use name as both id and name
+      }
+      return acc;
+    }, []);
     setCategories(uniqueCats);
   }, [products]);
 
@@ -41,13 +36,15 @@ export default function ProductPromoFilters({ onFilter }) {
     if (!categoryId) return;
 
     setSubLoading(true);
-    const subs = [
-      ...new Set(
-        products
-          .filter((p) => (p.category?._id || p.category) === categoryId)
-          .map((p) => (p.subCategory?._id || p.subCategory))
-      )
-    ];
+    const subs = products
+      .filter((p) => p.category === categoryId) // compare with string category name
+      .reduce((acc, p) => {
+        const subName = p.subCategory; // subCategory is already a string name
+        if (subName && !acc.find(s => s.name === subName)) {
+          acc.push({ id: subName, name: subName }); // use name as both id and name
+        }
+        return acc;
+      }, []);
     setSubCategories(subs);
     setSubLoading(false);
   }, [categoryId, products]);
@@ -55,8 +52,8 @@ export default function ProductPromoFilters({ onFilter }) {
   // 🔹 Filter logic
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
-      if (categoryId && (p.category?._id || p.category) !== categoryId) return false;
-      if (subCategoryId && (p.subCategory?._id || p.subCategory) !== subCategoryId) return false;
+      if (categoryId && p.category !== categoryId) return false; // compare with string
+      if (subCategoryId && p.subCategory !== subCategoryId) return false; // compare with string
       return true;
     });
   }, [products, categoryId, subCategoryId]);
@@ -90,11 +87,11 @@ export default function ProductPromoFilters({ onFilter }) {
 
               {categories.map((cat) => (
                 <button
-                  key={cat}
-                  className={`pf-chip ${categoryId === cat ? "active" : ""}`}
-                  onClick={() => setCategoryId(cat)}
+                  key={cat.id}
+                  className={`pf-chip ${categoryId === cat.id ? "active" : ""}`}
+                  onClick={() => setCategoryId(cat.id)}
                 >
-                  {cat}
+                  {cat.name}
                 </button>
               ))}
             </div>
@@ -114,11 +111,11 @@ export default function ProductPromoFilters({ onFilter }) {
 
               {subCategories.map((sub) => (
                 <button
-                  key={sub}
-                  className={`pf-chip ${subCategoryId === sub ? "active" : ""}`}
-                  onClick={() => setSubCategoryId(sub)}
+                  key={sub.id}
+                  className={`pf-chip ${subCategoryId === sub.id ? "active" : ""}`}
+                  onClick={() => setSubCategoryId(sub.id)}
                 >
-                  {sub}
+                  {sub.name}
                 </button>
               ))}
 
