@@ -11,7 +11,7 @@ export default function Checkout() {
 
   const [usePoints, setUsePoints] = useState(false);
   const [userLoyaltyPoints, setUserLoyaltyPoints] = useState(0);
-  const canUsePoints = userLoyaltyPoints >= 1000;
+  const canUsePoints = userLoyaltyPoints >= 500;
 
  const [billing, setBilling] = useState({
   name: "",
@@ -141,20 +141,38 @@ const isValid =
 
 // Calculs sous-total et total avec livraison
 const DELIVERY_FEE = 8;
+
+// Sous-total (avec promotions)
 const subTotal = cart?.reduce(
-  (sum, item) => sum + (item.promotion?.discountedPrice || item.product.price) * item.quantity,
+  (sum, item) =>
+    sum +
+    (item.promotion?.discountedPrice || item.product.price) *
+      item.quantity,
   0
 );
 
-const totalWithDelivery = subTotal + DELIVERY_FEE;
+// 🎁 Fidélité
+const POINT_VALUE_DT = 0.1; // 1 point = 0.1 DT
 
-// Points discount display
-const discount = usePoints && userLoyaltyPoints >= 1000
-  ? Math.floor(userLoyaltyPoints / 1000) * 10
-  : 0;
+let discount = 0;
+let pointsUsed = 0;
 
-const totalAfterDiscount = totalWithDelivery - discount;
+if (usePoints && userLoyaltyPoints >= 1000) {
+  const maxDiscountFromPoints = userLoyaltyPoints * POINT_VALUE_DT;
+
+  discount = Math.min(maxDiscountFromPoints, subTotal);
+  pointsUsed = Math.floor(discount / POINT_VALUE_DT);
+}
+
+// Total final
+const totalAfterDiscount = Math.max(
+  subTotal - discount + DELIVERY_FEE,
+  0
+);
+
+// ⭐ Points gagnés (100 DT = 10 points)
 const earnedPoints = Math.floor((totalAfterDiscount / 100) * 10);
+
 
 
  
@@ -302,9 +320,9 @@ if (loading) return null;
 
         <hr />
 
-        <div className="d-flex justify-content-between">
+      <div className="d-flex justify-content-between">
   <span>Sous-total</span>
-  <span>{subTotal} DT</span>
+  <span>{subTotal.toFixed(2)} DT</span>
 </div>
 
 <div className="d-flex justify-content-between">
@@ -312,24 +330,21 @@ if (loading) return null;
   <span>{DELIVERY_FEE} DT</span>
 </div>
 
-
 {/* 🎁 Remise fidélité */}
 {usePoints && discount > 0 && (
   <div className="d-flex justify-content-between text-success fw-bold">
     <span>Remise fidélité</span>
-    <span>-{discount} DT</span>
+    <span>-{discount.toFixed(2)} DT</span>
   </div>
 )}
-<div className="mt-2 text-muted" style={{ fontSize: "13px" }}>
-  🚚 Livraison estimée entre <strong style={{ color: "#000" }}>24 et 72 heures</strong>
-</div>
 
 <hr />
 
 <div className="d-flex justify-content-between fw-bold fs-5 mt-2">
   <span>Total à payer</span>
-  <span>{totalAfterDiscount} DT</span>
+  <span>{totalAfterDiscount.toFixed(2)} DT</span>
 </div>
+
 {/* 🚚 Délai de livraison */}
 
 {/* 🎁 POINTS FIDÉLITÉ */} 
