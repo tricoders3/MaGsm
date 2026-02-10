@@ -27,8 +27,10 @@ export default function OfferPage() {
     const fetchPromotions = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/api/promotions/promos`);
+
+        // Make sure every product has unique 'id'
         const mapped = res.data.map((p) => ({
-          id: p._id,
+          id: p._id, // important for ProductCard
           name: p.name,
           description: p.description,
           images: p.images?.length ? p.images : [{ url: "/assets/images/default.png" }],
@@ -40,12 +42,14 @@ export default function OfferPage() {
           subCategory: p.subCategory,
           countInStock: p.countInStock || "in",
         }));
+
         setProducts(mapped);
         setFilteredProducts(mapped);
 
-        // Active promotions for hero
+        // Hero promotion
         const promoResp = await axios.get(`${BASE_URL}/api/promotions`);
         setPromotions(promoResp.data.filter((p) => p.isActive));
+
       } catch (err) {
         console.error(err);
         setError("Failed to load promotions");
@@ -90,7 +94,7 @@ export default function OfferPage() {
     return days > 0 ? `${days}j ${hours}h restants` : `${hours}h restants`;
   };
 
-  // Pagination
+  // Pagination logic
   const totalPages = Math.ceil(displayedProducts.length / productsPerPage);
   const indexOfLast = currentPage * productsPerPage;
   const indexOfFirst = indexOfLast - productsPerPage;
