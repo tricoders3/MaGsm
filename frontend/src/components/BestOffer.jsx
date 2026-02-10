@@ -28,6 +28,7 @@ const BestSeller = () => {
           promotion: p.promotion || null,
           discountedPrice: p.promotion?.discountedPrice || p.price,
           hasPromotion: !!p.promotion,
+          countInStock: p.countInStock,
         }));
         
 
@@ -62,7 +63,10 @@ const BestSeller = () => {
         <div className="row g-3">
           {previewProducts.map((product) => (
             <div key={product.id} className="col-6 col-sm-6 col-md-4 col-lg-3">
-              <ProductCard product={product} badgeType="promo" />
+              <ProductCard 
+              product={product}
+              badgeType="promo" 
+              stockCount={product.countInStock} />
             </div>
           ))}
         </div>
