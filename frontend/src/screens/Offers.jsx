@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../constante";
 import ProductCard from "../components/ProductCard";
-import ProductPromoFilters from "../components/ProductPromoFilters"; 
-import { useGlobalSearch } from "../context/SearchContext";
+import ProductPromoFilters from "../components/ProductPromoFilters"; // Filters component
 import "swiper/css";
+import { useGlobalSearch } from "../context/SearchContext";
 
 export default function OfferPage() {
   const navigate = useNavigate();
@@ -22,68 +22,68 @@ export default function OfferPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
 
-  // Fetch promotions and products
+  // Load promotions/products
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
+        // Use the correct endpoint that returns products with promotions
         const res = await axios.get(`${BASE_URL}/api/promotions/promos`);
-
-        // Make sure every product has unique 'id'
+  
         const mapped = res.data.map((p) => ({
-          id: p._id, // important for ProductCard
+          id: p._id,
           name: p.name,
           description: p.description,
-          images: p.images?.length ? p.images : [{ url: "/assets/images/default.png" }],
+          images: p.images || [],
           price: p.price,
           discountedPrice: p.promotion?.discountedPrice || p.price,
           hasPromotion: !!p.promotion,
-          promotion: p.promotion || null,
+  
           category: p.category,
           subCategory: p.subCategory,
           countInStock: p.countInStock || "in",
+          promotion: p.promotion || null,
         }));
-
+  
         setProducts(mapped);
-        setFilteredProducts(mapped);
-
-        // Hero promotion
+  
         const promoResp = await axios.get(`${BASE_URL}/api/promotions`);
         setPromotions(promoResp.data.filter((p) => p.isActive));
-
+  
+        setLoading(false);
       } catch (err) {
-        console.error(err);
-        setError("Failed to load promotions");
-      } finally {
         setLoading(false);
       }
     };
-
+  
     fetchPromotions();
   }, []);
+  
 
-  // Reset page on search
+  // Reset page when search changes
   useEffect(() => {
     setCurrentPage(1);
   }, [query]);
 
-  // Handle filters
+  // Handle filter changes from ProductPromoFilters
   const handleFilter = (filtered) => {
     setFilteredProducts(filtered);
     setCurrentPage(1);
   };
 
-  // Combine search query + filters
+  // Combine search query with filteredProducts
   const displayedProducts = useMemo(() => {
     const q = (query || "").toLowerCase();
     return filteredProducts.filter((p) => p.name.toLowerCase().includes(q));
   }, [filteredProducts, query]);
 
+
+
   if (loading) return null;
   if (error) return null;
-
+  
   const heroPromotion = promotions[0];
 
-  // Remaining time helper
+  // Format remaining time
   const formatTimeLeft = (endDate) => {
     if (!endDate) return "";
     const diff = new Date(endDate) - new Date();
@@ -100,9 +100,6 @@ export default function OfferPage() {
   const indexOfFirst = indexOfLast - productsPerPage;
   const currentProducts = displayedProducts.slice(indexOfFirst, indexOfLast);
 
-  const handlePrev = () => setCurrentPage((p) => Math.max(p - 1, 1));
-  const handleNext = () => setCurrentPage((p) => Math.min(p + 1, totalPages));
-
   return (
     <section className="offer-page">
       <div className="container py-5">
@@ -115,6 +112,7 @@ export default function OfferPage() {
                 <p className="lead text-muted mb-2">
                   {heroPromotion.description || "Profitez de remises exclusives sur nos produits"}
                 </p>
+               
               </div>
 
               <div className="col-lg-4 text-lg-end">
@@ -124,7 +122,9 @@ export default function OfferPage() {
                       ? `${heroPromotion.discountValue}%`
                       : `${heroPromotion.discountValue} DT`}
                   </span>
-                  <span className="text-muted">{formatTimeLeft(heroPromotion.endDate)}</span>
+                  <span className="text-muted">
+                    {formatTimeLeft(heroPromotion.endDate)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -171,7 +171,7 @@ export default function OfferPage() {
               <div className="d-flex justify-content-center align-items-center gap-2 mt-5 flex-wrap">
                 <button
                   className={`pagination-btn ${currentPage === 1 ? "disabled" : ""}`}
-                  onClick={handlePrev}
+                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                 >
                   Préc
                 </button>
@@ -188,7 +188,7 @@ export default function OfferPage() {
 
                 <button
                   className={`pagination-btn ${currentPage === totalPages ? "disabled" : ""}`}
-                  onClick={handleNext}
+                  onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                 >
                   Suiv
                 </button>
