@@ -15,19 +15,28 @@ function WaitingApproval() {
 
           </div>
 
-          <h1 className="fw-semibold mb-3">
-            Compte en attente
-          </h1>
+<h1 className="fw-semibold mb-3">
+  الحساب في انتظار التفعيل
+</h1>
 
-          <p className="text-muted mb-2">
-            Merci pour votre inscription.
-          </p>
+<p className="text-muted mb-4">
+  شكرا على ثقتك في <strong className="text-dark">MaGsm</strong> ومرحبا بيك في عايلتنا!
+</p>
 
-          <p className="text-muted mb-4">
-            Votre compte est actuellement en cours de vérification par
-            l’administrateur de <strong className="text-dark">MaGsm</strong>.
-            Vous recevrez un email dès qu’il sera activé.
-          </p>
+<p className="text-muted mb-4">
+  أول ما يتفعل حسابك، توصلك رسالة على الإيميل 📩، عادة ما ياخذش وقت طويل.
+</p>
+
+<p className="text-muted mb-4">
+  🎁 وتربح معانا <strong className="text-dark">100 Point fidélité</strong> تنجّم تستعملهم في الشراء الجاي 😉
+</p>
+
+          
+
+          
+
+
+          
 
           <button
             className="btn btn-primary px-4"
