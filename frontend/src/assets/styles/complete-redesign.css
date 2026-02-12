@@ -5150,9 +5150,9 @@ body.dark .status-approve-badge {
   background: #cff4fc; 
   color: #17a2b8; 
   align-items: center;
-  font-weight: 600;
+  font-weight: 700;
   padding: 4px 8px;
-  font-size: 12px;
+  font-size: 13px;
   border-radius: 999px;
   display: inline-block;
   min-width: 20px;

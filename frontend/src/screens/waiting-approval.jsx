@@ -14,28 +14,23 @@ function WaitingApproval() {
 </span>
 
           </div>
-
+          <div dir="rtl">
 <h1 className="fw-semibold mb-3">
   الحساب في انتظار التفعيل
 </h1>
 
-<p className="text-muted mb-4">
+<p className="text-muted mb-0">
   شكرا على ثقتك في <strong className="text-dark">MaGsm</strong> ومرحبا بيك في عايلتنا!
 </p>
 
-<p className="text-muted mb-4">
+<p className="text-muted mb-0">
   أول ما يتفعل حسابك، توصلك رسالة على الإيميل 📩، عادة ما ياخذش وقت طويل.
 </p>
 
 <p className="text-muted mb-4">
   🎁 وتربح معانا <strong className="text-dark">100 Point fidélité</strong> تنجّم تستعملهم في الشراء الجاي 😉
 </p>
-
-          
-
-          
-
-
+</div>
           
 
           <button

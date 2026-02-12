@@ -376,10 +376,10 @@ const fetchProducts = async () => {
                 className="btn btn-outline-secondary"
                 onClick={() => setShowForm(false)}
               >
-                Cancel
+                Annuler
               </button>
               <button className="btn btn-primary-redesign px-4" onClick={submitHandler}>
-                {editingPromoId ? "Update" : "Create"}
+              {editingPromoId ? "Mettre à jour" : "Créer"}
               </button>
             </div>
           </div>

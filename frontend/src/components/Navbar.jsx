@@ -149,7 +149,7 @@ function NavBar() {
                                       setShowMenu(false);
                                     }}
                                   >
-                                    <FiUser /> Profil
+                                    <FiUser /> Profile
                                   </button>
 
                     <button className="logout"
