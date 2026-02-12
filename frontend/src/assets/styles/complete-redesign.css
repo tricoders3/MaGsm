@@ -4855,7 +4855,7 @@ body.dark .status-approve-badge {
 
   .admin-layout:not(.is-collapsed) .card-body,
   .admin-layout:not(.is-collapsed) .table-responsive {
-  max-width: 340px;
+  max-width: 360px;
 }
 
 .offcanvas-header span {
@@ -4957,8 +4957,8 @@ body.dark .status-approve-badge {
     padding: 0.7rem 0.9rem;
  
   }
-  .form-check-labe,  .forgot-password-link {
-    font-size: 0.8rem !important;
+  .form-check-label,  .forgot-password-link {
+    font-size: 0.7rem !important;
   }
   .auth-text {
     font-size: 0.9rem;
@@ -5001,7 +5001,7 @@ body.dark .status-approve-badge {
     padding: 4px; 
   }
   .card-body {
-    max-width: 300px;
+    max-width: 320px;
     padding: 0.8rem;
   }
   .product-image-container {
