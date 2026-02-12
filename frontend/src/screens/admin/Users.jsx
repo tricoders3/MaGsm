@@ -86,15 +86,29 @@ const Users = () => {
   // Update user
   const handleUpdateUser = async () => {
     try {
-      await axios.put(`${BASE_URL}/api/user/${selectedUser._id}`, formData);
+      const { data: updatedUser } = await axios.put(
+        `${BASE_URL}/api/user/${selectedUser._id}`,
+        formData,
+        {
+          withCredentials: true, // ✅ send cookies
+        }
+      );
+  
+      // Update UI immediately
+      setUsers((prev) =>
+        prev.map((u) =>
+          u._id === updatedUser._id ? updatedUser : u
+        )
+      );
+  
       toast.success("Utilisateur mis à jour avec succès");
       closeModal();
-      fetchUsers();
     } catch (err) {
       console.error(err);
       toast.error("Erreur lors de la mise à jour de l'utilisateur");
     }
   };
+  
 
   // Filter users by name or email
   const filteredUsers = users.filter(
@@ -279,7 +293,7 @@ const Users = () => {
                     value={formData.role}
                     onChange={handleChange}
                   >
-                    <option value="user">Utilisateur</option>
+                    <option value="client">Utilisateur</option>
                     <option value="admin">Admin</option>
                   </select>
                 </div>

@@ -66,15 +66,22 @@ export const getUserByIdController = async (req, res) => {
 // ADMIN
 export const updateUserController = async (req, res) => {
   try {
-    // Sécurité : interdire la modification du rôle
-    if ('role' in req.body) delete req.body.role
+    const { name, email, role } = req.body;
 
-    const user = await updateUser(req.params.id, req.body)
-    res.status(200).json(user)
+    const dataToUpdate = { name, email };
+
+    //  Allow role update only for admins
+    if (req.user?.role === "admin" && role) {
+      dataToUpdate.role = role;
+    }
+
+    const user = await updateUser(req.params.id, dataToUpdate);
+    res.status(200).json(user);
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    res.status(400).json({ message: error.message });
   }
-}
+};
+
 
 // ADMIN
 export const deleteUserController = async (req, res) => {
