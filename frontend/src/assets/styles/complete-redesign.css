@@ -4855,8 +4855,13 @@ body.dark .status-approve-badge {
 
   .admin-layout:not(.is-collapsed) .card-body,
   .admin-layout:not(.is-collapsed) .table-responsive {
-  max-width: 360px;
+  max-width: 340px !important;
 }
+.admin-layout .card-body,
+.admin-layout .table-responsive {
+  max-width: 280px !important;
+}
+
 
 .offcanvas-header span {
   font-size: 1.3rem;
@@ -4960,6 +4965,11 @@ body.dark .status-approve-badge {
   .form-check-label,  .forgot-password-link {
     font-size: 0.7rem !important;
   }
+
+.account-pending-text .pending-title {
+  font-size: 1.4rem; 
+}
+
   .auth-text {
     font-size: 0.9rem;
   }
@@ -5000,10 +5010,7 @@ body.dark .status-approve-badge {
   td[data-label="Actions"] {
     padding: 4px; 
   }
-  .card-body {
-    max-width: 320px;
-    padding: 0.8rem;
-  }
+
   .product-image-container {
     position: relative;
     display: inline-block;

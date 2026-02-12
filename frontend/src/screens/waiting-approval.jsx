@@ -14,10 +14,10 @@ function WaitingApproval() {
 </span>
 
           </div>
-          <div dir="rtl">
-<h1 className="fw-semibold mb-3">
+          <div dir="rtl" className="account-pending-text">
+<h2 className="fw-semibold pending-title mb-3">
   الحساب في انتظار التفعيل
-</h1>
+</h2>
 
 <p className="text-muted mb-0">
   شكرا على ثقتك في <strong className="text-dark">MaGsm</strong> ومرحبا بيك في عايلتنا!
