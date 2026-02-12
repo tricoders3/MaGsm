@@ -116,14 +116,14 @@ const Products = () => {
     />
   </div>
             <button
-              className="btn btn-add-primary  d-flex align-items-center justify-content-center gap-1"
+              className="btn btn-add-primary  d-flex align-items-center justify-content-center"
               onClick={() => {
                 setSelectedProduct(null);
                 setShowForm(true);
               }}
-              style={{ height: "42px" }}
+              
             >
-              <FiPlus /> Ajouter
+              Ajouter
             </button>
           </div>
         </div>

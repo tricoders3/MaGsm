@@ -179,7 +179,7 @@ const fetchProducts = async () => {
         <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center">
           <div>
             <h5 className="text-dark fw-bold mb-0">Promotions</h5>
-            <small className="text-muted">
+            <small className="text-muted d-none d-md-block">
               Gérer les promotions actives et leurs remises.
             </small>
           </div>
@@ -203,7 +203,7 @@ const fetchProducts = async () => {
                 });
               }}
             >
-              + Create Promotion
+               Créer une promotion
             </button>
           </div>
         </div>
@@ -214,7 +214,7 @@ const fetchProducts = async () => {
         <div className="card shadow-sm border-0 mb-4">
           <div className="card-body">
             <h5 className="fw-semibold mb-3">
-              {editingPromoId ? "Edit Promotion" : "Create Promotion"}
+            {editingPromoId ? "Modifier la promotion" : "Créer une promotion"}
             </h5>
 
             <div className="row g-3">

@@ -207,9 +207,9 @@ const Categories = () => {
               {categories.length} {categories.length === 1 ? "catégorie" : "catégories"}
             </span>
           </div>
-          <small className="text-muted d-block mb-2">Gérez les catégories principales de la boutique</small>
-          <button className="btn btn-add-primary d-inline-flex align-items-center gap-2 mt-2" onClick={() => { setShowCategoryForm(true); setEditId(null); setName(""); setImageFile(null); }}>
-            <i className="fas fa-plus"></i> Ajouter
+          <small className="text-muted d-none d-md-block mb-2">Gérez les catégories principales de la boutique</small>
+          <button className="btn btn-primary d-inline-flex align-items-center gap-2 mt-2" onClick={() => { setShowCategoryForm(true); setEditId(null); setName(""); setImageFile(null); }}>
+             Ajouter
           </button>
         </div>
     <ConfirmModal
@@ -300,9 +300,9 @@ const Categories = () => {
               
               <span className="count-pill">{subCategories.length} subcategories</span>
             </div>
-            <small className="text-muted d-block mb-2">Ajoutez ou modifiez les sous-catégories pour cette catégorie</small>
-            <button className="btn btn-add-primary d-inline-flex align-items-center gap-2 mt-2" onClick={() => { setShowSubCategoryForm(true); setSubEditId(null); setSubName(""); }}>
-              <i className="fas fa-plus"></i> Ajouter
+            <small className="text-muted d-none d-md-block mb-2">Ajoutez ou modifiez les sous-catégories pour cette catégorie</small>
+            <button className="btn btn-primary d-inline-flex align-items-center gap-2 mt-2" onClick={() => { setShowSubCategoryForm(true); setSubEditId(null); setSubName(""); }}>
+              Ajouter
             </button>
           </div>
 

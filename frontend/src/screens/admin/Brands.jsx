@@ -189,7 +189,7 @@ const BrandPage = () => {
           </div>
 
           <button
-            className="btn btn-primary"
+            className="btn btn-add-primary ms-5 ms-md-0"
             onClick={() => {
               setSelectedBrand(null);
               setShowForm(true);

@@ -4855,14 +4855,14 @@ body.dark .status-approve-badge {
 
   .admin-layout:not(.is-collapsed) .card-body,
   .admin-layout:not(.is-collapsed) .table-responsive {
-  max-width: 400px;
+  max-width: 340px;
 }
 
 .offcanvas-header span {
   font-size: 1.3rem;
 }
   .table-responsive {
-    max-width: 340px; 
+    max-width: 320px; 
     overflow-x: auto;  
   }
   
@@ -4986,7 +4986,11 @@ body.dark .status-approve-badge {
     width: 100%;
     font-size: 0.8rem;
   }
+ .btn-primary {
+   font-size: 0.8rem;
  
+ }
+
   .action-btn svg {
     width: 14px; 
     height: 14px;  
@@ -4997,7 +5001,7 @@ body.dark .status-approve-badge {
     padding: 4px; 
   }
   .card-body {
-    max-width: 340px;
+    max-width: 300px;
     padding: 0.8rem;
   }
   .product-image-container {
