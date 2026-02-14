@@ -29,7 +29,7 @@ function WaitingApproval() {
 </p>
 
 <p className="text-muted mb-4">
-  🎁 وتربح معانا <strong className="text-dark">100 Point fidélité</strong> 
+   وتربح معانا <strong className="text-dark">100 Point fidélité</strong> 🎁
 </p>
 </div>
           

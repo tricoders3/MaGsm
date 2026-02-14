@@ -1,7 +1,7 @@
 // controllers/categoryController.js
 import Category from "../models/CategoryModels.js";
 import cloudinary from "../config/cloudinary.js";
-
+import Product from "../models/productModel.js";
 /**
  * @desc    Get all categories with subCategories
  * @route   GET /api/categories
@@ -158,6 +158,12 @@ export const removeSubCategory = async (req, res) => {
  */
 export const getSubCategories = async (req, res) => {
   try {
+       const { id } = req.params;
+
+    // ✅ validation
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid category id" });
+    }
     // Find category by ID and select only the subCategories field
     const category = await Category.findById(req.params.id, "subCategories");
     if (!category) return res.status(404).json({ message: "Category not found" });
