@@ -26,7 +26,7 @@ function NavBar() {
   const [loading, setLoading] = useState(true);
   const isAdmin = isAuthenticated && user?.role === "admin";
   const menuRef = useRef(null);
-    const { cartCount, favoritesCount } = useCart();
+    const { cartCount, favoritesCount, resetCart } = useCart();
 
 
 
@@ -153,8 +153,8 @@ function NavBar() {
                                   </button>
 
                     <button className="logout"
-                    onClick={() => 
-                    { logout(); 
+                    onClick={() => { logout(); 
+                    resetCart(); 
                     setShowMenu(false); 
                     navigate("/");
                      toast.success("Déconnexion réussie"); }} > 
