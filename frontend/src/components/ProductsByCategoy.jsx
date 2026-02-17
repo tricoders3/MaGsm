@@ -98,7 +98,7 @@ const SubcategoryProducts = () => {
 
         {/* Pagination */}
     {totalPages > 1 && (
-  <div className="d-flex justify-content-center align-items-center gap-2 mt-4 flex-wrap">
+  <div className="d-flex justify-content-center align-items-center flex-nowrap gap-1 mt-3 mb-2 overflow-auto">
     {/* Previous */}
     <button
       className={`pagination-btn ${currentPage === 1 ? "disabled" : ""}`}

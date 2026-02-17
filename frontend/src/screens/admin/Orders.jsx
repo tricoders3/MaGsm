@@ -192,7 +192,7 @@ const Orders = () => {
 
             {/* Pagination */}
             {orders.length > ordersPerPage && (
-              <div className="d-flex justify-content-center align-items-center gap-2 mt-4 mb-3 flex-wrap">
+              <div className="d-flex justify-content-center align-items-center flex-nowrap gap-1 mt-3 mb-2 overflow-auto">
                 <button
                   className={`pagination-btn ${currentPage === 1 ? "disabled" : ""}`}
                   onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}

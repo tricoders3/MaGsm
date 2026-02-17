@@ -2,6 +2,8 @@
 import Category from "../models/CategoryModels.js";
 import cloudinary from "../config/cloudinary.js";
 import Product from "../models/productModel.js";
+import mongoose from "mongoose";
+
 /**
  * @desc    Get all categories with subCategories
  * @route   GET /api/categories
