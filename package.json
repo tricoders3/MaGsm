@@ -4,14 +4,13 @@
   "description": "",
   "main": "server.js",
   "type": "module",
-"scripts": {
-  "start": "node backend/server.js",
-  "backend": "nodemon backend/server.js",
-  "frontend": "npm start --prefix frontend",
-  "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
-  "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
-}
-,
+  "scripts": {
+    "start": "node backend/server.js",
+    "backend": "nodemon backend/server.js",
+    "frontend": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -21,6 +20,8 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
+    "email-existence": "^0.1.6",
+    "email-validator": "^2.0.4",
     "express": "^5.2.1",
     "express-session": "^1.18.2",
     "fs": "^0.0.1-security",
