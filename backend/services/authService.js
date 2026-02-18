@@ -3,30 +3,56 @@ import User from "../models/userModel.js";
 import crypto from "crypto";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 import { sendAdminRequestEmail, sendApprovalEmail } from "../utils/sendEmail.js";
+import validator from "email-validator";
+import emailExistence from "email-existence";
+
+// Fonction pour vérifier email valide et existe
+const checkEmail = async (email) => {
+  // 1️⃣ Vérifier le format
+  if (!validator.validate(email)) {
+    throw new Error("Email invalide (format incorrect)");
+  }
+
+  // 2️⃣ Vérifier si l’email existe vraiment
+  const exists = await new Promise((resolve) => {
+    emailExistence.check(email, (err, valid) => {
+      if (err) resolve(false);
+      else resolve(valid);
+    });
+  });
+
+  if (!exists) {
+    throw new Error("Email invalide (n’existe pas)");
+  }
+};
 
 export const registerUser = async ({ name, email, password }) => {
+  // 1️⃣ Vérifier email (format + existence)
+  await checkEmail(email);
+
+  // 2️⃣ Vérifier si email déjà utilisé
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new Error("Email déjà utilisé");
 
+  // 3️⃣ Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  console.log("Creating user in DB...");
+  
   const user = await User.create({
     name,
     email,
     password: hashedPassword,
     role: "guest",
     isApproved: false,
-    pendingRequest: true
+    pendingRequest: true,
+  
   });
-  console.log("User created:", user.email);
 
+  // 5️⃣ Email admin فقط
   try {
-    console.log("Sending email to admin...");
-    //await sendAdminRequestEmail(user);
-    console.log("Email sent to admin");
+    await sendAdminRequestEmail(user);
   } catch (err) {
-    console.error("Email error:", err);
+    console.error("Erreur email admin:", err);
   }
 
   return user;

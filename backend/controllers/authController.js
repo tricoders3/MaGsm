@@ -4,25 +4,44 @@ import {
 approveUser,getPendingRequestsService,
    updateUserPassword, generatePasswordResetToken, resetUserPassword, createPasswordForSocialUser
 } from "../services/authService.js";
-import { sendEmail } from "../utils/sendEmail.js"; 
+import { sendEmail,sendAdminRequestEmail, sendApprovalEmail }
+   from "../utils/sendEmail.js"; 
 import userModel from "../models/userModel.js";
+
+
 
 /**
  * Register (email / password)
  */
 export const register = async (req, res) => {
   try {
-    const user = await registerUser(req.body);
-    res.status(201).json({ message: "Inscription réussie, en attente de validation.", user });
+    const user = await registerUser(req.body); // Appelle le service
+    res.status(201).json({
+      message: "Inscription réussie, un email de vérification a été envoyé.",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
 
+
+
 export const approveUserByAdmin = async (req, res) => {
   try {
+   
     const user = await approveUser(req.params.id);
-    res.json({ message: "Utilisateur approuvé avec succès", user });
+
+   
+    await sendAdminRequestEmail(user); 
+
+    await sendApprovalEmail(user.email, user.name);
+
+    res.json({ message: "Utilisateur approuvé avec succès et email envoyé", user });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
