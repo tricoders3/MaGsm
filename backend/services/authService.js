@@ -13,12 +13,7 @@ const checkEmail = async (email) => {
     throw new Error("Email invalide (format incorrect)");
   }
 
-  // 2️⃣ Vérifier si l’email existe vraiment
-  const exists = await new Promise((resolve) => {
-    emailExistence.check(email, (err, valid) => {
-      if (err) resolve(false);
-      else resolve(valid);
-    });
+
   });
 
   if (!exists) {
