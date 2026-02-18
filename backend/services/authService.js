@@ -12,14 +12,8 @@ const checkEmail = async (email) => {
   if (!validator.validate(email)) {
     throw new Error("Email invalide (format incorrect)");
   }
-
-
-  });
-
-  if (!exists) {
-    throw new Error("Email invalide (n’existe pas)");
-  }
 };
+
 
 export const registerUser = async ({ name, email, password }) => {
   // 1️⃣ Vérifier email (format + existence)
