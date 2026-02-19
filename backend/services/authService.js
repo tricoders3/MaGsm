@@ -4,7 +4,7 @@ import crypto from "crypto";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 import { sendAdminRequestEmail, sendApprovalEmail } from "../utils/sendEmail.js";
 import validator from "email-validator";
-import emailExistence from "email-existence";
+
 
 // Fonction pour vérifier email valide et existe
 const checkEmail = async (email) => {
