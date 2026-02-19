@@ -14,6 +14,7 @@ const checkEmail = async (email) => {
   }
 };
 
+
 export const registerUser = async ({ name, email, password }) => {
   // 1️⃣ Vérifier email (format + existence)
   await checkEmail(email);
