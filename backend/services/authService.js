@@ -4,25 +4,13 @@ import crypto from "crypto";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 import { sendAdminRequestEmail, sendApprovalEmail } from "../utils/sendEmail.js";
 import validator from "email-validator";
-import emailExistence from "email-existence";
+
 
 // Fonction pour vérifier email valide et existe
 const checkEmail = async (email) => {
   // 1️⃣ Vérifier le format
   if (!validator.validate(email)) {
     throw new Error("Email invalide (format incorrect)");
-  }
-
-  // 2️⃣ Vérifier si l’email existe vraiment
-  const exists = await new Promise((resolve) => {
-    emailExistence.check(email, (err, valid) => {
-      if (err) resolve(false);
-      else resolve(valid);
-    });
-  });
-
-  if (!exists) {
-    throw new Error("Email invalide (n’existe pas)");
   }
 };
 
