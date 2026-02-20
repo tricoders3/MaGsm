@@ -2,16 +2,12 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: false,
+  service: "gmail", 
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    user: process.env.SMTP_USER, 
+    pass: process.env.SMTP_PASS, 
   },
-})
-
-
+});
 
 export const sendClientOrderConfirmation = async ({ user, order, invoicePath }) => {
   await transporter.sendMail({
@@ -37,8 +33,6 @@ export const sendClientOrderConfirmation = async ({ user, order, invoicePath }) 
   });
 };
 
-
-
 export const sendAdminOrderNotification = async ({ user, order }) => {
   await transporter.sendMail({
     from: `"MaGsm" <${process.env.SMTP_USER}>`,
@@ -53,14 +47,14 @@ export const sendAdminOrderNotification = async ({ user, order }) => {
     `,
   })
 }
-// Fonction générique pour envoyer un mail
+
 export const sendEmail = async ({ to, subject, text, html }) => {
   await transporter.sendMail({
     from: `"MaGsm" <${process.env.SMTP_USER}>`,
     to,
     subject,
-    text, // optionnel si html fourni
-    html, // optionnel si text fourni
+    text,
+    html,
   });
 };
 
@@ -79,9 +73,8 @@ export const sendAdminRequestEmail = async (user) => {
   await transporter.sendMail(mailOptions);
 };
 
-
 export const sendApprovalEmail = async (email, name) => {
-  const clientLoginUrl = `${process.env.CLIENT_URL}/login`; // lien vers le frontend login
+  const clientLoginUrl = `${process.env.CLIENT_URL}/login`;
 
   const mailOptions = {
     from: `"MA GSM" <${process.env.SMTP_USER}>`,
