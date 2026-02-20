@@ -4,14 +4,14 @@ import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
   service: "gmail", 
   auth: {
-    user: process.env.SMTP_USER, 
-    pass: process.env.SMTP_PASS, 
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS, 
   },
 });
 
 export const sendClientOrderConfirmation = async ({ user, order, invoicePath }) => {
   await transporter.sendMail({
-    from: `"MaGsm Boutique" <${process.env.SMTP_USER}>`,
+    from: `"MaGsm Boutique" <${process.env.EMAIL_USER}>`,
     to: user.email,
     subject: "Confirmation de commande & facture",
     html: `
@@ -35,7 +35,7 @@ export const sendClientOrderConfirmation = async ({ user, order, invoicePath }) 
 
 export const sendAdminOrderNotification = async ({ user, order }) => {
   await transporter.sendMail({
-    from: `"MaGsm" <${process.env.SMTP_USER}>`,
+    from: `"MaGsm" <${process.env.EMAIL_USER}>`,
     to: process.env.ADMIN_EMAIL,
     subject: "🛒 Nouvelle commande",
     html: `
@@ -50,7 +50,7 @@ export const sendAdminOrderNotification = async ({ user, order }) => {
 
 export const sendEmail = async ({ to, subject, text, html }) => {
   await transporter.sendMail({
-    from: `"MaGsm" <${process.env.SMTP_USER}>`,
+    from: `"MaGsm" <${process.env.EMAIL_USER}>`, // ✅ هنا
     to,
     subject,
     text,
@@ -60,7 +60,7 @@ export const sendEmail = async ({ to, subject, text, html }) => {
 
 export const sendAdminRequestEmail = async (user) => {
   const mailOptions = {
-    from: `"MA GSM - Inscription" <${process.env.SMTP_USER}>`,
+    from: `"MA GSM - Inscription" <${process.env.EMAIL_USER}>`,
     to: process.env.ADMIN_EMAIL,
     subject: "Nouvelle inscription sur le site",
     html: `
@@ -77,7 +77,7 @@ export const sendApprovalEmail = async (email, name) => {
   const clientLoginUrl = `${process.env.CLIENT_URL}/login`;
 
   const mailOptions = {
-    from: `"MA GSM" <${process.env.SMTP_USER}>`,
+    from: `"MA GSM" <${process.env.EMAIL_USER}>`, // ✅ هنا
     to: email,
     subject: "Votre compte a été approuvé et vous avez reçu 100 points fidélité !",
     html: `
