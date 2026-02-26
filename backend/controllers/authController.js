@@ -143,7 +143,7 @@ export const facebookLoginSuccess = async (req, res) => {
   } catch (error) {
     if (error.message === "ACCOUNT_NOT_APPROVED") {
       return res.redirect(
-        `${process.env.CLIENT_URL}/waiting-approval`
+        `https://magsm.tn/waiting-approval`
       );
     }
 
