@@ -139,11 +139,13 @@ export const facebookLoginSuccess = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     });
 
-  res.redirect(`https://magsm.tn/oauth-success?token=${accessToken}`);
+    res.redirect(
+      `${process.env.CLIENT_URL}/oauth-success?token=${accessToken}`
+    );
   } catch (error) {
     if (error.message === "ACCOUNT_NOT_APPROVED") {
       return res.redirect(
-        `https://magsm.tn/waiting-approval`
+        `${process.env.CLIENT_URL}/waiting-approval`
       );
     }
 
