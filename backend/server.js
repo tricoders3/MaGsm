@@ -57,7 +57,7 @@ app.use(cookieParser());
 // ------------------
 app.use(
   cors({
-    origin: ["https://magsm.onrender.com", "http://localhost:3000", "http://102.204.206.212"],
+    origin: ["https://magsm.tn", "http://localhost:3000", "http://102.204.206.212"],
     credentials: true, // مهم
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
