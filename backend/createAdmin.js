@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
-import User from "./models/User.js"; // ton modèle User
-
+import User from "./models/userModel.js";
 dotenv.config();
 
 mongoose.connect(process.env.MONGO_URI, {
