@@ -66,6 +66,7 @@ const OffersModal = () => {
     const fetchPromos = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/api/promotions/promos`);
+        const data = Array.isArray(res.data) ? res.data : res.data.data || [];
         setPromos(res.data || []);
       } catch (err) {
         console.error("Failed to load promotions", err);
