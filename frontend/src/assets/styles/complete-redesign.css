@@ -4957,14 +4957,32 @@ body.dark .status-approve-badge {
   .search-icon {
     font-size: 14px; 
   }
- .form-control {
-    font-size: 1rem;
-    padding: 0.7rem 0.9rem;
- 
-  }
+
   .form-check-label,  .forgot-password-link {
     font-size: 0.7rem !important;
   }
+  .auth-page {
+    min-height: 100dvh; 
+    background: linear-gradient(135deg, #f8f9fa, #eef1f4);
+  }
+
+  .card-header-redesign h3 {
+    font-size: 1.4rem;
+  }
+
+  .card-body-redesign {
+    padding: 20px 20px;
+  }
+
+
+  .form-control {
+    height: 40px;
+    border-radius: 12px;
+    font-size: 0.85rem !important;
+  }
+
+
+
 
 .account-pending-text .pending-title {
   font-size: 1.4rem; 
@@ -5098,6 +5116,7 @@ body.dark .status-approve-badge {
 }
 .auth-page {
   font-size: 0.9rem;
+   
 }
 .footer-bottom {
   font-size: 0.85rem;
