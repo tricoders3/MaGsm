@@ -74,7 +74,7 @@ export default function AdminAbout() {
   if (error) return null;
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 about-section">
       <h2 className="fw-semibold mb-3">About Us</h2>
       <form onSubmit={handleSubmit} className="mb-5">
         {/* About Title & Content */}

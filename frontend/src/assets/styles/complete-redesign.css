@@ -4626,13 +4626,6 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 
 /* Small screens */
-@media (max-width: 480px) {
-  .admin-bell-menu {
-    width: 92vw;
-    right: 50%;
-    transform: translateX(50%);
-  }
-}
 
 
 .pf-wrap {
@@ -4981,8 +4974,15 @@ body.dark .status-approve-badge {
     font-size: 0.85rem !important;
   }
 
-
-
+  .about-section h2, .contact-section h2 {
+    font-size: 1.2rem;   
+  }
+  
+  .admin-bell-menu {
+    width: 250px;
+    right: 50%;
+    transform: translateX(50%);
+  }
 
 .account-pending-text .pending-title {
   font-size: 1.4rem; 

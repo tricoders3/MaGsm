@@ -75,7 +75,7 @@ export default function AdminContact() {
   if (loading) return null;
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 contact-section">
       <div className="mb-4">
         <h2 className="fw-semibold">Contact Information</h2>
         <p className="text-muted">Update contact details displayed on the site.</p>
