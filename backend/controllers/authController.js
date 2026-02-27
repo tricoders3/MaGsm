@@ -1,11 +1,10 @@
 import {
   registerUser,
   loginUser, googleLogin, facebookLogin,
-approveUser,getPendingRequestsService,
-   updateUserPassword, generatePasswordResetToken, resetUserPassword, createPasswordForSocialUser
+  approveUser, getPendingRequestsService,
+  updateUserPassword, generatePasswordResetToken, resetUserPassword, createPasswordForSocialUser
 } from "../services/authService.js";
-import { sendEmail,sendAdminRequestEmail, sendApprovalEmail }
-   from "../utils/sendEmail.js"; 
+import { sendEmail, sendAdminRequestEmail, sendApprovalEmail } from "../utils/sendEmail.js";
 import userModel from "../models/userModel.js";
 
 

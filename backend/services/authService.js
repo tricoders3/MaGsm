@@ -37,12 +37,7 @@ export const registerUser = async ({ name, email, password }) => {
   
   });
 
-  // 5️⃣ Email admin فقط
-  try {
-    await sendAdminRequestEmail(user);
-  } catch (err) {
-    console.error("Erreur email admin:", err);
-  }
+  
 
   return user;
 };
