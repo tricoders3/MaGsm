@@ -90,11 +90,11 @@ const Users = () => {
         `${BASE_URL}/api/user/${selectedUser._id}`,
         formData,
         {
-          withCredentials: true, // ✅ send cookies
+          withCredentials: true, 
         }
       );
   
-      // Update UI immediately
+
       setUsers((prev) =>
         prev.map((u) =>
           u._id === updatedUser._id ? updatedUser : u
