@@ -8,7 +8,7 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "./passport.js";
 import cors from "cors";
-
+import MongoStore from 'connect-mongo';
 // ------------------
 // Routes
 // ------------------
@@ -80,6 +80,12 @@ app.use(
   })
 );
 
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({ mongoUrl: process.env.MONGO_URI })
+}));
 // ------------------
 // Passport
 // ------------------
