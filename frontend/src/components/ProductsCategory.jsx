@@ -29,7 +29,7 @@ const ProductsCategory = () => {
   if (loading || error ) return null;
 
   return (
-    <section className="category-editorial py-md-3 py-0">
+    <section className="category-editorial py-3">
       <div className="container">
         <div className="mb-4">
           <h2 className="section-title">Catégories de produits</h2>

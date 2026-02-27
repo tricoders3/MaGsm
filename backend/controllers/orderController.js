@@ -34,16 +34,15 @@ export const createOrderFromCart = async (req, res) => {
     );
 
     const user = await User.findById(req.user.id);
-    setImmediate(async () => {
-      try {
-        const invoiceBuffer = await generateInvoicePDF(order, user);
-        await sendAdminOrderNotification({ user, order });
-        await sendClientOrderConfirmation({ user, order, invoiceBuffer });
-      } catch (err) {
-        console.error("EMAIL/PDF ERROR:", err);
-      }
-    });
-
+   setImmediate(async () => {
+  try {
+    const invoicePath = await generateInvoicePDF(order, user); 
+    await sendAdminOrderNotification({ user, order });
+    await sendClientOrderConfirmation({ user, order, invoicePath }); 
+  } catch (err) {
+    console.error("EMAIL/PDF ERROR:", err);
+  }
+});
 
     await clearCart(req.user.id);
 

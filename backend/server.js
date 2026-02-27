@@ -57,7 +57,7 @@ app.use(cookieParser());
 // ------------------
 app.use(
   cors({
-    origin: ["https://magsm.onrender.com", "http://localhost:3000", "http://102.204.206.212"],
+    origin: ["https://magsm.tn", "http://localhost:3000", "http://102.204.206.212"],
     credentials: true, // مهم
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
@@ -80,7 +80,7 @@ app.use(
   })
 );
 
-// ------------------
+//--------------
 // Passport
 // ------------------
 app.use(passport.initialize());
@@ -119,4 +119,6 @@ if (process.env.NODE_ENV === "production") {
 // Start server
 // ------------------
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Backend running on http://127.0.0.1:${PORT}`);
+});

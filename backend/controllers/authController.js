@@ -152,7 +152,6 @@ export const facebookLoginSuccess = async (req, res) => {
     res.redirect(`${process.env.CLIENT_URL}/oauth-error`);
   }
 };
-
 /**
  * Logout
  */
