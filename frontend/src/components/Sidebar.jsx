@@ -134,7 +134,9 @@ const Sidebar = ({ categories, loading }) => {
         {/* Categories */}
         <div className="categories-section d-flex flex-column gap-1">
           {loading ? (
-            <p>Loading categories...</p>
+             <div className="spinner-container">
+              <div className="spinner"></div>
+            </div>
           ) : (
             categories.map((category) => (
               <div key={category._id}>
