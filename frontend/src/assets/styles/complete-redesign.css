@@ -4954,7 +4954,8 @@ body.dark .status-approve-badge {
   .form-check-label,  .forgot-password-link {
     font-size: 0.7rem !important;
   }
-  
+
+
   .card-header-redesign h3 {
     font-size: 1.4rem;
   }
@@ -4973,7 +4974,7 @@ body.dark .status-approve-badge {
   .about-section h2, .contact-section h2 {
     font-size: 1.2rem;   
   }
-  
+
   .admin-bell-menu {
     width: 250px;
     right: 50%;
@@ -5289,3 +5290,4 @@ body.dark .status-approve-badge {
     transform: rotate(360deg);
   }
 }
+
