@@ -13,20 +13,31 @@ const checkEmail = async (email) => {
     throw new Error("Email invalide (format incorrect)");
   }
 };
+const validateStrongPassword = (password) => {
+  const strongPasswordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 
+  if (!strongPasswordRegex.test(password)) {
+    throw new Error(
+      "Password must be at least 8 characters and include uppercase, lowercase, number, and special character."
+    );
+  }
+};
 
 export const registerUser = async ({ name, email, password }) => {
-  // 1️⃣ Vérifier email (format + existence)
+  // 1️⃣ Vérifier email
   await checkEmail(email);
 
   // 2️⃣ Vérifier si email déjà utilisé
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new Error("Email déjà utilisé");
 
-  // 3️⃣ Hash password
+  // 3️⃣ Vérifier mot de passe fort
+  validateStrongPassword(password);
+
+  // 4️⃣ Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  
   const user = await User.create({
     name,
     email,
@@ -34,10 +45,9 @@ export const registerUser = async ({ name, email, password }) => {
     role: "guest",
     isApproved: false,
     pendingRequest: true,
-  
   });
 
-  // 5️⃣ Email admin فقط
+  // 5️⃣ Email admin
   try {
     await sendAdminRequestEmail(user);
   } catch (err) {
@@ -46,7 +56,6 @@ export const registerUser = async ({ name, email, password }) => {
 
   return user;
 };
-
 
 
 export const approveUser = async (userId) => {

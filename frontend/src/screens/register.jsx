@@ -10,44 +10,66 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [passwordError, setPasswordError] = useState("");
+ const [showPassword, setShowPassword] = useState(false);
+const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Backend URL (mettre dans .env frontend)
+const validatePassword = (password) => {
+  if (password.length < 8) {
+    return "Au moins 8 caractères.";
+  }
+  if (!/[A-Z]/.test(password)) {
+    return "Doit contenir une majuscule.";
+  }
+  if (!/[a-z]/.test(password)) {
+    return "Doit contenir une minuscule.";
+  }
+  if (!/[0-9]/.test(password)) {
+    return "Doit contenir un chiffre.";
+  }
+  if (!/[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    return "Doit contenir un caractère spécial.";
+  }
 
+  return "";
+};
 
   // Register classique
 const handleSubmit = async (e) => {
   e.preventDefault();
 
   if (password !== confirmPassword) {
-    console.warn("Passwords do not match"); //  Password mismatch
     toast.error("Les mots de passe ne correspondent pas");
     return;
   }
 
+  const error = validatePassword(password);
+  if (error) {
+    setPasswordError(error);
+    return;
+  } else {
+    setPasswordError("");
+  }
 
   setLoading(true);
+
   try {
     const res = await axios.post(
       `${BASE_URL}/api/auth/register`,
-      { name, email, password },
-      
+      { name, email, password }
     );
 
-    
-
     toast.success(res.data.message || "Inscription réussie");
-
-    navigate("/waiting-approval"); // direct navigate
+    navigate("/waiting-approval");
   } catch (err) {
-   
     toast.error(
       err.response?.data?.message || "Erreur lors de l'inscription"
     );
   } finally {
-    setLoading(false); 
+    setLoading(false);
   }
 };
-
 
 
 
@@ -102,30 +124,93 @@ const handleSubmit = async (e) => {
                   />
                 </div>
   
-                <div className="mb-3">
-                  <label className="form-label">Mot de passe</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="Créer un mot de passe"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-  
-                <div className="mb-4">
-                  <label className="form-label">Confirmer le mot de passe</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="Confirmez le mot de passe"
-                    required
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                  />
-                </div>
-  
+              <div className="mb-3">
+
+
+ <div className="mb-3">
+  <label className="form-label">Mot de passe</label>
+
+  <div className="position-relative">
+    <input
+      type={showPassword ? "text" : "password"}
+      className={`form-control ${passwordError ? "is-invalid" : ""}`}
+      placeholder="Créer un mot de passe"
+      required
+      value={password}
+      onChange={(e) => {
+        setPassword(e.target.value);
+        setPasswordError(validatePassword(e.target.value));
+      }}
+      style={{ paddingRight: "30px" }}
+    />
+
+    <img
+      src={
+        showPassword
+          ? "https://cdn-icons-png.flaticon.com/128/2767/2767194.png"
+          : "https://cdn-icons-png.flaticon.com/128/6423/6423885.png"
+      }
+      alt="toggle visibility"
+      onClick={() => setShowPassword(!showPassword)}
+      style={{
+        position: "absolute",
+        right: "30px",
+        top: "50%",
+        transform: "translateY(-50%)",
+        width: "22px",
+        height: "22px",
+        cursor: "pointer",
+        opacity: 0.7
+      }}
+    />
+  </div>
+
+  {passwordError && (
+    <div className="invalid-feedback d-block">
+      {passwordError}
+    </div>
+  )}
+</div>
+
+ 
+</div>
+<div className="mb-4">
+  <label className="form-label">Confirmer le mot de passe</label>
+
+  <div className="position-relative">
+    <input
+      type={showConfirmPassword ? "text" : "password"}
+      className="form-control"
+      placeholder="Confirmez le mot de passe"
+      required
+      value={confirmPassword}
+      onChange={(e) => setConfirmPassword(e.target.value)}
+      style={{ paddingRight: "45px" }}
+    />
+
+    <img
+      src={
+        showConfirmPassword
+          ? "https://cdn-icons-png.flaticon.com/128/2767/2767194.png"
+          : "https://cdn-icons-png.flaticon.com/128/6423/6423885.png"
+      }
+      alt="toggle visibility"
+      onClick={() =>
+        setShowConfirmPassword(!showConfirmPassword)
+      }
+      style={{
+        position: "absolute",
+        right: "30px",
+        top: "50%",
+        transform: "translateY(-50%)",
+        width: "22px",
+        height: "22px",
+        cursor: "pointer",
+        opacity: 0.7
+      }}
+    />
+  </div>
+</div>
                 <button
                     className="btn btn-primary w-100 mb-3 d-flex justify-content-center align-items-center gap-2"
                     type="submit"

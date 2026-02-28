@@ -17,6 +17,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
   const { login } = useAuth();
+   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberMeEmail");
@@ -107,13 +108,32 @@ const Login = () => {
                   <div className="mb-3">
                     <label className="form-label">Mot de passe</label>
                     <input
-                      type="password"
+                    type={showPassword ? "text" : "password"}
                       className="form-control"
                       placeholder="Entrez votre mot de passe"
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
+                     <img
+      src={
+        showPassword
+          ? "https://cdn-icons-png.flaticon.com/128/2767/2767194.png"
+          : "https://cdn-icons-png.flaticon.com/128/6423/6423885.png"
+      }
+      alt="toggle visibility"
+      onClick={() => setShowPassword(!showPassword)}
+      style={{
+        position: "absolute",
+        right: "30px",
+        top: "70%",
+        transform: "translateY(-50%)",
+        width: "22px",
+        height: "22px",
+        cursor: "pointer",
+        opacity: 0.7
+      }}
+    />
                   </div>
                   <div className="mb-3 d-flex justify-content-between align-items-center">
   {/* Remember Me */}
