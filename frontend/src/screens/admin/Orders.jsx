@@ -104,7 +104,7 @@ const Orders = () => {
           <small className="text-muted d-none d-md-block">Gérez les commandes et leurs statuts.</small>
         </div>
         <button
-          className="btn btn-light btn-sm border text-danger d-flex align-items-center gap-1 px-3"
+          className="btn btn-light btn-sm border text-danger d-flex align-items-center gap-1"
           onClick={handleDeleteAllOrders}
         >
           <FiTrash2 size={14} />
