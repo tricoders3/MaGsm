@@ -1,92 +1,61 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FiBell } from "react-icons/fi";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import BASE_URL from "../constante";
 
 export default function AdminNotifications() {
   const [open, setOpen] = useState(false);
+  // Displayed counts (after applying 'seen' offsets)
   const [pendingOrders, setPendingOrders] = useState(0);
   const [pendingUsers, setPendingUsers] = useState(0);
+  // Raw counts from backend
+  const rawOrdersRef = useRef(0);
+  const rawUsersRef = useRef(0);
   const menuRef = useRef(null);
   const navigate = useNavigate();
-  const location = useLocation();
 
-  // Fetch counts from backend
   const fetchCounts = async () => {
     try {
-      // --- ORDERS ---
+      // Orders
       const { data: orders } = await axios.get(`${BASE_URL}/api/orders`, { withCredentials: true });
-      console.log("Orders fetched:", orders);
+      const pOrders = (orders || []).filter(o => (o.status || "").toLowerCase() === "pending").length;
+      rawOrdersRef.current = pOrders;
 
-      // Get last seen time
-      const lastSeenOrders = Number(localStorage.getItem("lastSeenOrders") || 0);
+      const seenOrders = Number(localStorage.getItem("notif_seen_orders") || 0);
+      setPendingOrders(Math.max(0, pOrders - seenOrders));
 
-      // Count only new pending orders
-      const newOrdersCount = (orders || []).filter(order => {
-        const created = new Date(order.createdAt).getTime();
-        return (order.orderStatus || "pending").toLowerCase() === "pending" && created > lastSeenOrders;
-      }).length;
-
-      // --- USERS ---
+      // Pending user requests
       const { data: users } = await axios.get(`${BASE_URL}/api/auth/pending-requests`, { withCredentials: true });
-      console.log("Pending users fetched:", users);
+      const pUsers = Array.isArray(users) ? users.length : 0;
+      rawUsersRef.current = pUsers;
 
-      const lastSeenUsers = Number(localStorage.getItem("lastSeenUsers") || 0);
-
-      const newUsersCount = (users || []).filter(user => {
-        const created = new Date(user.createdAt).getTime();
-        return created > lastSeenUsers;
-      }).length;
-
-      setPendingOrders(location.pathname !== "/admin/orders" ? newOrdersCount : 0);
-      setPendingUsers(location.pathname !== "/admin/pending-users" ? newUsersCount : 0);
-
-    } catch (err) {
-      console.error("Error fetching notifications:", err);
+      const seenUsers = Number(localStorage.getItem("notif_seen_users") || 0);
+      setPendingUsers(Math.max(0, pUsers - seenUsers));
+    } catch (e) {
+      // silent fail
     }
   };
 
-  // --- Polling + refresh ---
   useEffect(() => {
     fetchCounts();
-    const interval = setInterval(fetchCounts, 30000);
-    return () => clearInterval(interval);
-  }, [location.pathname]);
+    const id = setInterval(fetchCounts, 30000); 
+    return () => clearInterval(id);
+  }, []);
 
-  // --- Reset counts on route visit ---
   useEffect(() => {
-    if (location.pathname === "/admin/orders") {
-      localStorage.setItem("lastSeenOrders", Date.now());
-      setPendingOrders(0);
-    }
-
-    if (location.pathname === "/admin/pending-users") {
-      localStorage.setItem("lastSeenUsers", Date.now());
-      setPendingUsers(0);
-    }
-  }, [location.pathname]);
-
-  // --- Close dropdown when clicking outside ---
-  useEffect(() => {
-    const handleClickOutside = e => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setOpen(false);
-      }
+    const onDocClick = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setOpen(false);
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
   }, []);
 
   const total = pendingOrders + pendingUsers;
 
   return (
     <div className="admin-notifications" ref={menuRef}>
-      <button
-        className="admin-bell-btn"
-        onClick={() => setOpen(v => !v)}
-        aria-label="Notifications"
-      >
+      <button className="admin-bell-btn" onClick={() => setOpen(v => !v)} aria-label="Notifications">
         <FiBell size={20} />
         {total > 0 && <span className="badge-dot">{total}</span>}
       </button>
@@ -94,40 +63,34 @@ export default function AdminNotifications() {
       {open && (
         <div className="admin-bell-menu">
           <div className="menu-header">Notifications</div>
-
           {pendingOrders > 0 && (
-            <button
-              className="menu-item"
-              onClick={() => {
-                localStorage.setItem("lastSeenOrders", Date.now());
-                setPendingOrders(0);
-                setOpen(false);
-                navigate("/admin/orders");
-              }}
-            >
-              Commandes en attente
-              <span className="count-pill ms-auto">{pendingOrders}</span>
-            </button>
+          <button className="menu-item" onClick={() => {
+      
+            localStorage.setItem("notif_seen_orders", String(rawOrdersRef.current || 0));
+            setPendingOrders(0);
+            setOpen(false);
+            navigate("/admin/orders");
+          }}>
+            Commandes en attente
+            {pendingOrders > 0 && <span className="count-pill ms-auto">{pendingOrders}</span>}
+          </button>
           )}
-
           {pendingUsers > 0 && (
-            <button
-              className="menu-item"
-              onClick={() => {
-                localStorage.setItem("lastSeenUsers", Date.now());
-                setPendingUsers(0);
-                setOpen(false);
-                navigate("/admin/pending-users");
-              }}
-            >
-              Demandes d'inscription
-              <span className="count-pill ms-auto">{pendingUsers}</span>
-            </button>
+          <button className="menu-item" onClick={() => {
+      
+            localStorage.setItem("notif_seen_users", String(rawUsersRef.current || 0));
+            setPendingUsers(0);
+            setOpen(false);
+            navigate("/admin/pending-users");
+          }}>
+            Demandes d'inscription
+            {pendingUsers > 0 && <span className="count-pill ms-auto">{pendingUsers}</span>}
+          </button>
           )}
-
           {total === 0 && <div className="menu-empty">Aucune notification</div>}
         </div>
       )}
+     
     </div>
   );
 }
