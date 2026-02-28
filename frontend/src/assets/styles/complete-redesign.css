@@ -4954,11 +4954,7 @@ body.dark .status-approve-badge {
   .form-check-label,  .forgot-password-link {
     font-size: 0.7rem !important;
   }
-  .auth-page {
-    min-height: 100dvh; 
-    background: linear-gradient(135deg, #f8f9fa, #eef1f4);
-  }
-
+  
   .card-header-redesign h3 {
     font-size: 1.4rem;
   }
