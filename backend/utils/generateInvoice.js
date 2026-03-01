@@ -17,7 +17,7 @@ function generateHeader(doc) {
     .text("MaGsm Boutique", 120, 50)
     .fontSize(10)
     .text("Kairouan - Tunisie", 120, 75)
-    .text("Email : contact@magsm.tn", 120, 90);
+    .text("Email : magsm2077@gmail.com", 120, 90);
 
   generateHr(doc, 120);
 }
