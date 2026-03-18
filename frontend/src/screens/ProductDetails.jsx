@@ -6,7 +6,9 @@ import { FiShoppingCart, FiHeart } from "react-icons/fi";
 import BASE_URL from "../constante";
 import ProductCard from "../components/ProductCard";
 import { useCart } from "../context/CartContext";
-import AlertToast from "../components/AlertToast"; // <-- import AlertToast
+import AlertToast from "../components/AlertToast"; 
+import InnerImageZoom from "react-inner-image-zoom";
+import "react-inner-image-zoom/lib/styles.min.css";
 
 
 function ProductDetails() {
@@ -187,12 +189,12 @@ const { productName } = useParams();
      )}
 
      {/* Main Image */}
-     <img
-       src={product.images[selectedImageIndex]?.url}
-       alt={product.name}
-       className="img-fluid rounded-3 product-main-image"
-     />
-  
+     <InnerImageZoom
+  src={product.images[selectedImageIndex]?.url}
+  zoomSrc={product.images[selectedImageIndex]?.url}
+  zoomType="hover"
+  zoomScale={1.5}
+/>
       <div className="d-flex gap-2 justify-content-center flex-wrap mt-2">
         {product.images.map((img, index) => (
           <img
