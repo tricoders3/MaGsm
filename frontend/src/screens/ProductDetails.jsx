@@ -40,7 +40,7 @@ const { productName } = useParams();
     const fetchProductAndSimilar = async () => {
       try {
         const resProduct = await axios.get(
-          `${BASE_URL}/api/products/name/${encodeURIComponent(productName)}`
+          `${BASE_URL}/api/products/${productId}`
         );
         const currentProduct = resProduct.data;
         setProduct(currentProduct);
