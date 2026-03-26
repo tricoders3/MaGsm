@@ -216,7 +216,7 @@ const { productName } = useParams();
         {/* Product Info */}
         <div className="col-12 col-md-6">
           <h2 className="fw-bold">{product.name}</h2>
-          <p className="text-muted mb-1"><strong>Marque:</strong> {product.brand}</p>
+          <p className="text-muted mb-1"> <strong>Marque:</strong> {product.brand || "Non spécifié"}</p>
           <p className="text-muted mb-3"><strong>Catégorie:</strong> {product.category?.name || "N/A"}</p>
 
         
