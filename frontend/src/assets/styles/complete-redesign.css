@@ -886,7 +886,12 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   font-size: 0.85rem;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
-
+.brands-slider {
+  display: flex;
+  justify-content: center !important;
+  overflow: hidden;
+  width: 100%;
+}
 /* FLOAT */
 @keyframes float {
   0% { transform: translateY(0); }
@@ -4192,7 +4197,7 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 
 .brands-slider {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start !important;
   overflow: hidden;
   width: 100%;
 }
@@ -4201,7 +4206,8 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   display: flex;
   align-items: center;
   gap: 60px;
-  animation: moveBrands 6s ease-in-out infinite;
+  width: max-content;
+  animation: moveBrands 10s linear infinite;
 }
 
 .brand-slide img {
@@ -4219,11 +4225,8 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
   0% {
     transform: translateX(0);
   }
-  50% {
-    transform: translateX(30px);
-  }
   100% {
-    transform: translateX(0);
+    transform: translateX(-50%);
   }
 }
 
@@ -4260,6 +4263,11 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
     font-size: 14px;
   }
 }
+
+
+
+
+
 
 .product-main-image {
   width: 100%;     
@@ -4626,13 +4634,6 @@ h6 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
 }
 
 /* Small screens */
-@media (max-width: 480px) {
-  .admin-bell-menu {
-    width: 92vw;
-    right: 50%;
-    transform: translateX(50%);
-  }
-}
 
 
 .pf-wrap {
@@ -4961,10 +4962,7 @@ body.dark .status-approve-badge {
   .form-check-label,  .forgot-password-link {
     font-size: 0.7rem !important;
   }
-  .auth-page {
-    min-height: 100dvh; 
-    background: linear-gradient(135deg, #f8f9fa, #eef1f4);
-  }
+
 
   .card-header-redesign h3 {
     font-size: 1.4rem;
@@ -4981,8 +4979,15 @@ body.dark .status-approve-badge {
     font-size: 0.85rem !important;
   }
 
+  .about-section h2, .contact-section h2 {
+    font-size: 1.2rem;   
+  }
 
-
+  .admin-bell-menu {
+    width: 250px;
+    right: 50%;
+    transform: translateX(50%);
+  }
 
 .account-pending-text .pending-title {
   font-size: 1.4rem; 
@@ -5293,3 +5298,4 @@ body.dark .status-approve-badge {
     transform: rotate(360deg);
   }
 }
+
