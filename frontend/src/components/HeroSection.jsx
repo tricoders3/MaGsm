@@ -90,7 +90,7 @@ return (
            <div
                 style={{ cursor: "pointer" }}
                 onClick={() =>
-                  navigate(`/product/${encodeURIComponent(slide.productName)}`)
+                  navigate(`/products/${encodeURIComponent(slide.productName)}`)
                 }
               >
               <div className="row align-items-center min-vh-50">
