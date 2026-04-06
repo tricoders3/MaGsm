@@ -224,7 +224,7 @@ export default function GlobalSearch() {
   const handleSuggestionClick = (product) => {
     setShowDropdown(false);
     setSelectedSuggestionIndex(-1);
-     navigate(`/products/${encodeURIComponent(p.name)}`);
+    navigate(`/product/${product._id}`);
   };
 
   const handleInputFocus = () => {
