@@ -75,71 +75,91 @@ const HeroSlider = () => {
   if (loading || !slides.length) return null;
 
 return (
+  <section className="hero-section overflow-hidden">
+    <div className="container">
+      <Swiper
+        modules={[Autoplay, Pagination, EffectFade]}
+        autoplay={{ delay: 7000, disableOnInteraction: false }}
+        pagination={{ clickable: true }}
+        effect="fade"
+        loop
+        className="hero-swiper"
+      >
+        {slides.map((slide, index) => (
+          <SwiperSlide key={index}>
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() =>
+                navigate(`/product/${encodeURIComponent(slide.productName)}`)
+              }
+            >
+              <div className="row align-items-center min-vh-50">
 
-            {/* LEFT */}
-            <div className="col-lg-6">
-              <div className="hero-intro">
+                {/* LEFT */}
+                <div className="col-lg-6">
+                  <div className="hero-intro">
 
-                <span className="hero-tag">
-                  {hasPromotion ? "Offre Limitée" : "Nouveauté"}
-                </span>
+                    <span className="hero-tag">
+                      {hasPromotion ? "Offre Limitée" : "Nouveauté"}
+                    </span>
 
-                <h1 className="hero-heading">
-                  {hasPromotion ? (
-                    <>Découvrez nos <br /> meilleures offres</>
-                  ) : (
-                    <>Découvrez nos <br /> meilleurs produits</>
-                  )}
-                </h1>
+                    <h1 className="hero-heading">
+                      {hasPromotion ? (
+                        <>Découvrez nos <br /> meilleures offres</>
+                      ) : (
+                        <>Découvrez nos <br /> meilleurs produits</>
+                      )}
+                    </h1>
 
-                <p className="hero-description">
-                  {hasPromotion
-                    ? "Des offres sélectionnées pour vous"
-                    : "Des produits soigneusement sélectionnés pour vous"}
-                </p>
+                    <p className="hero-description">
+                      {hasPromotion
+                        ? "Des offres sélectionnées pour vous"
+                        : "Des produits soigneusement sélectionnés pour vous"}
+                    </p>
 
-                <Link
-                  to="/products"
-                  onClick={(e) => e.stopPropagation()}
-                  className="btn-redesign btn-primary-redesign btn-lg-redesign mb-2"
-                >
-                  En savoir plus
-                </Link>
+                    <Link
+                      to="/products"
+                      onClick={(e) => e.stopPropagation()}
+                      className="btn-redesign btn-primary-redesign btn-lg-redesign mb-2"
+                    >
+                      En savoir plus
+                    </Link>
 
-              </div>
-            </div>
-
-            {/* RIGHT */}
-            <div className="col-lg-6">
-              <div className="hero-product">
-                <div className="hero-product-wrapper">
-                  <div className="badge-container">
-                    {slide.badge && (
-                      <span className="promo-badge">
-                        {slide.badge}
-                      </span>
-                    )}
-                    <img
-                      src={slide.image}
-                      alt={slide.title}
-                      className="hero-product-image"
-                    />
                   </div>
                 </div>
 
-                <h2 className="hero-title mt-3">
-                  {slide.title}
-                </h2>
+                {/* RIGHT */}
+                <div className="col-lg-6">
+                  <div className="hero-product">
+                    <div className="hero-product-wrapper">
+                      <div className="badge-container">
+                        {slide.badge && (
+                          <span className="promo-badge">
+                            {slide.badge}
+                          </span>
+                        )}
+                        <img
+                          src={slide.image}
+                          alt={slide.title}
+                          className="hero-product-image"
+                        />
+                      </div>
+                    </div>
+
+                    <h2 className="hero-title mt-3">
+                      {slide.title}
+                    </h2>
+                  </div>
+                </div>
+
               </div>
             </div>
-
-          </div>
-        </div>
-      </SwiperSlide>
-    ))}
-  </Swiper>
-</div>
-
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  </section>
+);
 
 // Shuffle helper
 const shuffle = (array) => [...array].sort(() => 0.5 - Math.random());
