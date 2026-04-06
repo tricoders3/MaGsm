@@ -87,12 +87,12 @@ return (
       >
         {slides.map((slide, index) => (
           <SwiperSlide key={index}>
-            <div
-              style={{ cursor: "pointer" }}
-              onClick={() =>
-                navigate(`/product/${encodeURIComponent(slide.title)}`)
-              }
-            >
+           <div
+                style={{ cursor: "pointer" }}
+                onClick={() =>
+                  navigate(`/product/${encodeURIComponent(slide.productName)}`)
+                }
+              >
               <div className="row align-items-center min-vh-50">
 
                 {/* LEFT */}
