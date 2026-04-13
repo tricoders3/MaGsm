@@ -19,7 +19,9 @@ export default function OfferPage() {
   const [error, setError] = useState(null);
 
   // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => {
+  return Number(localStorage.getItem("offer_page")) || 1;
+});
   const productsPerPage = 8;
 
   // Load promotions/products
@@ -58,18 +60,20 @@ export default function OfferPage() {
   
     fetchPromotions();
   }, []);
-  
 
-  // Reset page when search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [query]);
+
+useEffect(() => {
+  localStorage.setItem("offer_page", currentPage);
+}, [currentPage]);
 
   // Handle filter changes from ProductPromoFilters
-  const handleFilter = (filtered) => {
-    setFilteredProducts(filtered);
-    setCurrentPage(1);
-  };
+const handleFilter = (filtered) => {
+  setFilteredProducts(filtered);
+
+  // reset فقط إذا النتائج تبدلت فعلاً
+  const savedPage = Number(localStorage.getItem("offer_page")) || 1;
+  setCurrentPage(savedPage);
+};
 
   // Combine search query with filteredProducts
   const displayedProducts = useMemo(() => {
