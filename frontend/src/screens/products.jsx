@@ -7,6 +7,7 @@ import ProductCard from "../components/ProductCard";
 import ProductFilters from "../components/ProductFilters";
 import { useGlobalSearch } from "../context/SearchContext";
 
+
 function Products() {
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState([]);
@@ -68,10 +69,7 @@ function Products() {
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const paginated = filtered.slice(indexOfFirstProduct, indexOfLastProduct);
 
-  // Reset to first page when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [query, categoryId, subCategoryId]);
+
 useEffect(() => {
   localStorage.setItem("currentPage", currentPage);
 }, [currentPage]);
