@@ -70,7 +70,11 @@ const [currentPage, setCurrentPage] = useState(() => {
     return filteredProducts.slice(start, end);
   }, [filteredProducts, currentPage]);
 
-  
+  useEffect(() => {
+  setCurrentPage(
+    Number(localStorage.getItem(`page_${categoryId}`)) || 1
+  );
+}, [categoryId]);
  useEffect(() => {
   localStorage.setItem(`page_${categoryId}`, currentPage);
 }, [currentPage, categoryId]);
