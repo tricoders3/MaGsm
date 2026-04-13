@@ -16,7 +16,9 @@ const CategoryView = () => {
   // Use global subcategory filter state instead of local
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+const [currentPage, setCurrentPage] = useState(() => {
+  return Number(localStorage.getItem(`page_${categoryId}`)) || 1;
+});
   const { query, subCategoryId, setCategoryId, setSubCategoryId } = useGlobalSearch();
 
  
@@ -69,9 +71,9 @@ const CategoryView = () => {
   }, [filteredProducts, currentPage]);
 
   
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [subCategoryId, query]);
+ useEffect(() => {
+  localStorage.setItem(`page_${categoryId}`, currentPage);
+}, [currentPage, categoryId]);
 
   
   if (loading) return null;
