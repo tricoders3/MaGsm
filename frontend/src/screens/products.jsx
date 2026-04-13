@@ -14,7 +14,9 @@ function Products() {
   const [error, setError] = useState(null);
   const { query, categoryId, subCategoryId } = useGlobalSearch();
   // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => {
+  return Number(localStorage.getItem("currentPage")) || 1;
+});
   const productsPerPage = 8; // nombre de produits par page
 
   useEffect(() => {
@@ -70,7 +72,9 @@ function Products() {
   useEffect(() => {
     setCurrentPage(1);
   }, [query, categoryId, subCategoryId]);
-
+useEffect(() => {
+  localStorage.setItem("currentPage", currentPage);
+}, [currentPage]);
   const handlePrev = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
