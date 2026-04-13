@@ -70,21 +70,34 @@ useEffect(() => {
 const handleFilter = (filtered) => {
   setFilteredProducts(filtered);
 };
-
-  // Combine search query with filteredProducts
+// Search + filter
   const displayedProducts = useMemo(() => {
     const q = (query || "").toLowerCase();
-    return filteredProducts.filter((p) => p.name.toLowerCase().includes(q));
+    return filteredProducts.filter((p) =>
+      p.name.toLowerCase().includes(q)
+    );
   }, [filteredProducts, query]);
 
+  // Reset page if needed
+  useEffect(() => {
+    const totalPages = Math.ceil(displayedProducts.length / productsPerPage);
 
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1);
+    }
+  }, [displayedProducts, currentPage]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(displayedProducts.length / productsPerPage);
+  const indexOfLast = currentPage * productsPerPage;
+  const indexOfFirst = indexOfLast - productsPerPage;
+  const currentProducts = displayedProducts.slice(indexOfFirst, indexOfLast);
 
   if (loading) return null;
   if (error) return null;
-  
+
   const heroPromotion = promotions[0];
 
-  // Format remaining time
   const formatTimeLeft = (endDate) => {
     if (!endDate) return "";
     const diff = new Date(endDate) - new Date();
@@ -92,20 +105,10 @@ const handleFilter = (filtered) => {
 
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+
     return days > 0 ? `${days}j ${hours}h restants` : `${hours}h restants`;
   };
 
-  // Pagination logic
-  const totalPages = Math.ceil(displayedProducts.length / productsPerPage);
-  const indexOfLast = currentPage * productsPerPage;
-  const indexOfFirst = indexOfLast - productsPerPage;
-  const currentProducts = displayedProducts.slice(indexOfFirst, indexOfLast);
-  useEffect(() => {
-  const totalPages = Math.ceil(displayedProducts.length / productsPerPage);
-  if (currentPage > totalPages) {
-    setCurrentPage(1);
-  }
-}, [displayedProducts, currentPage]);
 
   return (
     <section className="offer-page">
