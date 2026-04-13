@@ -69,10 +69,6 @@ useEffect(() => {
   // Handle filter changes from ProductPromoFilters
 const handleFilter = (filtered) => {
   setFilteredProducts(filtered);
-
-  // reset فقط إذا النتائج تبدلت فعلاً
-  const savedPage = Number(localStorage.getItem("offer_page")) || 1;
-  setCurrentPage(savedPage);
 };
 
   // Combine search query with filteredProducts
@@ -104,6 +100,12 @@ const handleFilter = (filtered) => {
   const indexOfLast = currentPage * productsPerPage;
   const indexOfFirst = indexOfLast - productsPerPage;
   const currentProducts = displayedProducts.slice(indexOfFirst, indexOfLast);
+  useEffect(() => {
+  const totalPages = Math.ceil(displayedProducts.length / productsPerPage);
+  if (currentPage > totalPages) {
+    setCurrentPage(1);
+  }
+}, [displayedProducts, currentPage]);
 
   return (
     <section className="offer-page">
