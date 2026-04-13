@@ -32,7 +32,7 @@ const [currentPage, setCurrentPage] = useState(() => {
 
         setProducts(res.data || []);
         setCategory(res.data[0]?.category || null);
-        setCurrentPage(1);
+
       } catch (err) {
         console.error(err);
       } finally {
