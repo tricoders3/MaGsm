@@ -9,7 +9,9 @@ const ITEMS_PER_PAGE = 8;
 const SubcategoryProducts = () => {
   const { subcategoryId } = useParams();
   const [products, setProducts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+const [currentPage, setCurrentPage] = useState(() => {
+  return Number(localStorage.getItem(`subcat_page_${subcategoryId}`)) || 1;
+});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -30,7 +32,25 @@ const SubcategoryProducts = () => {
 
     fetchProducts();
   }, [subcategoryId]);
+// ✅ reset page when subcategory changes
+  useEffect(() => {
+    const saved = Number(
+      localStorage.getItem(`subcat_page_${subcategoryId}`)
+    ) || 1;
 
+    setCurrentPage(saved);
+  }, [subcategoryId]);
+ 
+
+  // ✅ save page
+  useEffect(() => {
+    if (subcategoryId) {
+      localStorage.setItem(
+        `subcat_page_${subcategoryId}`,
+        currentPage
+      );
+    }
+  }, [currentPage, subcategoryId]);
   if (error) return null;
 
   if (!products.length)
