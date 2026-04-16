@@ -216,7 +216,7 @@ const Products = () => {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="d-flex justify-content-center align-items-center flex-nowrap gap-1 mt-3 mb-2 overflow-auto">
+                <div className="d-flex align-items-center gap-1 mt-3 mb-2" style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
                   <button
                     className="pagination-btn"
                     disabled={currentPage === 1}
