@@ -122,7 +122,7 @@ const Orders = () => {
                     <th className="ps-4">ID</th>
                     <th>Client</th>
                     <th>Produits</th>
-                    <th className="text-center">Quantité</th>
+                    
                     <th>Total (TND)</th>
                     <th className="text-center">Statut</th>
                     <th>Date</th>
@@ -131,7 +131,7 @@ const Orders = () => {
                 </thead>
                 <tbody>
                   {paginatedOrders.map(order => {
-                    const totalQuantity = order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+                    
 
                     return (
                       <tr key={order._id}>
@@ -146,20 +146,26 @@ const Orders = () => {
                             <span className="text-muted">Utilisateur</span>
                           )}
                         </td>
-                        <td>
-                          {order.items?.length > 0 ? (
-                            <ul className="list-unstyled mb-0">
-                              {order.items.map((item, index) => (
-                                <li key={index} className="small">
-                                  {item.product?.name || "Produit"}
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <span className="text-muted">—</span>
-                          )}
-                        </td>
-                        <td className="text-center fw-semibold">{totalQuantity}</td>
+<td>
+  {order.items?.length > 0 ? (
+    <ul className="list-unstyled mb-0">
+      {order.items.map((item, index) => (
+        <li key={index} className="small mb-1">
+          <span className="fw-semibold">
+            {item.name || "Produit"}
+          </span>
+
+          <span className="text-muted">
+            {" × "}
+            {item.quantity}
+          </span>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <span className="text-muted">—</span>
+  )}
+</td>
                         <td className="fw-semibold">{order.total?.toFixed(2)} TND</td>
                         <td className="text-center">
                           <select
