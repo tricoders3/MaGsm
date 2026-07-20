@@ -8,6 +8,8 @@ const statusOptions =["en attente", "livré", "annulé"];
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+const [showDetails, setShowDetails] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -181,14 +183,27 @@ const Orders = () => {
                         </td>
                         <td>{new Date(order.createdAt).toLocaleString()}</td>
                         <td className="text-center">
-                          <button
-                            className="btn btn-sm btn-light border text-danger action-btn"
-                            title="Supprimer"
-                            onClick={() => handleDeleteOrder(order._id)}
-                          >
-                              <FiTrash2 size={16} />
-                          </button>
-                        </td>
+
+  <button
+    className="btn btn-sm btn-light border me-2"
+    onClick={() => {
+      setSelectedOrder(order);
+      setShowDetails(true);
+    }}
+  >
+    Détails
+  </button>
+
+
+  <button
+    className="btn btn-sm btn-light border text-danger action-btn"
+    title="Supprimer"
+    onClick={() => handleDeleteOrder(order._id)}
+  >
+    <FiTrash2 size={16} />
+  </button>
+
+</td>
                       </tr>
                     );
                   })}
@@ -229,6 +244,112 @@ const Orders = () => {
       </div>
     </div>
   </div>
+      {showDetails && selectedOrder && (
+<div 
+ className="modal d-block"
+ style={{backgroundColor:"rgba(0,0,0,.5)"}}
+>
+  <div className="modal-dialog modal-lg modal-dialog-centered">
+
+    <div className="modal-content">
+
+      <div className="modal-header">
+        <h5 className="modal-title">
+          Détails commande #{selectedOrder._id.slice(-6)}
+        </h5>
+
+        <button
+          className="btn-close"
+          onClick={() => setShowDetails(false)}
+        ></button>
+      </div>
+
+
+      <div className="modal-body">
+
+        <h6>Produits</h6>
+
+        <table className="table table-sm">
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th>Prix</th>
+              <th>Quantité</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+          {selectedOrder.items.map((item,index)=>(
+
+            <tr key={index}>
+
+              <td>
+                {item.name}
+              </td>
+
+              <td>
+                {item.price} TND
+              </td>
+
+              <td>
+                <span className="badge bg-danger">
+                  {item.quantity}
+                </span>
+              </td>
+
+              <td>
+                {(item.price * item.quantity).toFixed(2)} TND
+              </td>
+
+            </tr>
+
+          ))}
+
+          </tbody>
+        </table>
+
+
+        <hr/>
+
+
+        <h6>Adresse livraison</h6>
+
+        <p>
+          {selectedOrder.shippingAddress.street}<br/>
+          {selectedOrder.shippingAddress.postalCode} - {selectedOrder.shippingAddress.city}<br/>
+          {selectedOrder.shippingAddress.country}
+        </p>
+
+
+        <h6>Facturation</h6>
+
+        <p>
+          Nom : {selectedOrder.billingDetails.name}<br/>
+          Email : {selectedOrder.billingDetails.email}<br/>
+          Téléphone : {selectedOrder.billingDetails.phone}
+        </p>
+
+
+        <hr/>
+
+
+        <h5>
+          Total :
+          <span className="text-danger ms-2">
+            {selectedOrder.total} TND
+          </span>
+        </h5>
+
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+)}
     <ConfirmModal
   open={confirmOpen}
   title="Confirmer la suppression"
