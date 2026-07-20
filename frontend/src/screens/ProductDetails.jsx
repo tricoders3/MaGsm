@@ -22,6 +22,7 @@ const { productName } = useParams();
   const [similarProducts, setSimilarProducts] = useState([]);
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   const MAX_LENGTH = 180;
   const isLongDescription = product?.description?.length > MAX_LENGTH;
 
@@ -148,7 +149,15 @@ const { productName } = useParams();
       }
     }
   };
-  
+  const increaseQuantity = () => {
+  setQuantity((prev) => prev + 1);
+};
+
+const decreaseQuantity = () => {
+  if (quantity > 1) {
+    setQuantity((prev) => prev - 1);
+  }
+};
 
   // Add to cart
   const handleAddToCart = async () => {
@@ -159,7 +168,10 @@ const { productName } = useParams();
     }
 
     try {
-      await axios.post(`${BASE_URL}/api/cart`, { productId: product._id, quantity: 1 }, { withCredentials: true });
+      await axios.post(`${BASE_URL}/api/cart`,   {
+    productId: product._id,
+    quantity,
+  }, { withCredentials: true });
       setCartCount(cartCount + 1);
 
       setToast({ show: true, message: "Produit ajouté au panier", type: "cart" });
@@ -260,18 +272,41 @@ const { productName } = useParams();
 
 
           <div className="d-flex flex-column flex-sm-row gap-2 gap-sm-3 mb-3">
-          <Button
-  variant="btn btn-primary"
-  className="gap-2"
-  onClick={handleAddToCart}
-  title={
-    product.countInStock === "out"
-      ? "Produit en rupture de stock"
-      : "Ajouter au panier"
-  }
->
-  <FiShoppingCart /> Ajouter au panier
-</Button>
+        <div className="d-flex align-items-center gap-3 flex-wrap">
+
+  <div className="d-flex align-items-center border rounded">
+
+    <Button
+      variant="light"
+      onClick={decreaseQuantity}
+    >
+      -
+    </Button>
+
+    <span
+      className="px-3 fw-bold"
+      style={{ minWidth: "40px", textAlign: "center" }}
+    >
+      {quantity}
+    </span>
+
+    <Button
+      variant="light"
+      onClick={increaseQuantity}
+    >
+      +
+    </Button>
+
+  </div>
+
+  <Button
+    variant="btn btn-primary"
+    onClick={handleAddToCart}
+  >
+    <FiShoppingCart /> Ajouter au panier
+  </Button>
+
+</div>
 
 
 
